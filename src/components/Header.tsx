@@ -204,7 +204,7 @@ const Header = () => {
                 3
               </p>
               {isNotificationOpen && (
-                <div className="absolute top-12 right-0 z-2 h-[475px] max-h-[819.2px] w-96 rounded-lg border border-gray-200">
+                <div className="absolute top-12 right-0 z-2 h-[475px] max-h-[819.2px] w-96 overflow-hidden rounded-lg border border-gray-200">
                   <div className="flex items-center justify-between px-4 pt-4 pb-[17px]">
                     <h3 className="flex items-center justify-start text-lg font-semibold text-gray-900">
                       알림
