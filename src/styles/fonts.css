@@ -1,0 +1,26 @@
+@font-face {
+  font-family: 'Pretendard Variable';
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  src: url('/assets/fonts/PretendardVariable.woff2') format('woff2-variations');
+}
+
+/* 전역 기본 폰트 설정 */
+html {
+  font-family:
+    var(--font-family-pretendard, 'Pretendard Variable'),
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    sans-serif;
+}
+
+body {
+  font-weight: var(--font-weight-normal, 400);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1;
+}
