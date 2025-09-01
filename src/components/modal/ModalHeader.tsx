@@ -16,7 +16,8 @@ export default function ModalHeader({
   const subId = subTitle ? 'modal-sub' : undefined
 
   return (
-    <header className="flex items-start justify-between gap-4 pb-4">
+    // items-center로할지 start로 할지 질문
+    <header className="flex w-full items-center justify-between gap-4 border-b border-gray-300 px-6 py-4">
       <div className="min-w-0">
         <h2
           id={titleId}
@@ -30,11 +31,9 @@ export default function ModalHeader({
           </p>
         )}
       </div>
-      <div className="flex items-center gap-2">
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-          <X className="h-5 w-5" />
-        </button>
-      </div>
+      <button onClick={onClose} className="text-gray-400 hover:text-gray-900">
+        <X className="h-5 w-5" />
+      </button>
     </header>
   )
 }
