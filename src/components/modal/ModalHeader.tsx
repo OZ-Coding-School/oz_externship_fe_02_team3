@@ -18,7 +18,7 @@ export default function ModalHeader({
   return (
     // items-center로할지 start로 할지 질문
     <header className="flex w-full items-center justify-between gap-4 border-b border-gray-300 px-6 py-4">
-      <div className="min-w-0">
+      <div className="flex min-w-0 flex-col items-start">
         <h2
           id={titleId}
           className="truncate text-xl font-semibold text-gray-900"

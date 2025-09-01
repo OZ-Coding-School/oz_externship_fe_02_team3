@@ -15,11 +15,11 @@ export default function TestModal() {
         모달 열기
       </button>
 
-      <BaseModal open={open} onClose={() => setOpen(false)}>
+      <BaseModal open={open} onClose={() => setOpen(false)} size="horizontal">
         <div className="text-center">
           <ModalHeader
             title="지원 현황 관리"
-            subTitle="총 3명이 지원했습니다"
+            subTitle="총 Node.js 백엔드 개발 스터디원 구합니다 - 총 3명이 지원했습니다."
             onClose={() => setOpen(false)}
           />
           <div> 메인 내용이 들어갈 공간입니다.</div>
