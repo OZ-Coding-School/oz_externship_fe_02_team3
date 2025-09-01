@@ -6,7 +6,7 @@ interface BadgeProps {
 const Badge = ({ badgeTitle, sideClass = '' }: BadgeProps) => {
   return (
     <p
-      className={`w-fit ${sideClass} rounded-5 flex items-center justify-center rounded px-2 py-1 text-xs`}
+      className={`w-fit ${sideClass} flex items-center justify-center rounded px-2 py-1 text-xs`}
     >
       {badgeTitle}
     </p>
