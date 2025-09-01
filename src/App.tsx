@@ -15,11 +15,6 @@ import {
 import './App.css'
 
 function App() {
-  const dropDownData = {
-    dropdownTitle: '전체 카테고리',
-    leftIcon: FolderIcon,
-    rightIcon: ChevronDown,
-  }
   const cardData = {
     cardTitle: 'AWS 클라우드 아키텍처',
     author: '최자바',
@@ -48,7 +43,14 @@ function App() {
 
   return (
     <div>
-      <DropDown {...dropDownData} />
+      {/* 드롭다운에서 아이콘이 있는 버전 */}
+      <DropDown
+        dropdownTitle="전체 카테고리"
+        leftIcon={FolderIcon}
+        rightIcon={ChevronDown}
+      />
+      {/* 드롭다운에서 아이콘이 없는 버전 */}
+      <DropDown dropdownTitle="전체" />
       <Card {...cardData} />
       <JobPostCard {...JobPostCardProps} />
       {/* iconClassName 없는 버전 */}

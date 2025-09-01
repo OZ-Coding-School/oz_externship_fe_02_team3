@@ -60,7 +60,7 @@ const JobPostCard = ({
           <div className="flex flex-col gap-1">
             {courses.map((course, courseIndex) => (
               <div key={courseIndex} className="flex items-center">
-                <p className="text-sm text-gray-600">• {course}</p>
+                <p className="text-sm text-gray-700">• {course}</p>
               </div>
             ))}
           </div>
