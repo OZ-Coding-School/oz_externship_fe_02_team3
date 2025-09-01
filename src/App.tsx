@@ -4,6 +4,8 @@ import JobPostCard from '@src/components/JobPostCard'
 import { ChevronDown, FolderIcon } from 'lucide-react'
 import './App.css'
 
+import TestModal from './components/modal/TestModal'
+
 function App() {
   const dropDownData = {
     dropdownTitle: '전체 카테고리',
@@ -41,6 +43,7 @@ function App() {
       <DropDown {...dropDownData} />
       <Card {...cardData} />
       <JobPostCard {...JobPostCardProps} />
+      <TestModal />
     </div>
   )
 }
