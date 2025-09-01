@@ -14,6 +14,8 @@ import {
 } from 'lucide-react'
 import './App.css'
 
+import TestModal from './components/modal/TestModal'
+
 function App() {
   const cardData = {
     cardTitle: 'AWS 클라우드 아키텍처',
@@ -53,6 +55,7 @@ function App() {
       <DropDown dropdownTitle="전체" />
       <Card {...cardData} />
       <JobPostCard {...JobPostCardProps} />
+
       {/* iconClassName 없는 버전 */}
       <PageLink pageLinkInnerText="로그인 후 공고 작성" icon={LogIn} />
       {/* iconClassName 있는 버전 */}
@@ -101,6 +104,7 @@ function App() {
       />
       {/* 뱃지 */}
       <Badge badgeTitle="거절됨" sideClass="bg-danger-100 text-danger-800" />
+      <TestModal />
     </div>
   )
 }
