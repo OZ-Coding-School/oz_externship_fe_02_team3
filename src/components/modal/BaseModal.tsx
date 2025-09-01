@@ -1,11 +1,12 @@
 import { useEffect, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 
 // 모달 타입 정의
 type BaseModalProps = {
   open: boolean
   onClose: () => void
   children: ReactNode
-  maxWidth?: number | string
+  size?: 'vertical' | 'horizontal' // 'vertical' = 672px, 'horizontal' = 896px 피그마 참조
   dismissByOverlay?: boolean
 }
 
@@ -13,7 +14,7 @@ export default function BaseModal({
   open,
   onClose,
   children,
-  maxWidth = 640,
+  size = 'vertical',
   dismissByOverlay = true,
 }: BaseModalProps) {
   if (typeof document === 'undefined') return null
@@ -36,7 +37,27 @@ export default function BaseModal({
 
   if (!open) return null
 
-  return <>{/* 나중에 모달 내용 들어갈 자리 */}</>
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[1000] flex items-center justify-center"
+      role="dialog"
+      aria-modal="true"
+      onMouseDown={(e) => {
+        if (!dismissByOverlay) return
+        if (e.target === e.currentTarget) onClose()
+      }}
+    >
+      <div className="absolute inset-0 bg-black/50" />
+      <div
+        className={`relative w-[92%] ${
+          size === 'horizontal' ? 'max-w-[896px]' : 'max-w-[672px]'
+        } rounded-[12px] bg-white p-6 shadow-2xl`}
+      >
+        {children}
+      </div>
+    </div>,
+    root
+  )
 }
 
 // 동적인 DOM 관리
@@ -60,6 +81,8 @@ function lockScroll() {
     if (gap) document.documentElement.style.paddingRight = `${gap}px`
   }
 }
+
+// 스크롤 방지 해지
 function unlockScroll() {
   _lockCount = Math.max(0, _lockCount - 1)
   if (_lockCount === 0) {
