@@ -5,7 +5,5 @@
 /* 토큰(theme 레이어로 직접 삽입) */
 @import './styles/tokens.colors.css' layer(theme);
 @import './styles/tokens.typography.css' layer(theme);
-@import './styles/tokens.spacing.css' layer(theme);
-@import './styles/tokens.layout.css' layer(theme);
 /* 폰트(base 레이어로 직접 삽입) */
 @import './styles/fonts.css' layer(base);
