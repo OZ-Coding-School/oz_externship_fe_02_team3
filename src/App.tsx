@@ -1,17 +1,22 @@
+import Badge from '@components/Badge'
+import Button from '@components/Button'
 import Card from '@components/Card'
 import DropDown from '@components/DropDown'
-import JobPostCard from '@src/components/JobPostCard'
-import { ChevronDown, FolderIcon } from 'lucide-react'
+import JobPostCard from '@components/JobPostCard'
+import PageLink from '@components/PageLink'
+import {
+  ChevronDown,
+  FolderIcon,
+  LogIn,
+  MousePointer2,
+  UserRoundPlus,
+  X,
+} from 'lucide-react'
 import './App.css'
 
 import TestModal from './components/modal/TestModal'
 
 function App() {
-  const dropDownData = {
-    dropdownTitle: '전체 카테고리',
-    leftIcon: FolderIcon,
-    rightIcon: ChevronDown,
-  }
   const cardData = {
     cardTitle: 'AWS 클라우드 아키텍처',
     author: '최자바',
@@ -40,9 +45,65 @@ function App() {
 
   return (
     <div>
-      <DropDown {...dropDownData} />
+      {/* 드롭다운에서 아이콘이 있는 버전 */}
+      <DropDown
+        dropdownTitle="전체 카테고리"
+        leftIcon={FolderIcon}
+        rightIcon={ChevronDown}
+      />
+      {/* 드롭다운에서 아이콘이 없는 버전 */}
+      <DropDown dropdownTitle="전체" />
       <Card {...cardData} />
       <JobPostCard {...JobPostCardProps} />
+
+      {/* iconClassName 없는 버전 */}
+      <PageLink pageLinkInnerText="로그인 후 공고 작성" icon={LogIn} />
+      {/* iconClassName 있는 버전 */}
+      <PageLink
+        pageLinkInnerText="지원하기"
+        icon={MousePointer2}
+        iconClassName="rotate-[90deg]"
+      />
+      {/* outline 만 있는 버전 */}
+      <PageLink
+        pageLinkInnerText="회원가입하기"
+        icon={UserRoundPlus}
+        variant="outline"
+      />
+      {/* button 에서 아이콘이 있는 버전 */}
+      <Button
+        buttonInnerText="지원서 제출"
+        icon={MousePointer2}
+        iconClassName="rotate-[90deg]"
+        size="base"
+      />
+      {/* button 에서 아이콘이 없고 border 만 있는 버전 */}
+      <Button
+        buttonInnerText="취소"
+        size="base"
+        variant="outline"
+        bgColor="bg-transparent"
+        borderColor="border-gray-300"
+      />
+      {/* button 에서 아이콘이 있으며, background color 만 있고, 텍스트 컬러 white 버전 */}
+      <Button
+        buttonInnerText="거절"
+        size="base"
+        variant="outline"
+        bgColor="bg-danger-500"
+        borderColor="border-danger-500"
+        textColor="text-white"
+        icon={X}
+      />
+      {/* button 에서 disabled 버전 */}
+      <Button
+        buttonInnerText="선택 완료"
+        size="base"
+        variant="outline"
+        disabled
+      />
+      {/* 뱃지 */}
+      <Badge badgeTitle="거절됨" sideClass="bg-danger-100 text-danger-800" />
       <TestModal />
     </div>
   )

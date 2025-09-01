@@ -1,8 +1,8 @@
 import { ChevronDown, Star } from 'lucide-react'
 
 import Badge from '@components/Badge'
+import Button from '@components/Button'
 import Icon from '@components/Icon'
-import Button from '@src/components/BookMarkButton'
 interface CardProps {
   cardTitle: string
   author: string
@@ -30,7 +30,6 @@ const Card = ({
             <Badge badgeTitle="Udemy" sideClass="bg-primary-500 text-white" />
             <Badge badgeTitle="28% 할인" sideClass="bg-danger-500 text-white" />
           </div>
-          <Button />
         </div>
       </div>
       <div className="flex h-[297px] flex-col p-5">
@@ -49,12 +48,12 @@ const Card = ({
                 key={i}
                 icon={Star}
                 className={
-                  i < 4
+                  i < Math.floor(reviewRating)
                     ? 'stroke-primary-400 fill-primary-400'
                     : 'stroke-primary-400'
                 }
-                containerClassName="h-[14px] w-[14.58px]"
-                fill={i < 4}
+                size="sm"
+                fill={i < Math.floor(reviewRating)}
               />
             ))}
           </div>
@@ -71,15 +70,11 @@ const Card = ({
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <Icon icon={ChevronDown} className="stroke-primary-600" />
+            <Icon icon={ChevronDown} className="stroke-primary-600" size="sm" />
             <p className="text-primary-600 text-sm font-medium">리뷰 보기</p>
           </div>
-          <button
-            type="button"
-            className="bg-primary-500 rounded-lg px-4 py-2 text-sm font-medium text-white"
-          >
-            강의 보러가기
-          </button>
+
+          <Button buttonInnerText="강의보러가기" />
         </div>
       </div>
     </div>

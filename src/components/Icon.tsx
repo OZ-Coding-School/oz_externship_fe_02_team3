@@ -6,18 +6,33 @@ interface IconProps {
   className?: string
   containerClassName?: string
   fill?: boolean
+  strokeWidth?: number
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number
 }
 
 const Icon = ({
   icon: IconComponent,
   className = '',
-  containerClassName = 'h-[14px] w-[14.58px]',
+  containerClassName,
   fill = false,
+  strokeWidth = 2,
+  size = 'sm',
 }: IconProps) => {
+  // 사이즈 매핑
+  const sizeClasses = {
+    xs: 'h-3 w-3', // 12px
+    sm: 'h-4 w-4', // 16px
+    md: 'h-5 w-5', // 20px
+    lg: 'h-6 w-6', // 24px
+    xl: 'h-8 w-8', // 32px
+  }
+  const defaultContainerClass =
+    typeof size === 'string' ? sizeClasses[size] : `h-[${size}px] w-[${size}px]`
   return (
-    <div className={containerClassName}>
+    <div className={containerClassName || defaultContainerClass}>
       <IconComponent
         className={`h-full w-full ${className} ${fill ? 'fill-current' : ''}`}
+        strokeWidth={strokeWidth}
       />
     </div>
   )
