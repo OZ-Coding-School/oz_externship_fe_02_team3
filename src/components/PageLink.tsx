@@ -1,6 +1,6 @@
+import Icon from '@components/Icon'
 import type { LucideIcon } from 'lucide-react'
 import { Link } from 'react-router'
-import Icon from './Icon'
 interface PageLinkProps {
   pageLinkInnerText: string
   icon?: LucideIcon
