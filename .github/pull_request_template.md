@@ -9,8 +9,8 @@
 
 ## 📎 관련 이슈
 
-- close #이슈번호  
-  (ex: close #32)
+closes #이슈번호  
+ (ex: closes #32)
 
 ## 📸 스크린샷 (선택)
 
