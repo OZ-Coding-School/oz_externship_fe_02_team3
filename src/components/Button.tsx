@@ -12,6 +12,7 @@ interface ButtonProps {
   textColor?: string
   disabled?: boolean
   fontWeight?: 'normal' | 'medium' | 'semibold' | 'bold'
+  iconSize?: 'sm' | 'md' | 'lg'
 }
 
 const Button = ({
@@ -25,6 +26,7 @@ const Button = ({
   textColor = 'text-gray-700',
   fontWeight = 'medium',
   disabled = false,
+  iconSize = 'sm',
 }: ButtonProps) => {
   // size별 텍스트 사이즈 매핑
   const sizeMap = { sm: 'text-sm', base: 'text-base', lg: 'text-lg' }
@@ -57,7 +59,7 @@ const Button = ({
       {icon && (
         <Icon
           icon={icon}
-          size="sm"
+          size={iconSize}
           className={`stroke-white ${iconClassName}`}
         />
       )}
