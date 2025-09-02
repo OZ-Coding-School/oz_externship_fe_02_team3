@@ -1,36 +1,40 @@
 import { Bookmark, Calendar, Eye, UsersRound } from 'lucide-react'
 import Badge from './Badge'
 import Icon from './Icon'
+import type { JobPost } from '@src/data/jobPosts'
 
 interface JobPostCardProps {
-  postTitle: string
-  viewCount: number
-  commentCount: number
-  memberLimit: number
-  deadline: string
-  courses: string[]
-  tags: string[]
-  image?: string
+  post: JobPost
 }
 
-const JobPostCard = ({
-  postTitle,
-  viewCount,
-  commentCount,
-  memberLimit,
-  deadline,
-  courses,
-  tags,
-  image,
-}: JobPostCardProps) => {
+const JobPostCard = ({ post }: JobPostCardProps) => {
+  if (!post) return null
+
+  const {
+    title,
+    viewCount,
+    commentCount,
+    memberLimit,
+    deadline,
+    courses,
+    tags,
+    image,
+  } = post
+
   return (
-    <div className="flex gap-4 rounded-lg border border-solid border-gray-200 p-[25px]">
-      <div className="h-24 w-32 rounded-lg bg-gray-100 bg-cover bg-center bg-no-repeat" />
+    <div className="flex h-full gap-4 rounded-lg border border-solid border-gray-200 bg-white p-[25px]">
+      <img
+        src={image}
+        alt={title}
+        className="h-24 w-32 rounded-lg bg-cover bg-center bg-no-repeat"
+      />
       <div className="flex w-full flex-col">
         {/* 제목과 조회수, 북마크 수 */}
         <div className="flex w-full justify-between pb-3">
-          <p className="text-lg">{postTitle}</p>
-          <div className="flex items-center gap-2">
+          <p className="line-clamp-2 text-lg font-semibold text-gray-900">
+            {title}
+          </p>
+          <div className="text ml-2 flex items-center gap-2">
             <div className="flex items-center gap-1">
               <Icon icon={Eye} size="sm" className="stroke-gray-500" />
               <p className="text-sm text-gray-500">{viewCount}</p>
