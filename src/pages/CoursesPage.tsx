@@ -1,71 +1,168 @@
-// src/pages/CoursesPage.tsx
-
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { ChevronDown, FolderIcon } from 'lucide-react'
 import Card from '@components/Card'
-import DropDown from '@components/DropDown'
 import { mockCoursesData, categories, type Course } from '../mock/coursesData'
-import {
-  LIST_SETTINGS,
-  FILTER_SORT,
-  EMPTY_MESSAGES,
-  BUTTON_TEXT,
-  LOADING_MESSAGES,
-  LIST_MESSAGES,
-  ERROR_MESSAGES,
-  CARD,
-} from '../constants/ui'
 
-// 정렬 함수들
+// 정렬 옵션 정의
+const SORT_OPTIONS = {
+  POPULARITY: 'popularity',
+  LATEST: 'latest',
+  PRICE_LOW: 'price_low',
+  RATING: 'rating',
+} as const
+
+const SORT_LABELS = {
+  [SORT_OPTIONS.POPULARITY]: '인기순',
+  [SORT_OPTIONS.LATEST]: '최신순',
+  [SORT_OPTIONS.PRICE_LOW]: '가격낮은순',
+  [SORT_OPTIONS.RATING]: '평점높은순',
+}
+
+// any 대신 정확한 타입 정의
+interface IconProps {
+  className?: string
+}
+
+type IconComponent = React.ComponentType<IconProps>
+
+interface SimpleDropDownProps {
+  options: string[]
+  selected: string
+  onSelect: (value: string) => void
+  leftIcon?: IconComponent
+}
+
+const SimpleDropDown = ({
+  options,
+  selected,
+  onSelect,
+  leftIcon: LeftIcon,
+}: SimpleDropDownProps) => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex h-[38px] items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 transition-colors hover:bg-gray-50"
+      >
+        {LeftIcon && <LeftIcon className="h-4 w-4 text-gray-400" />}
+        <span className="text-sm text-gray-700">{selected}</span>
+        <ChevronDown
+          className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+          {options.map((option) => (
+            <button
+              key={option}
+              onClick={() => {
+                onSelect(option)
+                setIsOpen(false)
+              }}
+              className="w-full px-3 py-2 text-left text-sm first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50"
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// 정렬 함수
 const sortCourses = (courses: Course[], sortBy: string): Course[] => {
   const sortedCourses = [...courses]
 
   switch (sortBy) {
-    case FILTER_SORT.SORT_OPTIONS.LATEST:
+    case SORT_OPTIONS.LATEST:
       return sortedCourses.sort((a, b) => b.id - a.id)
-    case FILTER_SORT.SORT_OPTIONS.PRICE_LOW:
+    case SORT_OPTIONS.PRICE_LOW:
       return sortedCourses.sort((a, b) => a.price - b.price)
-    case FILTER_SORT.SORT_OPTIONS.PRICE_HIGH:
-      return sortedCourses.sort((a, b) => b.price - a.price)
-    case FILTER_SORT.SORT_OPTIONS.RATING:
+    case SORT_OPTIONS.RATING:
       return sortedCourses.sort((a, b) => b.reviewRating - a.reviewRating)
-    case FILTER_SORT.SORT_OPTIONS.POPULARITY:
+    case SORT_OPTIONS.POPULARITY:
     default:
       return sortedCourses.sort((a, b) => b.reviewCount - a.reviewCount)
   }
 }
 
-interface CoursesPageProps {
-  title?: string
-  subtitle?: string
-  isLoading?: boolean
-  error?: string | null
+// API 관련 함수들 (나중에 실제 API로 교체)
+const fetchCourses = async (): Promise<Course[]> => {
+  // TODO: 실제 API 호출로 교체
+  // const response = await fetch('/api/courses');
+  // return response.json();
+
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+  return mockCoursesData
 }
 
-const CoursesPage = ({
-  title = 'IT 강의 목록',
-  subtitle = '개발자를 위한 최고의 강의들을 만나보세요',
-  isLoading = false,
-  error = null,
-}: CoursesPageProps) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    FILTER_SORT.DEFAULT_CATEGORY
-  )
-  const [sortBy, setSortBy] = useState<string>(FILTER_SORT.DEFAULT_SORT)
-  const [displayedCount, setDisplayedCount] = useState(
-    LIST_SETTINGS.PREVIEW_ITEMS
-  )
-  const [courses] = useState<Course[]>(mockCoursesData)
+interface CoursesPageProps {
+  className?: string
+}
+
+const CoursesPage = ({ className }: CoursesPageProps = {}) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('전체')
+  const [sortBy, setSortBy] = useState<string>(SORT_OPTIONS.POPULARITY)
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [displayedCount, setDisplayedCount] = useState(6)
+
+  // API 연동을 위한 상태들
+  const [courses, setCourses] = useState<Course[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // 컴포넌트 마운트 시 데이터 로딩
+  useEffect(() => {
+    const loadCourses = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await fetchCourses() // 나중에 이 부분을 실제 API로 교체
+        setCourses(data)
+      } catch (err) {
+        setError('강의 목록을 불러오는데 실패했습니다.')
+        console.error('Failed to fetch courses:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadCourses()
+  }, [])
+
+  // 검색 필터링 함수
+  const filterBySearch = (courses: Course[], query: string): Course[] => {
+    if (!query.trim()) return courses
+
+    return courses.filter(
+      (course) =>
+        course.title.toLowerCase().includes(query.toLowerCase()) ||
+        course.author.toLowerCase().includes(query.toLowerCase()) ||
+        course.description.toLowerCase().includes(query.toLowerCase())
+    )
+  }
 
   // 필터링 및 정렬된 강의 목록
   const processedCourses = useMemo(() => {
-    const filtered =
-      selectedCategory === FILTER_SORT.DEFAULT_CATEGORY
-        ? courses
-        : courses.filter((course) => course.category === selectedCategory)
+    let filtered = courses
 
+    // 검색 필터링
+    filtered = filterBySearch(filtered, searchQuery)
+
+    // 카테고리 필터링
+    if (selectedCategory !== '전체') {
+      filtered = filtered.filter(
+        (course) => course.category === selectedCategory
+      )
+    }
+
+    // 정렬
     return sortCourses(filtered, sortBy)
-  }, [courses, selectedCategory, sortBy])
+  }, [courses, selectedCategory, sortBy, searchQuery])
 
   // 현재 표시할 강의 목록
   const displayedCourses = processedCourses.slice(0, displayedCount)
@@ -73,36 +170,31 @@ const CoursesPage = ({
 
   // 더 보기 핸들러
   const handleLoadMore = () => {
-    const nextCount = Math.min(
-      displayedCount + LIST_SETTINGS.ITEMS_PER_PAGE,
-      processedCourses.length
+    setDisplayedCount((prev) => Math.min(prev + 6, processedCourses.length))
+  }
+
+  // 로딩 상태
+  if (loading) {
+    return (
+      <div className={`min-h-screen bg-gray-50 ${className || ''}`}>
+        <div className="flex items-center justify-center py-20">
+          <p className="text-gray-500">강의 목록을 불러오는 중...</p>
+        </div>
+      </div>
     )
-    setDisplayedCount(nextCount)
-  }
-
-  // 정렬 변경 핸들러
-  const handleSortChange = (newSortBy: string) => {
-    setSortBy(newSortBy)
-    setDisplayedCount(LIST_SETTINGS.PREVIEW_ITEMS) // 정렬 변경시 초기화
-  }
-
-  // 카테고리 변경 핸들러
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category)
-    setDisplayedCount(LIST_SETTINGS.PREVIEW_ITEMS) // 카테고리 변경시 초기화
   }
 
   // 에러 상태
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <p className="mb-4 text-red-600">{ERROR_MESSAGES.LOAD_COURSES}</p>
+      <div className={`min-h-screen bg-gray-50 ${className || ''}`}>
+        <div className="flex flex-col items-center justify-center py-20">
+          <p className="mb-4 text-red-600">{error}</p>
           <button
             onClick={() => window.location.reload()}
             className="bg-primary-500 hover:bg-primary-600 rounded-lg px-4 py-2 text-white"
           >
-            {BUTTON_TEXT.RETRY}
+            다시 시도
           </button>
         </div>
       </div>
@@ -110,39 +202,72 @@ const CoursesPage = ({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen bg-gray-50 ${className || ''}`}>
       {/* 페이지 헤더 */}
       <div className="border-b border-gray-200 bg-white px-6 py-6">
         <div className="mx-auto max-w-7xl">
-          <h1 className="mb-2 text-2xl font-bold text-gray-900">{title}</h1>
-          <p className="text-gray-600">{subtitle}</p>
+          <h1 className="mb-2 text-2xl font-bold text-gray-900">
+            IT 강의 목록
+          </h1>
+          <p className="text-gray-600">
+            개발자를 위한 최고의 강의들을 만나보세요
+          </p>
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-8">
-        {/* 필터 영역 */}
+        {/* 검색 및 필터 영역 */}
         <div className="mb-8">
-          <div className="flex items-center gap-4">
-            <DropDown
-              dropdownTitle={selectedCategory}
-              leftIcon={FolderIcon}
-              rightIcon={ChevronDown}
-            />
-            {/* 카테고리 탭들 */}
-            <div className="flex gap-2 overflow-x-auto">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => handleCategoryChange(category)}
-                  className={`rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap ${CARD.TRANSITION} ${
-                    selectedCategory === category
-                      ? 'bg-primary-500 text-white'
-                      : 'border border-gray-300 bg-white text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
+          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+            {/* 검색바 */}
+            <div className="min-w-0 flex-1">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="강의를 검색해보세요..."
+                  className="focus:ring-primary-500 focus:border-primary-500 h-[38px] w-full rounded-lg border border-gray-300 pr-10 pl-4 text-sm focus:ring-2 focus:outline-none"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <div className="absolute top-1/2 right-3 -translate-y-1/2">
+                  <svg
+                    className="h-4 w-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* 드롭다운들 */}
+            <div className="flex gap-3">
+              <SimpleDropDown
+                options={categories}
+                selected={selectedCategory}
+                onSelect={setSelectedCategory}
+                leftIcon={FolderIcon}
+              />
+
+              <SimpleDropDown
+                options={Object.values(SORT_LABELS)}
+                selected={SORT_LABELS[sortBy as keyof typeof SORT_LABELS]}
+                onSelect={(label) => {
+                  const sortValue =
+                    Object.keys(SORT_LABELS).find(
+                      (key) =>
+                        SORT_LABELS[key as keyof typeof SORT_LABELS] === label
+                    ) || SORT_OPTIONS.POPULARITY
+                  setSortBy(sortValue)
+                }}
+              />
             </div>
           </div>
         </div>
@@ -151,50 +276,18 @@ const CoursesPage = ({
         <div className="mb-6">
           <div className="mb-4 flex items-center justify-between">
             <p className="text-gray-600">
-              {LIST_MESSAGES.SHOWING_RESULTS(
-                displayedCourses.length,
-                processedCourses.length
+              {displayedCourses.length}개 표시 / 총 {processedCourses.length}개
+              {searchQuery && (
+                <span className="text-primary-600 ml-2">
+                  {searchQuery} 검색 결과
+                </span>
               )}
             </p>
-            <div className="flex gap-2">
-              {Object.entries({
-                [FILTER_SORT.SORT_OPTIONS.POPULARITY]: '인기순',
-                [FILTER_SORT.SORT_OPTIONS.LATEST]: '최신순',
-                [FILTER_SORT.SORT_OPTIONS.PRICE_LOW]: '가격낮은순',
-                [FILTER_SORT.SORT_OPTIONS.RATING]: '평점높은순',
-              }).map(([value, label], index, array) => (
-                <span key={value} className="flex items-center">
-                  <button
-                    onClick={() => handleSortChange(value)}
-                    className={`text-sm transition-colors ${
-                      sortBy === value
-                        ? 'text-primary-600 font-medium'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    {label}
-                  </button>
-                  {index < array.length - 1 && (
-                    <span className="mx-2 text-gray-300">|</span>
-                  )}
-                </span>
-              ))}
-            </div>
           </div>
 
-          {/* 로딩 상태 */}
-          {isLoading ? (
+          {displayedCourses.length === 0 ? (
             <div className="flex items-center justify-center py-20">
-              <p className="text-gray-500">{LOADING_MESSAGES.COURSES}</p>
-            </div>
-          ) : displayedCourses.length === 0 ? (
-            /* 빈 상태 */
-            <div className="flex items-center justify-center py-20">
-              <p className="text-gray-500">
-                {selectedCategory === FILTER_SORT.DEFAULT_CATEGORY
-                  ? EMPTY_MESSAGES.COURSES
-                  : EMPTY_MESSAGES.FILTERED_COURSES}
-              </p>
+              <p className="text-gray-500">검색 결과가 없습니다.</p>
             </div>
           ) : (
             <>
@@ -203,7 +296,7 @@ const CoursesPage = ({
                 {displayedCourses.map((course) => (
                   <div
                     key={course.id}
-                    className={`${CARD.HOVER_SCALE} ${CARD.TRANSITION}`}
+                    className="transition-all duration-200 hover:scale-105"
                   >
                     <Card
                       cardTitle={course.title}
@@ -219,22 +312,16 @@ const CoursesPage = ({
               </div>
 
               {/* 더 보기 버튼 */}
-              <div className="mt-12 flex justify-center">
-                {hasMore ? (
+              {hasMore && (
+                <div className="mt-12 flex justify-center">
                   <button
                     onClick={handleLoadMore}
-                    className={`rounded-lg border border-gray-300 bg-white px-8 py-3 text-gray-700 hover:bg-gray-50 ${CARD.TRANSITION}`}
+                    className="rounded-lg border border-gray-300 bg-white px-8 py-3 text-gray-700 transition-colors hover:bg-gray-50"
                   >
-                    {BUTTON_TEXT.LOAD_MORE}
+                    더 보기
                   </button>
-                ) : (
-                  processedCourses.length > LIST_SETTINGS.PREVIEW_ITEMS && (
-                    <p className="text-sm text-gray-500">
-                      {LIST_MESSAGES.NO_MORE}
-                    </p>
-                  )
-                )}
-              </div>
+                </div>
+              )}
             </>
           )}
         </div>
