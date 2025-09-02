@@ -50,7 +50,7 @@ export default function BaseModal({
       <div className="absolute inset-0 bg-black/50" />
       <div
         className={`relative w-[92%] ${
-          size === 'horizontal' ? 'max-w-[896px]' : 'max-w-[672px]'
+          size === 'horizontal' ? 'max-w-[920px]' : 'max-w-[672px]'
         } min-h-[200px] min-w-[320px] rounded-[12px] bg-white shadow-2xl`}
       >
         {children}
