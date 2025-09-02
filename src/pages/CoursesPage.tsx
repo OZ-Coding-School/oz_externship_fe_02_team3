@@ -90,7 +90,6 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
       )
     }
 
-    // 정렬
     return sortCourses(filtered, sortBy)
   }, [courses, selectedCategory, sortBy, searchQuery])
 
