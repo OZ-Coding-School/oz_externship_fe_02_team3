@@ -195,17 +195,8 @@ const HeaderUserSection = () => {
                         onClick={linkToRecruitmentManage}
                       >
                         {getNotificationIcon(notification.type)}
-                        {/* <div className="flex"> */}
                         <div className="flex flex-col gap-1">
-                          {/* <div
-                                  className={`-webkit-box relative h-10 w-[286px] shrink-0 flex-col justify-center overflow-hidden font-['Pretendard:Regular',_sans-serif] text-[14px] leading-[0] overflow-ellipsis not-italic ${notification.isUnread ? 'text-gray-900' : 'text-gray-700'}`}
-                                  style={{
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: 'vertical',
-                                  }}
-                                > */}
-                          <p className="text-left text-sm text-gray-900">
+                          <p className="line-clamp-2 text-left text-sm text-gray-900">
                             {notification.message}
                           </p>
                           {/* </div> */}
