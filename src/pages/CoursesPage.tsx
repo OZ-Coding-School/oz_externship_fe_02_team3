@@ -24,7 +24,6 @@ const SORT_LABELS = {
   [SORT_OPTIONS.RATING]: '평점높은순',
 }
 
-// any 대신 정확한 타입 정의
 interface IconProps {
   className?: string
 }
@@ -54,13 +53,11 @@ const fetchCourses = async (): Promise<Course[]> => {
   // const response = await fetch('/api/courses');
   // return response.json();
 
-  // 현재는 mock 데이터 반환 (로딩 시뮬레이션)
   await new Promise((resolve) => setTimeout(resolve, 1000))
   return mockCoursesData
 }
 
 interface CoursesPageProps {
-  // props 정의 (필요시 확장)
   className?: string
 }
 
@@ -100,7 +97,7 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
     }
 
     loadCourses()
-  }, []) // 빈 배열이므로 컴포넌트 마운트 시 한 번만 실행
+  }, [])
 
   // 검색 필터링 함수
   const filterBySearch = (courses: Course[], query: string): Course[] => {
