@@ -39,11 +39,10 @@ const Button = ({
   }
 
   const baseStyles = `flex items-center gap-2 rounded-lg transition-colors duration-200 ${weightMap[fontWeight]}`
-  const padding = variant === 'outline' ? 'px-4 py-2' : 'px-6 py-2'
-
+  const padding = variant === 'outline' || icon ? 'px-4 py-2' : 'px-6 py-2'
   const variantStyles =
     variant === 'outline'
-      ? `border-2 ${borderColor} ${textColor} hover:bg-primary-50 active:bg-primary-100`
+      ? `border-1 ${borderColor} ${textColor} hover:bg-primary-50 active:bg-primary-100`
       : `${bgColor} text-white hover:bg-primary-600 active:bg-primary-700`
 
   const disabledStyles = disabled
