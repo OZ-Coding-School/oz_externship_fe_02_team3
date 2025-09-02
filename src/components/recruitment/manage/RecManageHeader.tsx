@@ -4,7 +4,7 @@ import { Plus } from 'lucide-react'
 
 const RecManageHeader = () => {
   return (
-    <div className="mb-8 flex h-full w-full items-center justify-between">
+    <div className="flex h-full w-full items-center justify-between">
       {/* 공고관리 header Left */}
       <div className="flex h-16 w-[340.77px] items-center justify-center">
         <BackButton />
