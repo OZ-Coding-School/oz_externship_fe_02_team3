@@ -1,4 +1,4 @@
-import HeaderUserSection from '@components/HeaderUserSection'
+import HeaderUserSection from './HeaderUserSection'
 import { NAV_ITEMS } from '@src/constants/ui'
 import { Link } from 'react-router'
 
