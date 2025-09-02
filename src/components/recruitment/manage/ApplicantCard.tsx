@@ -2,6 +2,8 @@ import Badge from '@src/components/Badge'
 import Avatar from '../common/Avatar'
 import { Calendar } from 'lucide-react'
 import InfoRow from './InfoRow'
+import { formatDate } from '@src/utils/date'
+import StatusBadge from '@src/components/StatusBadge'
 
 export type ApplicantStatus = 'pending' | 'approved' | 'rejected'
 
@@ -78,21 +80,4 @@ export default function ApplicantCard({ data, onClick }: Props) {
       </div>
     </article>
   )
-}
-
-function StatusBadge({ status }: { status: ApplicantStatus }) {
-  const map: Record<ApplicantStatus, { text: string; cls: string }> = {
-    approved: { text: '승인됨', cls: 'bg-emerald-100 text-emerald-700' },
-    pending: { text: '대기중', cls: 'bg-amber-100 text-amber-700' },
-    rejected: { text: '거절됨', cls: 'bg-rose-100 text-rose-700' },
-  }
-
-  const s = map[status]
-  return <Badge badgeTitle={s.text} sideClass={s.cls} />
-}
-
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
