@@ -1,4 +1,5 @@
 import Icon from '@components/Icon'
+import { Send } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 interface ButtonProps {
@@ -11,6 +12,7 @@ interface ButtonProps {
   bgColor?: string
   textColor?: string
   disabled?: boolean
+  onClick?: () => void
 }
 
 const Button = ({
@@ -23,6 +25,7 @@ const Button = ({
   bgColor = 'bg-primary-500',
   textColor = 'text-gray-700',
   disabled = false,
+  onClick,
 }: ButtonProps) => {
   // size별 텍스트 사이즈 매핑
   const textSizeStyles = {
@@ -56,6 +59,7 @@ const Button = ({
     <button
       type="button"
       disabled={disabled}
+      onClick={onClick}
       className={` ${buttonStyles.background} ${buttonStyles.text} ${buttonStyles.border} ${buttonStyles.borderWidth} ${buttonStyles.padding} ${buttonStyles.cursor} flex items-center gap-2 rounded-lg text-sm font-medium`}
     >
       {icon && (
