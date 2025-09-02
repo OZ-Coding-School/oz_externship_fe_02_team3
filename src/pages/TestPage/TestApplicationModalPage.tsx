@@ -27,6 +27,7 @@ export default function TestApplicationModalPage() {
       <ApplicationModal
         open={openApplication}
         onClose={() => setOpenApplication(false)}
+        title="Unity 게임 개발 프로젝트 팀원 모집"
       />
 
       {/* 지원자 관리 모달 */}

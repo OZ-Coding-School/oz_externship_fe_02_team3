@@ -7,7 +7,7 @@ import TextareaWithCounter from '@src/components/modal/TextareaWithCounter'
 import { useForm } from 'react-hook-form'
 import { Send } from 'lucide-react'
 
-type Props = { open: boolean; onClose: () => void }
+type Props = { open: boolean; onClose: () => void; title?: string }
 
 type Form = {
   intro: string
@@ -18,7 +18,11 @@ type Form = {
   expDetail?: string
 }
 
-export default function ApplicationModal({ open, onClose }: Props) {
+export default function ApplicationModal({
+  open,
+  onClose,
+  title = '공고 제목',
+}: Props) {
   const {
     register,
     handleSubmit,
@@ -56,7 +60,7 @@ export default function ApplicationModal({ open, onClose }: Props) {
       <div className="flex max-h-[80vh] flex-col">
         <ModalHeader
           title="스터디 지원서 작성"
-          subTitle="Unity 게임 개발 프로젝트 팀원 모집 입력"
+          subTitle={title}
           // subTitle={title} 나중에 공고 제목 props 으로 내려 줘야함
           onClose={handleClose}
         />
