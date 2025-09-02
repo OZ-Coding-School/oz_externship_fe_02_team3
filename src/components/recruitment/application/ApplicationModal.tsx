@@ -31,7 +31,7 @@ export default function ApplicationModal({ open, onClose }: Props) {
   const motive = watch('motive') ?? ''
   const goal = watch('goal') ?? ''
   const availability = watch('availability') ?? ''
-  const hasExp = watch('hasExp') ?? true
+  const hasExp = watch('hasExp') ?? false
   const expDetail = watch('expDetail') ?? ''
 
   // 나중에 api 연결로 post 하기
@@ -52,7 +52,7 @@ export default function ApplicationModal({ open, onClose }: Props) {
   if (!open) return null
 
   return (
-    <BaseModal open={open} onClose={onClose} size="vertical">
+    <BaseModal open={open} onClose={handleClose} size="vertical">
       <div className="flex max-h-[80vh] flex-col">
         <ModalHeader
           title="스터디 지원서 작성"
@@ -61,19 +61,31 @@ export default function ApplicationModal({ open, onClose }: Props) {
           onClose={handleClose}
         />
         <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-10 py-4">
-          <FormField label="자기소개" required error={errors.intro?.message}>
+          <FormField
+            id="intro"
+            label="자기소개"
+            required
+            error={errors.intro?.message}
+          >
             <TextareaWithCounter
+              id="intro"
               maxLength={500}
               valueLength={intro.length}
               {...register('intro', {
                 required: '자기소개를 입력해주세요.',
                 maxLength: 500,
               })}
-              placeholder="본인에 대해 간략하게 소개해주세요. (학습, 배경, 관심분야, 현재 수중 등)"
+              placeholder="본인에 대해 간략하게 소개해주세요. (학습, 배경, 관심분야, 현재 수준 등)"
             />
           </FormField>
-          <FormField label="지원동기" required error={errors.motive?.message}>
+          <FormField
+            id="motive"
+            label="지원동기"
+            required
+            error={errors.motive?.message}
+          >
             <TextareaWithCounter
+              id="motive"
               maxLength={500}
               valueLength={motive.length}
               {...register('motive', {
@@ -83,8 +95,14 @@ export default function ApplicationModal({ open, onClose }: Props) {
               placeholder="이 스터디에 지원하게 된 동기를 작성해 주세요."
             />
           </FormField>
-          <FormField label="스터디목표" required error={errors.goal?.message}>
+          <FormField
+            id="goal"
+            label="스터디목표"
+            required
+            error={errors.goal?.message}
+          >
             <TextareaWithCounter
+              id="goal"
               maxLength={500}
               valueLength={goal.length}
               {...register('goal', {
@@ -95,6 +113,7 @@ export default function ApplicationModal({ open, onClose }: Props) {
             />
           </FormField>
           <FormField
+            id="availability"
             label="가능한 시간대"
             required
             error={errors.availability?.message}
@@ -102,6 +121,7 @@ export default function ApplicationModal({ open, onClose }: Props) {
             {/* 시간대는 maxLength 변경 해야 할듯 
             높이도 줄여보는 방향으로, 아니면 시간 선택관련 컴포넌트를 따로 추가하는것도 좋아보이는데..... */}
             <TextareaWithCounter
+              id="availability"
               maxLength={500}
               valueLength={availability.length}
               {...register('availability', {
@@ -111,21 +131,24 @@ export default function ApplicationModal({ open, onClose }: Props) {
               placeholder="스터디 참여가 가능한 요일과 시간대를 작성해주세요(예: 평일 저녁 7~9시, 주말 오후)."
             />
           </FormField>
-          <FormField label="스터디 경험 유무">
-            <label className="inline-flex items-center gap-2">
+          <FormField id="hasExp" label="스터디 경험 유무">
+            <div className="inline-flex items-center gap-2">
               <input
+                id="hasExp"
                 type="checkbox"
                 {...register('hasExp')}
                 className="checked:bg-primary-500 h-3 w-3 appearance-none rounded-xs border border-gray-500 checked:border-1"
               />
               <span>스터디 참여 경험이 있습니다</span>
-            </label>
+            </div>
           </FormField>
           <FormField
+            id="expDetail"
             label="구체적인 스터디 경험"
             error={errors.expDetail?.message}
           >
             <TextareaWithCounter
+              id="expDetail"
               maxLength={500}
               valueLength={expDetail.length}
               disabled={!hasExp}
