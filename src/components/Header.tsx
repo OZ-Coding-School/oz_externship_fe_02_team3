@@ -1,6 +1,9 @@
 import Button from '@components/Button'
 import Icon from '@components/Icon'
 import PageLink from '@components/PageLink'
+import { NOTIFICATION_ICON_CONFIG, ROUTES, Z_INDEX } from '@constants/ui'
+import notificationsData from '@data/notificationsData'
+import type { NotificationItem } from '@src/types/notification'
 import {
   Bell,
   CalendarCheck,
@@ -12,86 +15,40 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
-interface Notification {
-  id: number
-  type:
-    | 'application'
-    | 'approval'
-    | 'rejection'
-    | 'join'
-    | 'study_end'
-    | 'reminder'
-  title: string
-  message: string
-  date: string
-  isRead: boolean
-  isUnread: boolean
+
+const iconMap = {
+  UserRoundPlus,
+  Check,
+  X,
+  UsersRound,
+  CalendarCheck,
 }
-const notificationsData: Notification[] = [
-  {
-    id: 1,
-    type: 'application',
-    title: '지원자 대기',
-    message:
-      'Unity 게임 개발 프로젝트 팀원 모집 구인 공고에 대한 1건의 대기중인 지원자가 있습니다.',
-    date: '12월 1일',
-    isRead: false,
-    isUnread: true,
-  },
-  {
-    id: 2,
-    type: 'approval',
-    title: '지원 승인',
-    message:
-      'React 실무 프로젝트 함께하실 분 모집합니다! 구인 공고에 대한 지원내역이 승인되었습니다.',
-    date: '12월 1일',
-    isRead: false,
-    isUnread: true,
-  },
-  {
-    id: 3,
-    type: 'join',
-    title: '새 멤버 참여',
-    message:
-      'React 실무 프로젝트 스터디에 김민지님이 참여했습니다. 환영해주세요!',
-    date: '12월 1일',
-    isRead: true,
-    isUnread: false,
-  },
-  {
-    id: 4,
-    type: 'rejection',
-    title: '지원 거절',
-    message:
-      'Vue.js 프론트엔드 개발팀 모집 구인 공고에 대한 지원내역이 거절되었습니다.',
-    date: '11월 30일',
-    isRead: true,
-    isUnread: false,
-  },
-  {
-    id: 5,
-    type: 'study_end',
-    title: '스터디 종료',
-    message:
-      '오늘은 Python 데이터 분석 스터디의 종료일이에요! 스터디 후기를 기록해주세요!',
-    date: '11월 29일',
-    isRead: false,
-    isUnread: true,
-  },
-  {
-    id: 6,
-    type: 'application',
-    title: '지원자 대기',
-    message:
-      'React 실무 프로젝트 함께하실 분 모집합니다! 구인 공고에 대한 2건의 대기중인 지원자가 있습니다.',
-    date: '11월 29일',
-    isRead: true,
-    isUnread: false,
-  },
-]
+
+const getNotificationIcon = (type: NotificationItem['type']) => {
+  const config = NOTIFICATION_ICON_CONFIG.find((item) => item.type === type)
+
+  if (!config) {
+    return (
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100">
+        <div className="h-5 w-5 rounded-full bg-gray-500" />
+      </div>
+    )
+  }
+  const IconComponent = iconMap[config.icon as keyof typeof iconMap]
+  // "config.icon은 iconMap의 키 중 하나야"라고 알려주는 것
+
+  return (
+    <div
+      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${config.bgColor}`}
+    >
+      <Icon icon={IconComponent} className={config.strokeColor} size="s" />
+    </div>
+  )
+}
+
 const Header = () => {
   const [notifications, setNotifications] =
-    useState<Notification[]>(notificationsData)
+    useState<NotificationItem[]>(notificationsData)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
   const [notificationFilter, setNotificationFilter] = useState<
     'all' | 'unread' | 'read'
@@ -102,56 +59,7 @@ const Header = () => {
   const navigate = useNavigate()
 
   // 개발단계에선 해당 값을 true 와 false 로 합니다.
-  const user = false
-
-  const getNotificationIcon = (type: Notification['type']) => {
-    switch (type) {
-      case 'application':
-        return (
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100">
-            <Icon
-              icon={UserRoundPlus}
-              className={`stroke-[#2563EB]`}
-              size="s"
-            />
-          </div>
-        )
-      case 'approval':
-        return (
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-green-100">
-            <Icon icon={Check} className={`stroke-[#16A34A]`} size="s" />
-          </div>
-        )
-      case 'rejection':
-        return (
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-red-100">
-            <Icon icon={X} className={`stroke-[#DC2626]`} size="s" />
-          </div>
-        )
-      case 'join':
-        return (
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100">
-            <Icon icon={UsersRound} className={`stroke-[#9333EA]`} size="s" />
-          </div>
-        )
-      case 'study_end':
-        return (
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-orange-100">
-            <Icon
-              icon={CalendarCheck}
-              className={`stroke-[#EA580C]`}
-              size="s"
-            />
-          </div>
-        )
-      default:
-        return (
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100">
-            <div className="h-5 w-5 rounded-full bg-gray-500" />
-          </div>
-        )
-    }
-  }
+  const user = true
 
   const handleNotificationToggle = () => {
     setIsNotificationOpen(!isNotificationOpen)
@@ -179,7 +87,7 @@ const Header = () => {
   }
 
   const linkToRecruitmentManage = () => {
-    navigate('/recruitment/manage')
+    navigate(ROUTES.RECRUITMENT_MANAGE)
     setIsNotificationOpen(false)
   }
   useEffect(() => {
@@ -200,7 +108,9 @@ const Header = () => {
   }, [isNotificationOpen])
 
   return (
-    <header className="sticky top-0 z-2 flex h-16 w-full items-center justify-center px-20">
+    <header
+      className={`sticky top-0 z-[${Z_INDEX.HEADER}] flex h-16 w-full items-center justify-center px-20`}
+    >
       <div className="flex h-full w-full max-w-7xl justify-between px-8">
         <Link to="/" className="flex items-center gap-2">
           <p className="bg-primary-500 flex h-8 w-8 items-center justify-center rounded-lg text-base font-bold text-white">
@@ -242,7 +152,7 @@ const Header = () => {
                   {isNotificationOpen && (
                     <div
                       ref={notificationRef}
-                      className="absolute top-12 right-0 z-2 max-h-[819.2px] w-96 overflow-hidden rounded-lg border border-gray-200 bg-white"
+                      className={`absolute top-12 right-0 z-[${Z_INDEX.DROPDOWN}] max-h-[819.2px] w-96 overflow-hidden rounded-lg border border-gray-200 bg-white`}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="flex items-center justify-between px-4 pt-4 pb-[17px]">
