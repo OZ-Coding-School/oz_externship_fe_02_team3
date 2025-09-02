@@ -1,18 +1,19 @@
 import { useState, useMemo, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import Card from '@components/Card'
+import Card from '@src/components/Card'
 import SearchFilter from '@components/SearchFilter'
-import { getRecommendedCourses, type Course } from '@src/data/coursesData'
-import { courseFetcher } from '@src/api/courseFetcher'
-import { sortCourses } from '@src/utils/sortUtils'
-import { cn } from '@src/utils/cn'
+import { getRecommendedCourses, type Course } from '../data/coursesData'
+import { courseFetcher } from '../api/courseFetcher'
+import { sortCourses } from '../utils/sortUtils'
+import { cn } from '../utils/cn'
 import {
   CATEGORIES,
   SORT_OPTIONS,
   SORT_LABELS,
   CATEGORY_LIST,
   PAGINATION,
-} from '@src/constants/courses'
+} from '../constants/courses'
+import CourseCardWithBookmark from '@src/components/CourseCardWithBookmark'
 
 // 검색 필터링 함수
 const filterBySearch = (courses: Course[], query: string): Course[] => {
@@ -103,6 +104,19 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
     setDisplayedCount((prev) =>
       Math.min(prev + PAGINATION.LOAD_MORE_COUNT, processedCourses.length)
     )
+  }
+
+  // 북마크 핸들러
+  const handleBookmark = (courseId: number, isBookmarked: boolean) => {
+    // TODO: 북마크 API 호출
+    console.log(`Course ${courseId} bookmark status: ${isBookmarked}`)
+
+    // 추후 북마크 상태 관리나 API 호출 로직 추가
+    // if (isBookmarked) {
+    //   // 북마크 추가 API
+    // } else {
+    //   // 북마크 제거 API
+    // }
   }
 
   // 추천 강의 표시용
@@ -213,7 +227,7 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
                 key={`recommended-${course.id}`}
                 className="transition-all duration-200 hover:scale-105"
               >
-                <Card
+                <CourseCardWithBookmark
                   cardTitle={course.title}
                   author={course.author}
                   cardDescription={course.description}
@@ -221,6 +235,8 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
                   reviewCount={course.reviewCount}
                   originalPrice={course.originalPrice}
                   price={course.price}
+                  courseId={course.id}
+                  onBookmarkClick={handleBookmark}
                 />
               </div>
             ))}
@@ -265,7 +281,7 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
                     key={course.id}
                     className="transition-all duration-200 hover:scale-105"
                   >
-                    <Card
+                    <CourseCardWithBookmark
                       cardTitle={course.title}
                       author={course.author}
                       cardDescription={course.description}
@@ -273,6 +289,8 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
                       reviewCount={course.reviewCount}
                       originalPrice={course.originalPrice}
                       price={course.price}
+                      courseId={course.id}
+                      onBookmarkClick={handleBookmark}
                     />
                   </div>
                 ))}
