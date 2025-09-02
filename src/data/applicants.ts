@@ -1,0 +1,52 @@
+import type { Applicant } from '@src/components/recruitment/manage/ApplicantCard'
+
+export const dummyApplicants: Applicant[] = [
+  {
+    id: 1,
+    name: '홍길동',
+    gender: '남성',
+    avatarUrl: 'https://i.pravatar.cc/150?img=3',
+    appliedAt: '2025-09-02T14:30:00',
+    availability: '평일 저녁 7~10시, 주말 오후 시간대 참여 가능합니다.',
+    hasExp: true,
+    status: 'pending',
+  },
+  {
+    id: 2,
+    name: '김민지',
+    gender: '여성',
+    avatarUrl: 'https://i.pravatar.cc/150?img=5',
+    appliedAt: '2025-09-01T11:15:00',
+    availability: '화요일, 목요일 저녁 7~10시',
+    hasExp: true,
+    status: 'approved',
+  },
+  {
+    id: 3,
+    name: '박개발자',
+    gender: '남성',
+    appliedAt: '2025-08-30T16:45:00',
+    availability: '주 3회 이상 참여 가능',
+    hasExp: false,
+    status: 'rejected',
+  },
+  {
+    id: 4,
+    name: '정동근',
+    gender: '남성',
+    avatarUrl: 'https://i.pravatar.cc/150?img=7',
+    appliedAt: '2025-08-30T16:45:00',
+    availability: '주 3회 이상 참여 가능',
+    hasExp: false,
+    status: 'rejected',
+  },
+  {
+    id: 5,
+    name: '박재민',
+    gender: '남성',
+    appliedAt: '2025-08-30T16:45:00',
+    availability: '주 3회 이상 참여 가능',
+    hasExp: false,
+    status: 'approved',
+  },
+]
