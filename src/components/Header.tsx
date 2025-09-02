@@ -9,7 +9,9 @@ import {
   X,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
+import Button from './Button'
+import PageLink from './PageLink'
 interface Notification {
   id: number
   type:
@@ -97,8 +99,10 @@ const Header = () => {
 
   const notificationRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
-
   const navigate = useNavigate()
+
+  // 개발단계에선 해당 값을 true 와 false 로 합니다.
+  const user = false
 
   const getNotificationIcon = (type: Notification['type']) => {
     switch (type) {
@@ -198,115 +202,126 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-2 flex h-16 w-full items-center justify-center px-20">
       <div className="flex h-full w-full max-w-7xl justify-between px-8">
-        <div className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2">
           <p className="bg-primary-500 flex h-8 w-8 items-center justify-center rounded-lg text-base font-bold text-white">
             S
           </p>
           <p className="text-primary-600 text-xl font-bold">StudyHub</p>
-        </div>
+        </Link>
         <nav className="flex items-center gap-8">
-          <a href="" className="flex items-center text-base text-gray-700">
+          <Link
+            to={`/courses`}
+            className="flex items-center text-base text-gray-700"
+          >
             강의 목록
-          </a>
-          <a href="" className="flex items-center text-base text-gray-700">
+          </Link>
+          <Link
+            to={`/study-group`}
+            className="flex items-center text-base text-gray-700"
+          >
             스터디 그룹
-          </a>
-          <a href="" className="flex items-center text-base text-gray-700">
+          </Link>
+          <Link
+            to={`/recruitment`}
+            className="flex items-center text-base text-gray-700"
+          >
             구인 공고
-          </a>
+          </Link>
           <div className="flex items-center gap-4">
-            <button
-              ref={buttonRef}
-              className="relative flex size-10 items-center justify-center rounded-full"
-              onClick={handleNotificationToggle}
-            >
-              <Icon icon={Bell} size="md" className={`stroke-gray-600`} />
-              <p className="bg-danger-500 absolute -top-1 left-6 flex h-5 w-5 items-center justify-center rounded-full text-xs font-semibold text-white">
-                3
-              </p>
-              {isNotificationOpen && (
-                <div
-                  ref={notificationRef}
-                  className="absolute top-12 right-0 z-2 max-h-[819.2px] w-96 overflow-hidden rounded-lg border border-gray-200 bg-white"
-                  onClick={(e) => e.stopPropagation()}
+            {user ? (
+              <>
+                <button
+                  ref={buttonRef}
+                  className="relative flex size-10 items-center justify-center rounded-full"
+                  onClick={handleNotificationToggle}
                 >
-                  <div className="flex items-center justify-between px-4 pt-4 pb-[17px]">
-                    <h3 className="flex items-center justify-start text-lg font-semibold text-gray-900">
-                      알림
-                    </h3>
+                  <Icon icon={Bell} size="md" className={`stroke-gray-600`} />
+                  <p className="bg-danger-500 absolute -top-1 left-6 flex h-5 w-5 items-center justify-center rounded-full text-xs font-semibold text-white">
+                    3
+                  </p>
+                  {isNotificationOpen && (
                     <div
-                      onClick={handleMarkAllAsRead}
-                      className="text-primary-600 flex items-center justify-center text-center text-sm"
+                      ref={notificationRef}
+                      className="absolute top-12 right-0 z-2 max-h-[819.2px] w-96 overflow-hidden rounded-lg border border-gray-200 bg-white"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      모두 읽음
-                    </div>
-                  </div>
-
-                  <div className="flex">
-                    <div
-                      role="tab"
-                      onClick={() => setNotificationFilter('all')}
-                      className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
-                        notificationFilter === 'all'
-                          ? 'border-primary-500 text-primary-600 border-[0px_0px_2px] border-solid'
-                          : 'border-[0px_0px_2px] border-solid border-transparent text-gray-500'
-                      }`}
-                    >
-                      전체보기 ({notifications.length})
-                    </div>
-                    <div
-                      role="tab"
-                      onClick={() => setNotificationFilter('unread')}
-                      className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
-                        notificationFilter === 'unread'
-                          ? 'border-primary-500 text-primary-600 border-[0px_0px_2px] border-solid'
-                          : 'border-[0px_0px_2px] border-solid border-transparent text-gray-500'
-                      }`}
-                    >
-                      읽지 않음 (
-                      {
-                        notifications.filter(
-                          (notification) => notification.isUnread
-                        ).length
-                      }
-                      )
-                    </div>
-                    <div
-                      role="tab"
-                      onClick={() => setNotificationFilter('read')}
-                      className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
-                        notificationFilter === 'read'
-                          ? 'border-primary-500 text-primary-600 border-[0px_0px_2px] border-solid'
-                          : 'border-[0px_0px_2px] border-solid border-transparent text-gray-500'
-                      }`}
-                    >
-                      읽음 (
-                      {
-                        notifications.filter(
-                          (notification) => notification.isRead
-                        ).length
-                      }
-                      )
-                    </div>
-                  </div>
-
-                  <div
-                    className="flex max-h-80 flex-col overflow-y-auto"
-                    role="tabpanel"
-                  >
-                    {filteredNotifications.map((notification) => (
-                      <div
-                        key={notification.id}
-                        className={`${notification.isUnread ? 'bg-primary-50' : 'bg-white'} flex flex-col content-stretch items-start justify-start border-gray-100`}
-                      >
+                      <div className="flex items-center justify-between px-4 pt-4 pb-[17px]">
+                        <h3 className="flex items-center justify-start text-lg font-semibold text-gray-900">
+                          알림
+                        </h3>
                         <div
-                          className="flex items-start gap-3 border-b border-gray-200 px-4 pt-[17px] pb-4"
-                          onClick={linkToRecruitmentManage}
+                          onClick={handleMarkAllAsRead}
+                          className="text-primary-600 flex items-center justify-center text-center text-sm"
                         >
-                          {getNotificationIcon(notification.type)}
-                          {/* <div className="flex"> */}
-                          <div className="flex flex-col gap-1">
-                            {/* <div
+                          모두 읽음
+                        </div>
+                      </div>
+
+                      <div className="flex">
+                        <div
+                          role="tab"
+                          onClick={() => setNotificationFilter('all')}
+                          className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
+                            notificationFilter === 'all'
+                              ? 'border-primary-500 text-primary-600 border-[0px_0px_2px] border-solid'
+                              : 'border-[0px_0px_2px] border-solid border-transparent text-gray-500'
+                          }`}
+                        >
+                          전체보기 ({notifications.length})
+                        </div>
+                        <div
+                          role="tab"
+                          onClick={() => setNotificationFilter('unread')}
+                          className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
+                            notificationFilter === 'unread'
+                              ? 'border-primary-500 text-primary-600 border-[0px_0px_2px] border-solid'
+                              : 'border-[0px_0px_2px] border-solid border-transparent text-gray-500'
+                          }`}
+                        >
+                          읽지 않음 (
+                          {
+                            notifications.filter(
+                              (notification) => notification.isUnread
+                            ).length
+                          }
+                          )
+                        </div>
+                        <div
+                          role="tab"
+                          onClick={() => setNotificationFilter('read')}
+                          className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
+                            notificationFilter === 'read'
+                              ? 'border-primary-500 text-primary-600 border-[0px_0px_2px] border-solid'
+                              : 'border-[0px_0px_2px] border-solid border-transparent text-gray-500'
+                          }`}
+                        >
+                          읽음 (
+                          {
+                            notifications.filter(
+                              (notification) => notification.isRead
+                            ).length
+                          }
+                          )
+                        </div>
+                      </div>
+
+                      <div
+                        className="flex max-h-80 flex-col overflow-y-auto"
+                        role="tabpanel"
+                      >
+                        {filteredNotifications.map((notification) => (
+                          <div
+                            key={notification.id}
+                            className={`${notification.isUnread ? 'bg-primary-50' : 'bg-white'} flex flex-col content-stretch items-start justify-start border-gray-100`}
+                          >
+                            <div
+                              className="flex items-start gap-3 border-b border-gray-200 px-4 pt-[17px] pb-4"
+                              onClick={linkToRecruitmentManage}
+                            >
+                              {getNotificationIcon(notification.type)}
+                              {/* <div className="flex"> */}
+                              <div className="flex flex-col gap-1">
+                                {/* <div
                                   className={`-webkit-box relative h-10 w-[286px] shrink-0 flex-col justify-center overflow-hidden font-['Pretendard:Regular',_sans-serif] text-[14px] leading-[0] overflow-ellipsis not-italic ${notification.isUnread ? 'text-gray-900' : 'text-gray-700'}`}
                                   style={{
                                     display: '-webkit-box',
@@ -314,37 +329,56 @@ const Header = () => {
                                     WebkitBoxOrient: 'vertical',
                                   }}
                                 > */}
-                            <p className="text-left text-sm text-gray-900">
-                              {notification.message}
-                            </p>
-                            {/* </div> */}
-                            <p className="flex items-center text-xs text-gray-500">
-                              {notification.date}
-                            </p>
-                          </div>
-                          {notification.isUnread && (
-                            <div className="flex pt-2">
-                              <div className="bg-primary-500 size-2 rounded-full" />
+                                <p className="text-left text-sm text-gray-900">
+                                  {notification.message}
+                                </p>
+                                {/* </div> */}
+                                <p className="flex items-center text-xs text-gray-500">
+                                  {notification.date}
+                                </p>
+                              </div>
+                              {notification.isUnread && (
+                                <div className="flex pt-2">
+                                  <div className="bg-primary-500 size-2 rounded-full" />
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                      <div className="flex h-[45px] bg-gray-50" />
+                    </div>
+                  )}
+                </button>
+                <a className="flex items-center gap-2">
+                  <div className="bg-primary-100 flex h-8 w-8 items-center justify-center rounded-full">
+                    <Icon
+                      icon={UserRound}
+                      size="sm"
+                      className={`stroke-primary-600`}
+                    />
                   </div>
-                  <div className="flex h-[45px] bg-gray-50" />
-                </div>
-              )}
-            </button>
-            <a className="flex items-center gap-2">
-              <div className="bg-primary-100 flex h-8 w-8 items-center justify-center rounded-full">
-                <Icon
-                  icon={UserRound}
-                  size="sm"
-                  className={`stroke-primary-600`}
+                  <p className="text-base text-gray-700">김스터디</p>
+                </a>
+              </>
+            ) : (
+              <>
+                <PageLink
+                  pageLinkInnerText="로그인"
+                  variant="ghost"
+                  hoverTextColor="text-gray-700"
+                  fontWeight="normal"
+                  linkTo="/login"
                 />
-              </div>
-              <p className="text-base text-gray-700">김스터디</p>
-            </a>
+                <Button
+                  buttonInnerText="회원가입"
+                  size="base"
+                  bgColor="bg-primary-500"
+                  borderColor="border-primary-500"
+                  fontWeight="medium"
+                />
+              </>
+            )}
           </div>
         </nav>
       </div>
