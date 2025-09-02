@@ -11,7 +11,7 @@ import {
   categories,
   getRecommendedCourses,
   type Course,
-} from '../mock/coursesData'
+} from '../data/coursesData'
 
 // 정렬 옵션 정의
 const SORT_OPTIONS = {
