@@ -1,4 +1,4 @@
-import { Course } from '../data/coursesData'
+import type { Course } from '../data/coursesData'
 import { mockCoursesData } from '../data/coursesData'
 
 // API 응답 타입

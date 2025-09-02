@@ -2,59 +2,28 @@ import { useState, useMemo, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Card from '@components/Card'
 import SearchFilter from '@components/SearchFilter'
+import { getRecommendedCourses, type Course } from '@src/data/coursesData'
+import { courseFetcher } from '@src/api/courseFetcher'
+import { sortCourses } from '@src/utils/sortUtils'
+import { cn } from '@src/utils/cn'
 import {
-  mockCoursesData,
-  categories,
-  getRecommendedCourses,
-  type Course,
-} from '../data/coursesData'
+  CATEGORIES,
+  SORT_OPTIONS,
+  SORT_LABELS,
+  CATEGORY_LIST,
+  PAGINATION,
+} from '@src/constants/courses'
 
-// 정렬 옵션 정의
-const SORT_OPTIONS = {
-  POPULARITY: 'popularity',
-  LATEST: 'latest',
-  PRICE_LOW: 'price_low',
-  RATING: 'rating',
-} as const
+// 검색 필터링 함수
+const filterBySearch = (courses: Course[], query: string): Course[] => {
+  if (!query.trim()) return courses
 
-const SORT_LABELS = {
-  [SORT_OPTIONS.POPULARITY]: '인기순',
-  [SORT_OPTIONS.LATEST]: '최신순',
-  [SORT_OPTIONS.PRICE_LOW]: '가격낮은순',
-  [SORT_OPTIONS.RATING]: '평점높은순',
-}
-
-interface IconProps {
-  className?: string
-}
-
-type IconComponent = React.ComponentType<IconProps>
-
-// 정렬 함수
-const sortCourses = (courses: Course[], sortBy: string): Course[] => {
-  const sortedCourses = [...courses]
-
-  switch (sortBy) {
-    case SORT_OPTIONS.LATEST:
-      return sortedCourses.sort((a, b) => b.id - a.id)
-    case SORT_OPTIONS.PRICE_LOW:
-      return sortedCourses.sort((a, b) => a.price - b.price)
-    case SORT_OPTIONS.RATING:
-      return sortedCourses.sort((a, b) => b.reviewRating - a.reviewRating)
-    case SORT_OPTIONS.POPULARITY:
-    default:
-      return sortedCourses.sort((a, b) => b.reviewCount - a.reviewCount)
-  }
-}
-
-// API 관련 함수들 (나중에 실제 API로 교체)
-const fetchCourses = async (): Promise<Course[]> => {
-  // TODO: 실제 API 호출로 교체
-  // const response = await fetch('/api/courses');
-  // return response.json();
-
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  return mockCoursesData
+  return courses.filter(
+    (course) =>
+      course.title.toLowerCase().includes(query.toLowerCase()) ||
+      course.author.toLowerCase().includes(query.toLowerCase()) ||
+      course.description.toLowerCase().includes(query.toLowerCase())
+  )
 }
 
 interface CoursesPageProps {
@@ -62,10 +31,14 @@ interface CoursesPageProps {
 }
 
 const CoursesPage = ({ className }: CoursesPageProps = {}) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('전체')
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    CATEGORIES.ALL
+  )
   const [sortBy, setSortBy] = useState<string>(SORT_OPTIONS.POPULARITY)
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [displayedCount, setDisplayedCount] = useState(6)
+  const [displayedCount, setDisplayedCount] = useState<number>(
+    PAGINATION.INITIAL_COUNT
+  )
 
   // API 연동을 위한 상태들
   const [courses, setCourses] = useState<Course[]>([])
@@ -74,7 +47,8 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
 
   // 추천 강의 상태
   const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([])
-  const [currentRecommendedIndex, setCurrentRecommendedIndex] = useState(0)
+  const [currentRecommendedIndex, setCurrentRecommendedIndex] =
+    useState<number>(0)
 
   // 컴포넌트 마운트 시 데이터 로딩
   useEffect(() => {
@@ -82,11 +56,14 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
       try {
         setLoading(true)
         setError(null)
-        const data = await fetchCourses()
+        const data = await courseFetcher.getAll()
         setCourses(data)
 
         // 추천 강의 설정
-        const recommended = getRecommendedCourses(data, 6)
+        const recommended = getRecommendedCourses(
+          data,
+          PAGINATION.RECOMMENDED_COUNT
+        )
         setRecommendedCourses(recommended)
       } catch (err) {
         setError('강의 목록을 불러오는데 실패했습니다.')
@@ -99,18 +76,6 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
     loadCourses()
   }, [])
 
-  // 검색 필터링 함수
-  const filterBySearch = (courses: Course[], query: string): Course[] => {
-    if (!query.trim()) return courses
-
-    return courses.filter(
-      (course) =>
-        course.title.toLowerCase().includes(query.toLowerCase()) ||
-        course.author.toLowerCase().includes(query.toLowerCase()) ||
-        course.description.toLowerCase().includes(query.toLowerCase())
-    )
-  }
-
   // 필터링 및 정렬된 강의 목록
   const processedCourses = useMemo(() => {
     let filtered = courses
@@ -119,7 +84,7 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
     filtered = filterBySearch(filtered, searchQuery)
 
     // 카테고리 필터링
-    if (selectedCategory !== '전체') {
+    if (selectedCategory !== CATEGORIES.ALL) {
       filtered = filtered.filter(
         (course) => course.category === selectedCategory
       )
@@ -135,24 +100,33 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
 
   // 더 보기 핸들러
   const handleLoadMore = () => {
-    setDisplayedCount((prev) => Math.min(prev + 6, processedCourses.length))
+    setDisplayedCount((prev) =>
+      Math.min(prev + PAGINATION.LOAD_MORE_COUNT, processedCourses.length)
+    )
   }
 
-  // 추천 강의 표시용 (한 번에 3개씩)
+  // 추천 강의 표시용
   const visibleRecommended = recommendedCourses.slice(
     currentRecommendedIndex,
-    currentRecommendedIndex + 3
+    currentRecommendedIndex + PAGINATION.RECOMMENDED_VISIBLE
   )
   const canGoLeft = currentRecommendedIndex > 0
-  const canGoRight = currentRecommendedIndex + 3 < recommendedCourses.length
+  const canGoRight =
+    currentRecommendedIndex + PAGINATION.RECOMMENDED_VISIBLE <
+    recommendedCourses.length
 
   // 추천 강의 네비게이션
   const handleRecommendedNav = (direction: 'left' | 'right') => {
     if (direction === 'left' && canGoLeft) {
-      setCurrentRecommendedIndex((prev) => Math.max(0, prev - 3))
+      setCurrentRecommendedIndex((prev) =>
+        Math.max(0, prev - PAGINATION.RECOMMENDED_VISIBLE)
+      )
     } else if (direction === 'right' && canGoRight) {
       setCurrentRecommendedIndex((prev) =>
-        Math.min(prev + 3, recommendedCourses.length - 3)
+        Math.min(
+          prev + PAGINATION.RECOMMENDED_VISIBLE,
+          recommendedCourses.length - PAGINATION.RECOMMENDED_VISIBLE
+        )
       )
     }
   }
@@ -160,7 +134,7 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
   // 로딩 상태
   if (loading) {
     return (
-      <div className={`min-h-screen bg-gray-50 ${className || ''}`}>
+      <div className={cn('min-h-screen bg-gray-50', className)}>
         <div className="flex items-center justify-center py-20">
           <p className="text-gray-500">강의 목록을 불러오는 중...</p>
         </div>
@@ -171,7 +145,7 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
   // 에러 상태
   if (error) {
     return (
-      <div className={`min-h-screen bg-gray-50 ${className || ''}`}>
+      <div className={cn('min-h-screen bg-gray-50', className)}>
         <div className="flex flex-col items-center justify-center py-20">
           <p className="mb-4 text-red-600">{error}</p>
           <button
@@ -186,7 +160,7 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
   }
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${className || ''}`}>
+    <div className={cn('min-h-screen bg-gray-50', className)}>
       {/* 페이지 헤더 */}
       <div className="border-b border-gray-200 bg-white px-6 py-6">
         <div className="mx-auto max-w-7xl">
@@ -208,29 +182,31 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
               <button
                 onClick={() => handleRecommendedNav('left')}
                 disabled={!canGoLeft}
-                className={`rounded-full border p-2 ${
+                className={cn(
+                  'rounded-full border p-2',
                   canGoLeft
                     ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
                     : 'cursor-not-allowed border-gray-200 text-gray-400'
-                }`}
+                )}
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => handleRecommendedNav('right')}
                 disabled={!canGoRight}
-                className={`rounded-full border p-2 ${
+                className={cn(
+                  'rounded-full border p-2',
                   canGoRight
                     ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
                     : 'cursor-not-allowed border-gray-200 text-gray-400'
-                }`}
+                )}
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
           </div>
 
-          {/* 추천 강의 가로 스크롤 */}
+          {/* 추천 강의 카드 */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {visibleRecommended.map((course) => (
               <div
@@ -250,6 +226,7 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
             ))}
           </div>
         </div>
+
         {/* 검색 및 필터 영역 */}
         <SearchFilter
           searchQuery={searchQuery}
@@ -258,7 +235,7 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
           onCategoryChange={setSelectedCategory}
           selectedSort={sortBy}
           onSortChange={setSortBy}
-          categories={categories}
+          categories={CATEGORY_LIST}
           sortOptions={SORT_LABELS}
         />
 
