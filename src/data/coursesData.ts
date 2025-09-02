@@ -1,3 +1,5 @@
+// src/mock/coursesData.ts
+
 export interface Course {
   id: number
   title: string
@@ -141,6 +143,18 @@ export const mockCoursesData: Course[] = [
     isBestseller: true,
   },
 ]
+
+// 추천 강의 로직
+export const getRecommendedCourses = (
+  courses: Course[],
+  limit: number = 4
+): Course[] => {
+  // 평점 4.7 이상이면서 리뷰 수가 많은 순으로 정렬
+  return courses
+    .filter((course) => course.reviewRating >= 4.7)
+    .sort((a, b) => b.reviewCount - a.reviewCount)
+    .slice(0, limit)
+}
 
 // 카테고리 목록
 export const categories = [

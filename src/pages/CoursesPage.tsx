@@ -1,7 +1,17 @@
 import { useState, useMemo, useEffect } from 'react'
-import { ChevronDown, FolderIcon } from 'lucide-react'
+import {
+  ChevronDown,
+  FolderIcon,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react'
 import Card from '@components/Card'
-import { mockCoursesData, categories, type Course } from '../mock/coursesData'
+import {
+  mockCoursesData,
+  categories,
+  getRecommendedCourses,
+  type Course,
+} from '../mock/coursesData'
 
 // 정렬 옵션 정의
 const SORT_OPTIONS = {
@@ -25,11 +35,12 @@ interface IconProps {
 
 type IconComponent = React.ComponentType<IconProps>
 
+// 드롭다운 컴포넌트 - any 제거
 interface SimpleDropDownProps {
   options: string[]
   selected: string
   onSelect: (value: string) => void
-  leftIcon?: IconComponent
+  leftIcon?: IconComponent // any 대신 구체적 타입
 }
 
 const SimpleDropDown = ({
@@ -96,11 +107,13 @@ const fetchCourses = async (): Promise<Course[]> => {
   // const response = await fetch('/api/courses');
   // return response.json();
 
+  // 현재는 mock 데이터 반환 (로딩 시뮬레이션)
   await new Promise((resolve) => setTimeout(resolve, 1000))
   return mockCoursesData
 }
 
 interface CoursesPageProps {
+  // props 정의 (필요시 확장)
   className?: string
 }
 
@@ -115,14 +128,22 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // 추천 강의 상태
+  const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([])
+  const [currentRecommendedIndex, setCurrentRecommendedIndex] = useState(0)
+
   // 컴포넌트 마운트 시 데이터 로딩
   useEffect(() => {
     const loadCourses = async () => {
       try {
         setLoading(true)
         setError(null)
-        const data = await fetchCourses() // 나중에 이 부분을 실제 API로 교체
+        const data = await fetchCourses()
         setCourses(data)
+
+        // 추천 강의 설정
+        const recommended = getRecommendedCourses(data, 6)
+        setRecommendedCourses(recommended)
       } catch (err) {
         setError('강의 목록을 불러오는데 실패했습니다.')
         console.error('Failed to fetch courses:', err)
@@ -132,7 +153,7 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
     }
 
     loadCourses()
-  }, [])
+  }, []) // 빈 배열이므로 컴포넌트 마운트 시 한 번만 실행
 
   // 검색 필터링 함수
   const filterBySearch = (courses: Course[], query: string): Course[] => {
@@ -171,6 +192,25 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
   // 더 보기 핸들러
   const handleLoadMore = () => {
     setDisplayedCount((prev) => Math.min(prev + 6, processedCourses.length))
+  }
+
+  // 추천 강의 표시용 (한 번에 3개씩)
+  const visibleRecommended = recommendedCourses.slice(
+    currentRecommendedIndex,
+    currentRecommendedIndex + 3
+  )
+  const canGoLeft = currentRecommendedIndex > 0
+  const canGoRight = currentRecommendedIndex + 3 < recommendedCourses.length
+
+  // 추천 강의 네비게이션
+  const handleRecommendedNav = (direction: 'left' | 'right') => {
+    if (direction === 'left' && canGoLeft) {
+      setCurrentRecommendedIndex((prev) => Math.max(0, prev - 3))
+    } else if (direction === 'right' && canGoRight) {
+      setCurrentRecommendedIndex((prev) =>
+        Math.min(prev + 3, recommendedCourses.length - 3)
+      )
+    }
   }
 
   // 로딩 상태
@@ -216,6 +256,56 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
       </div>
 
       <div className="mx-auto max-w-7xl px-6 py-8">
+        {/* 추천 강의 섹션 */}
+        <div className="mb-12">
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-xl font-bold text-gray-900">추천 강의</h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleRecommendedNav('left')}
+                disabled={!canGoLeft}
+                className={`rounded-full border p-2 ${
+                  canGoLeft
+                    ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'cursor-not-allowed border-gray-200 text-gray-400'
+                }`}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => handleRecommendedNav('right')}
+                disabled={!canGoRight}
+                className={`rounded-full border p-2 ${
+                  canGoRight
+                    ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                    : 'cursor-not-allowed border-gray-200 text-gray-400'
+                }`}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* 추천 강의 가로 스크롤 */}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {visibleRecommended.map((course) => (
+              <div
+                key={`recommended-${course.id}`}
+                className="transition-all duration-200 hover:scale-105"
+              >
+                <Card
+                  cardTitle={course.title}
+                  author={course.author}
+                  cardDescription={course.description}
+                  reviewRating={course.reviewRating}
+                  reviewCount={course.reviewCount}
+                  originalPrice={course.originalPrice}
+                  price={course.price}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
         {/* 검색 및 필터 영역 */}
         <div className="mb-8">
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
