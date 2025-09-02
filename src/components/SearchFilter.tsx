@@ -1,62 +1,5 @@
-import { useState } from 'react'
 import { ChevronDown, FolderIcon } from 'lucide-react'
-
-interface IconProps {
-  className?: string
-}
-
-type IconComponent = React.ComponentType<IconProps>
-
-// 드롭다운 컴포넌트
-interface SimpleDropDownProps {
-  options: string[]
-  selected: string
-  onSelect: (value: string) => void
-  leftIcon?: IconComponent
-}
-
-const SimpleDropDown = ({
-  options,
-  selected,
-  onSelect,
-  leftIcon: LeftIcon,
-}: SimpleDropDownProps) => {
-  const [isOpen, setIsOpen] = useState(false)
-
-  return (
-    <div className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex h-[38px] w-full items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 transition-colors hover:bg-gray-50"
-      >
-        {LeftIcon && <LeftIcon className="h-4 w-4 text-gray-400" />}
-        <span className="flex-1 text-left text-sm text-gray-700">
-          {selected}
-        </span>
-        <ChevronDown
-          className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-        />
-      </button>
-
-      {isOpen && (
-        <div className="absolute top-full left-0 z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
-          {options.map((option) => (
-            <button
-              key={option}
-              onClick={() => {
-                onSelect(option)
-                setIsOpen(false)
-              }}
-              className="w-full px-3 py-2 text-left text-sm first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50"
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
+import SelectableDropDown from './SelectableDropDown'
 
 interface SearchFilterProps {
   searchQuery: string
@@ -113,19 +56,21 @@ const SearchFilter = ({
 
         {/* 카테고리 드롭다운 */}
         <div className="lg:col-span-1">
-          <SimpleDropDown
-            options={categories}
+          <SelectableDropDown
             selected={selectedCategory}
+            options={categories}
             onSelect={onCategoryChange}
             leftIcon={FolderIcon}
+            rightIcon={ChevronDown}
+            placeholder="카테고리 선택"
           />
         </div>
 
         {/* 정렬 드롭다운 */}
         <div className="lg:col-span-1">
-          <SimpleDropDown
-            options={Object.values(sortOptions)}
+          <SelectableDropDown
             selected={sortOptions[selectedSort] || '인기순'}
+            options={Object.values(sortOptions)}
             onSelect={(label) => {
               const sortValue =
                 Object.keys(sortOptions).find(
@@ -133,6 +78,8 @@ const SearchFilter = ({
                 ) || 'popularity'
               onSortChange(sortValue)
             }}
+            rightIcon={ChevronDown}
+            placeholder="정렬 선택"
           />
         </div>
       </div>
