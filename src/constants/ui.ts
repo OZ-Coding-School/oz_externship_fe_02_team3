@@ -54,3 +54,9 @@ export const Z_INDEX = {
   POPUP: 600,
   TOAST: 1000,
 } as const
+
+export const NAV_ITEMS = [
+  { to: '/courses', label: '강의목록' },
+  { to: '/study-group', label: '스터디 그룹' },
+  { to: '/recruitment', label: '구인 공고' },
+]
