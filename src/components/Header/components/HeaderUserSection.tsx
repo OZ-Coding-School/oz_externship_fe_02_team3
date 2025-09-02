@@ -14,7 +14,7 @@ import {
   X,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 
 const getNotificationIcon = (type: NotificationItem['type']) => {
   const config = NOTIFICATION_ICON_CONFIG.find((item) => item.type === type)

@@ -1,6 +1,6 @@
 import HeaderUserSection from '@components/Header/components/HeaderUserSection'
 import { NAV_ITEMS } from '@src/constants/ui'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 
 const Navigation = () => {
   return (
