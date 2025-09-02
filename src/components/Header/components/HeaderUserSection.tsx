@@ -139,8 +139,8 @@ const HeaderUserSection = () => {
                     onClick={() => setNotificationFilter('all')}
                     className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
                       notificationFilter === 'all'
-                        ? 'border-primary-500 text-primary-600 border-[0px_0px_2px] border-solid'
-                        : 'border-[0px_0px_2px] border-solid border-transparent text-gray-500'
+                        ? 'border-primary-500 text-primary-600 border-b-2'
+                        : 'border-b-2 border-transparent text-gray-500'
                     }`}
                   >
                     전체보기 ({notifications.length})
@@ -150,8 +150,8 @@ const HeaderUserSection = () => {
                     onClick={() => setNotificationFilter('unread')}
                     className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
                       notificationFilter === 'unread'
-                        ? 'border-primary-500 text-primary-600 border-[0px_0px_2px] border-solid'
-                        : 'border-[0px_0px_2px] border-solid border-transparent text-gray-500'
+                        ? 'border-primary-500 text-primary-600 border-b-2'
+                        : 'border-b-2 border-transparent text-gray-500'
                     }`}
                   >
                     읽지 않음 (
@@ -167,8 +167,8 @@ const HeaderUserSection = () => {
                     onClick={() => setNotificationFilter('read')}
                     className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
                       notificationFilter === 'read'
-                        ? 'border-primary-500 text-primary-600 border-[0px_0px_2px] border-solid'
-                        : 'border-[0px_0px_2px] border-solid border-transparent text-gray-500'
+                        ? 'border-primary-500 text-primary-600 border-b-2'
+                        : 'border-b-2 border-transparent text-gray-500'
                     }`}
                   >
                     읽음 (
