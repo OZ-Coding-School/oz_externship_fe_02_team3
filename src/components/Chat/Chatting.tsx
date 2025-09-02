@@ -33,30 +33,33 @@ const Chatting = ({ toggleChat }: ChatProps) => {
       .length
   }
 
-  return (
-    <div className="fixed right-6 bottom-24 z-40 max-h-96 w-80 rounded-lg border border-gray-200 bg-white shadow-2xl">
-      <div className="flex flex-col">
-        {currentView === 'list' ? (
-          <>
-            <ChatListHeader unreadCount={3} onClose={toggleChat} />
-            <ChatList openChatRoom={openChatRoom} />
-          </>
-        ) : (
-          selectedChatRoom && (
-            <>
-              <ChatRoomHeader
-                title={selectedChatRoom.title}
-                onlineCount={getOnlineCount()}
-                onBack={handleBack}
-                onClose={toggleChat}
-              />
-              <ParticipantsList participants={selectedChatRoom.participants} />
-              <MessageList messages={selectedChatRoom.messages} />
-              <MessageInput onSend={sendMessage} />
-            </>
-          )
-        )}
+  const renderListView = () => (
+    <>
+      <ChatListHeader unreadCount={3} onClose={toggleChat} />
+      <ChatList openChatRoom={openChatRoom} />
+    </>
+  )
+
+  const renderChatView = () =>
+    selectedChatRoom && (
+      <div className="flex h-full flex-col">
+        <ChatRoomHeader
+          title={selectedChatRoom.title}
+          onlineCount={getOnlineCount()}
+          onBack={handleBack}
+          onClose={toggleChat}
+        />
+        <ParticipantsList participants={selectedChatRoom.participants} />
+        <div className="flex-1 overflow-y-auto">
+          <MessageList messages={selectedChatRoom.messages} />
+        </div>
+        <MessageInput onSend={sendMessage} />
       </div>
+    )
+
+  return (
+    <div className="fixed right-6 bottom-24 z-40 h-96 w-80 rounded-lg border border-gray-200 bg-white shadow-2xl">
+      {currentView === 'list' ? renderListView() : renderChatView()}
     </div>
   )
 }

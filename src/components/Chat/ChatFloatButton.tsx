@@ -1,6 +1,6 @@
 import Button from '@components/Button'
 import Chat from '@src/components/Chat/Chatting'
-import { MessageCircle } from 'lucide-react'
+import { MessageCircle, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 interface ChatFloatButtonProps {
@@ -38,15 +38,27 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
         ref={buttonRef}
         className={`fixed right-6 bottom-6 z-50 ${className} bg-primary-500 flex size-16 cursor-pointer items-center justify-center rounded-full shadow-lg`}
       >
-        <Button
-          icon={MessageCircle}
-          iconOnly
-          variant="ghost"
-          iconSize="lg"
-          iconClassName="stroke-white"
-          onClick={toggleChat}
-          ariaLabel="채팅창 닫기"
-        />
+        {!isOpen ? (
+          <Button
+            icon={MessageCircle}
+            iconOnly
+            variant="ghost"
+            iconSize="lg"
+            iconClassName="stroke-white"
+            onClick={toggleChat}
+            ariaLabel="채팅창 열기"
+          />
+        ) : (
+          <Button
+            icon={X}
+            iconOnly
+            variant="ghost"
+            iconSize="sm"
+            iconClassName="stroke-gray-400"
+            onClick={toggleChat}
+            ariaLabel="채팅창 닫기"
+          />
+        )}
       </div>
       {isOpen && (
         <div ref={chatRef}>

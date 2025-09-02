@@ -31,7 +31,7 @@ const ChatList = ({ openChatRoom }: ChatListProps) => {
             <span className="text-xs text-gray-600">
               {data.lastMessage.sender}:
             </span>
-            <p className="line-clamp-1 max-w-[253.688px] flex-1 text-xs text-gray-600">
+            <p className="line-clamp-1 flex-1 text-xs text-gray-600">
               {data.lastMessage.content}
             </p>
           </div>

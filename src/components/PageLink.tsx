@@ -12,7 +12,7 @@ interface PageLinkProps {
   hoverBgColor?: string
   hoverTextColor?: string
   fontWeight?: 'normal' | 'medium' | 'semibold' | 'bold'
-  linkTo: string
+  linkTo?: string
 }
 
 const PageLink = ({
