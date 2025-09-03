@@ -7,9 +7,9 @@ import TextareaWithCounter from '@src/components/modal/TextareaWithCounter'
 import { useForm } from 'react-hook-form'
 import { Send } from 'lucide-react'
 
-type Props = { open: boolean; onClose: () => void; title?: string }
+interface Props { open: boolean; onClose: () => void; title?: string }
 
-type Form = {
+interface Form {
   intro: string
   motive: string
   goal: string

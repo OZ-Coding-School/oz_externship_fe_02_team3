@@ -7,7 +7,7 @@ interface JobPostCardProps {
   post: JobPost
 }
 
-const JobPostCard = ({ post }: JobPostCardProps) => {
+export default function JobPostCard({ post }: JobPostCardProps) {
   if (!post) return null
 
   const {
@@ -58,12 +58,12 @@ const JobPostCard = ({ post }: JobPostCardProps) => {
           </div>
         </div>
 
-        {/* 강의 목록*/}
+        {/* 강의 목록 */}
         <div className="flex flex-col gap-2 pb-4">
           <p className="text-sm text-gray-600">강의 목록:</p>
           <div className="flex flex-col gap-1">
-            {courses.map((course, courseIndex) => (
-              <div key={courseIndex} className="flex items-center">
+            {courses.map((course, idx) => (
+              <div key={idx} className="flex items-center">
                 <p className="text-sm text-gray-700">• {course}</p>
               </div>
             ))}
@@ -72,10 +72,10 @@ const JobPostCard = ({ post }: JobPostCardProps) => {
 
         {/* 강의 태그 */}
         <div className="flex flex-wrap gap-2">
-          {tags.map((tag, tagIndex) => (
+          {tags.map((tag, idx) => (
             <Badge
               badgeTitle={tag}
-              key={tagIndex}
+              key={idx}
               sideClass="bg-primary-100 text-primary-800"
             />
           ))}
@@ -84,5 +84,3 @@ const JobPostCard = ({ post }: JobPostCardProps) => {
     </div>
   )
 }
-
-export default JobPostCard

@@ -8,13 +8,13 @@ interface BadgeProps {
   iconColor: string
 }
 
-const NotificationBadge = ({
+function NotificationBadge({
   Icon,
   count,
   title,
   bgColor,
   iconColor,
-}: BadgeProps) => {
+}: BadgeProps) {
   return (
     <div className="flex h-[102px] w-[286px] items-center gap-4 rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#E5E7EB]">
       <div

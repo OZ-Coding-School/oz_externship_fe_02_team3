@@ -12,7 +12,7 @@ interface CardProps {
   originalPrice: number
   price: number
 }
-const Card = ({
+function Card({
   cardTitle,
   author,
   cardDescription,
@@ -20,7 +20,7 @@ const Card = ({
   reviewCount,
   originalPrice,
   price,
-}: CardProps) => {
+}: CardProps) {
   return (
     <div className="flex h-[516.86px] w-[389.33px] flex-col overflow-hidden rounded-xl border border-solid border-gray-200">
       <div className="relative flex h-[217.859px] flex-col bg-gray-100">

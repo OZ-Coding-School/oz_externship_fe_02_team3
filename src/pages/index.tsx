@@ -1,6 +1,7 @@
 import ChatFloatButton from '@src/components/Chat/ChatFloatButton'
 import Header from '@src/components/Header/Header'
-const HomePage = () => {
+
+export default function HomePage() {
   return (
     <div>
       <Header />
@@ -8,5 +9,3 @@ const HomePage = () => {
     </div>
   )
 }
-
-export default HomePage

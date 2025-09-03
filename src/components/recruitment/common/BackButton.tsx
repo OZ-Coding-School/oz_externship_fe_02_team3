@@ -1,7 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router'
 
-const BackButton = () => {
+function BackButton() {
   const navigate = useNavigate()
 
   const handleBack = () => {

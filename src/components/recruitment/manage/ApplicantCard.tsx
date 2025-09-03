@@ -7,7 +7,7 @@ import StatusBadge from '@src/components/StatusBadge'
 
 export type ApplicantStatus = 'pending' | 'approved' | 'rejected'
 
-export type Applicant = {
+export interface Applicant {
   id: string | number // 상세 모달 API 호출용으로 필요
   name: string
   gender: '남성' | '여성'
@@ -18,7 +18,7 @@ export type Applicant = {
   status: ApplicantStatus
 }
 
-type Props = {
+interface Props {
   data: Applicant
   onClick?: (applicant: Applicant) => void
 }
