@@ -29,7 +29,7 @@ export default function TestHub() {
         ))}
       </div>
       <h1 className="mb-4 text-2xl font-bold">Test Hub</h1>
-      <div className="gmb-6 grid grid-cols-3 gap-3">
+      <div className="mb-6 grid grid-cols-3 gap-3">
         {testItems.map((i) => (
           <Link
             key={i.to}
