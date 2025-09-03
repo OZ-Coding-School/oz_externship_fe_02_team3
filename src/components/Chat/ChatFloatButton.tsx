@@ -1,5 +1,5 @@
 import Button from '@components/Button'
-import Chat from '@src/components/Chat/Chatting'
+import Chat from '@src/components/chat/Chatting'
 import { MessageCircle, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 

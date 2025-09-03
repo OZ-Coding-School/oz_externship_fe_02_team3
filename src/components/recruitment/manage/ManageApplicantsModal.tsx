@@ -1,8 +1,6 @@
-import type { Applicant } from './ApplicantCard'
 import BaseModal from '@src/components/modal/BaseModal'
 import ModalHeader from '@src/components/modal/ModalHeader'
-import ApplicantCard from './ApplicantCard'
-
+import ApplicantCard, { type Applicant } from './ApplicantCard'
 
 interface Props {
   open: boolean

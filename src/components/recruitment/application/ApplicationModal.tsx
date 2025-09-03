@@ -4,11 +4,14 @@ import FormField from '@src/components/modal/FormField'
 import ModalFooter from '@src/components/modal/ModalFooter'
 import ModalHeader from '@src/components/modal/ModalHeader'
 import TextareaWithCounter from '@src/components/modal/TextareaWithCounter'
-import { useForm } from 'react-hook-form'
 import { Send } from 'lucide-react'
+import { useForm } from 'react-hook-form'
 
-
-interface Props { open: boolean; onClose: () => void; title?: string }
+interface Props {
+  open: boolean
+  onClose: () => void
+  title?: string
+}
 
 interface Form {
   intro: string

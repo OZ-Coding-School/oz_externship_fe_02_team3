@@ -4,7 +4,7 @@ import { useState } from 'react'
 interface MessageInputProps {
   onSend: (message: string) => void
 }
-export const MessageInput = ({ onSend }: MessageInputProps) => {
+export default function MessageInput({ onSend }: MessageInputProps) {
   const [message, setMessage] = useState('')
 
   const handleSend = () => {
