@@ -22,7 +22,7 @@ const PageLink = ({
   variant = 'ghost',
   bgColor = 'bg-primary-500',
   borderColor = 'border-primary-500',
-  textColor = 'text-gray-700',
+  textColor = 'text-primary-600',
   hoverBgColor = 'hover:bg-primary-50',
   hoverTextColor = 'hover:text-primary-600',
   fontWeight = 'normal',
@@ -45,9 +45,6 @@ const PageLink = ({
     }
   }
 
-  const iconColor =
-    variant === 'filled' ? 'stroke-white' : textColor.replace('text', 'stroke')
-
   return (
     <Link
       to={`${linkTo}`}
@@ -57,7 +54,7 @@ const PageLink = ({
         <Icon
           icon={icon}
           size="sm"
-          className={`${iconColor} ${iconClassName}`}
+          className={`stroke-current ${iconClassName}`}
         />
       )}
       <span className={`${weightMap[fontWeight]} text-base`}>
