@@ -5,7 +5,7 @@ interface ChatListProps {
   openChatRoom: (chatData: Chat) => void
 }
 
-const ChatList = ({ openChatRoom }: ChatListProps) => {
+function ChatList({ openChatRoom }: ChatListProps) {
   return (
     <div className="flex max-h-[310px] w-[318px] flex-col divide-y divide-gray-200 overflow-y-auto">
       {chatData.map((data) => (

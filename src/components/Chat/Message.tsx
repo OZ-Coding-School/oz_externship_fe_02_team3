@@ -5,7 +5,7 @@ interface MessageProps {
   isOwn: boolean
 }
 
-export const Message = ({ sender, message, time, isOwn }: MessageProps) => {
+export function Message({ sender, message, time, isOwn }: MessageProps) {
   return (
     <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'} gap-1`}>
       <div className="flex flex-col gap-1">

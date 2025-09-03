@@ -45,7 +45,7 @@ const iconMap = {
   UsersRound,
   CalendarCheck,
 }
-const HeaderUserSection = () => {
+function HeaderUserSection() {
   const navigate = useNavigate()
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
   const [notifications, setNotifications] =

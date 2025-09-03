@@ -12,7 +12,7 @@ interface MessageListProps {
   messages: MessageData[]
 }
 
-export const MessageList = ({ messages }: MessageListProps) => {
+export function MessageList({ messages }: MessageListProps) {
   return (
     <div className="flex max-h-[217px] flex-col gap-3 overflow-y-auto p-3">
       {messages.map((message) => (

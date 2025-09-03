@@ -3,8 +3,8 @@ import { useState } from 'react'
 
 import ChatList from './ChatList'
 
-import ChatListHeader from './ChatHeader/ChatListHeader'
-import ChatRoomHeader from './ChatHeader/ChatRoomHeader'
+import ChatListHeader from './chatheader/ChatListHeader'
+import ChatRoomHeader from './chatheader/ChatRoomHeader'
 import { MessageInput } from './MessageInput'
 import { MessageList } from './MessageList'
 import { ParticipantsList } from './ParticipantsList'
@@ -12,7 +12,7 @@ import { ParticipantsList } from './ParticipantsList'
 interface ChatProps {
   toggleChat: () => void
 }
-const Chatting = ({ toggleChat }: ChatProps) => {
+export default function Chatting({ toggleChat }: ChatProps) {
   const [currentView, setCurrentView] = useState<'list' | 'chat'>('list')
   const [selectedChatRoom, setSelectedChatRoom] = useState<Chat | null>(null)
 
@@ -25,7 +25,9 @@ const Chatting = ({ toggleChat }: ChatProps) => {
     setCurrentView('list')
   }
 
-  const sendMessage = (message: string) => {}
+  const sendMessage = (message: string) => {
+    console.log(message)
+  }
 
   const getOnlineCount = () => {
     if (!selectedChatRoom) return 0
@@ -63,5 +65,3 @@ const Chatting = ({ toggleChat }: ChatProps) => {
     </div>
   )
 }
-
-export default Chatting
