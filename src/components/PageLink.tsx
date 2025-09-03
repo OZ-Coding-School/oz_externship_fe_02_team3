@@ -23,7 +23,7 @@ const PageLink = ({
   bgColor = 'bg-primary-500',
   borderColor = 'border-primary-500',
   textColor = 'text-primary-600',
-  hoverBgColor = 'hover:bg-primary-50',
+  hoverBgColor,
   hoverTextColor = 'hover:text-primary-600',
   fontWeight = 'normal',
   linkTo = '/',
@@ -34,14 +34,18 @@ const PageLink = ({
     semibold: 'font-semibold',
     bold: 'font-bold',
   }
+
+  const appliedHoverBgColor =
+    variant === 'outline' ? 'hover:bg-primary-50' : 'hover:bg-primary-600'
+
   const getStyles = () => {
     switch (variant) {
       case 'ghost':
         return `${textColor} ${hoverTextColor} transition-colors px-2`
       case 'outline':
-        return `border-1 ${borderColor} ${textColor} ${hoverBgColor} transition-colors px-6 py-2 rounded-lg`
+        return `border-1 ${borderColor} ${textColor} ${hoverBgColor || appliedHoverBgColor}  transition-colors px-6 py-2 rounded-lg`
       default:
-        return `${bgColor} text-white ${hoverBgColor || 'hover:bg-primary-600'} transition-colors px-6 py-2 rounded-lg`
+        return `${bgColor} text-white ${hoverBgColor || appliedHoverBgColor} transition-colors px-6 py-2 rounded-lg`
     }
   }
 
