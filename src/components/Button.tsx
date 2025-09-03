@@ -1,5 +1,4 @@
 import Icon from '@components/Icon'
-import { Send } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 interface ButtonProps {
@@ -15,7 +14,6 @@ interface ButtonProps {
   fontWeight?: 'normal' | 'medium' | 'semibold' | 'bold'
   iconSize?: 'sm' | 'md' | 'lg'
   onClick?: () => void
-
 }
 
 const Button = ({
@@ -26,7 +24,7 @@ const Button = ({
   variant = 'filled',
   borderColor = 'border-primary-500',
   bgColor = 'bg-primary-500',
-  textColor = 'text-gray-700',
+  textColor = 'text-primary-600',
   fontWeight = 'medium',
   disabled = false,
   iconSize = 'sm',
