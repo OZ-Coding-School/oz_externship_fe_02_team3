@@ -110,6 +110,15 @@ export default tseslint.config(
           allowConstantExport: true, // 상수 export는 허용
         },
       ],
+      // 팀 규칙
+      '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
+      'react/function-component-definition': [
+        'error',
+        {
+          namedComponents: 'function-declaration', // 이름 있는 컴포넌트는 function 선언식
+          unnamedComponents: 'arrow-function', // 익명 컴포넌트는 화살표 함수
+        },
+      ],
       // 설명: Vite의 Hot Module Replacement 최적화를 위한 규칙
     },
   },

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
-type Props = {
+
+interface Props {
   id: string
   label: string
   required?: boolean

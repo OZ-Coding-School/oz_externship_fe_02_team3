@@ -1,7 +1,7 @@
 import { X } from 'lucide-react'
 
 // 모달 헤더 props 타입 정의
-type ModalHeaderProps = {
+interface ModalHeaderProps {
   title: React.ReactNode
   subTitle?: React.ReactNode
   onClose: () => void

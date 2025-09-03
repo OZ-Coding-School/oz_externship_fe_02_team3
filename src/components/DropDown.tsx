@@ -9,13 +9,13 @@ interface DropDownProps {
   rightIconClassName?: string
 }
 
-const DropDown = ({
+function DropDown({
   dropdownTitle,
   leftIcon,
   rightIcon,
   leftIconClassName = '',
   rightIconClassName = '',
-}: DropDownProps) => {
+}: DropDownProps) {
   return (
     <div className="relative flex h-[38px] w-[378px] items-center rounded-lg border border-gray-300">
       {/* {leftIcon && (  <LeftIcon className="absolute top-0 left-0 flex h-full items-center justify-center pl-[12px]" />)} */}

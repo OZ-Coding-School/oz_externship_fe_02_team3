@@ -1,4 +1,4 @@
-type ModalFooterProps = {
+interface ModalFooterProps {
   left?: React.ReactNode // 안내문, 보조 텍스트 들어갈 공간
   right?: React.ReactNode // 버튼 들어갈 공간
 }

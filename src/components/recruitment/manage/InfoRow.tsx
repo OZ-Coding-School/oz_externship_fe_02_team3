@@ -1,6 +1,7 @@
 import type { LucideIcon } from 'lucide-react'
 
-type Base = {
+
+interface Base {
   label: string
   icon?: LucideIcon
   direction?: 'row' | 'col'

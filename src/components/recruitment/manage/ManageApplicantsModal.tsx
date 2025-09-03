@@ -3,7 +3,8 @@ import BaseModal from '@src/components/modal/BaseModal'
 import ModalHeader from '@src/components/modal/ModalHeader'
 import ApplicantCard from './ApplicantCard'
 
-type Props = {
+
+interface Props {
   open: boolean
   onClose: () => void
   title?: string // 공고 제목
@@ -36,12 +37,12 @@ export default function ManageApplicantsModal({
                 <ApplicantCard
                   key={a.id}
                   data={a}
-                  onClick={(idOrData) => {
-                    // const id =
-                    typeof idOrData === 'object' ? idOrData.id : idOrData
-                    // setSelectedId(id)
-                    // TODO : 상세 모달 open
-                  }}
+                  //   onClick={(idOrData) => {
+                  // const id =
+                  // typeof idOrData === 'object' ? idOrData.id : idOrData
+                  // setSelectedId(id)
+                  // TODO : 상세 모달 open
+                  //   }}
                 />
               ))}
             </div>
