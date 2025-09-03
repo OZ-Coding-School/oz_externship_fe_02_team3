@@ -15,7 +15,7 @@ interface DropDownProps {
   className?: string
 }
 
-function DropDown({
+export default function DropDown({
   selected,
   options = [],
   onSelect,
@@ -118,5 +118,3 @@ function DropDown({
     </div>
   )
 }
-
-export default DropDown
