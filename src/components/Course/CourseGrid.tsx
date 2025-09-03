@@ -7,7 +7,6 @@ interface CourseGridProps {
   onBookmark: (courseId: number, isBookmarked: boolean) => void
 }
 
-// ✅ Default Export + function
 export default function CourseGrid({ courses, onBookmark }: CourseGridProps) {
   if (courses.length === 0) {
     return (
@@ -32,14 +31,12 @@ export default function CourseGrid({ courses, onBookmark }: CourseGridProps) {
         >
           <CourseCardWithBookmark
             cardTitle={course.title}
-            instructor={course.instructor}
+            author={course.instructor ?? '미정'}
             cardDescription={course.description}
-            rating={course.rating}
-            reviewCount={course.reviewCount}
-            originalPrice={course.originalPrice}
-            price={course.price}
-            thumbnailUrl={course.thumbnailUrl}
-            provider={course.provider}
+            reviewRating={course.rating ?? 0}
+            reviewCount={course.reviewCount ?? 0}
+            originalPrice={course.originalPrice ?? course.price ?? 0}
+            price={course.price ?? 0}
             courseId={course.id}
             onBookmarkClick={onBookmark}
           />
