@@ -1,12 +1,6 @@
 import { Z_INDEX } from '@constants/ui'
-
-<<<<<<< HEAD
-import Logo from './components/Logo'
-import Navigation from './components/Navigation'
-=======
 import Logo from '@components/Header/components/Logo'
 import Navigation from '@components/Header/components/Navigation'
->>>>>>> develop
 
 const Header = () => {
   return (
