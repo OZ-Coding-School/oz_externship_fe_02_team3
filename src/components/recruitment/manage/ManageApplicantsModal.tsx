@@ -3,6 +3,7 @@ import BaseModal from '@src/components/modal/BaseModal'
 import ModalHeader from '@src/components/modal/ModalHeader'
 import ApplicantCard from './ApplicantCard'
 
+
 interface Props {
   open: boolean
   onClose: () => void

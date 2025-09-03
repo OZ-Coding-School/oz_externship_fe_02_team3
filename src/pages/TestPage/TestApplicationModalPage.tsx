@@ -3,6 +3,7 @@ import ManageApplicantsModal from '@src/components/recruitment/manage/ManageAppl
 import { dummyApplicants } from '@src/data/applicants'
 import { useState } from 'react'
 
+// 팀 규칙: 선언식 + default export
 export default function TestApplicationModalPage() {
   const [openApplication, setOpenApplication] = useState(false)
   const [openManage, setOpenManage] = useState(false)

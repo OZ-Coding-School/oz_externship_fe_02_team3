@@ -7,6 +7,7 @@ import StatusBadge from '@src/components/StatusBadge'
 
 export type ApplicantStatus = 'pending' | 'approved' | 'rejected'
 
+
 export interface Applicant {
   id: string | number // 상세 모달 API 호출용으로 필요
   name: string

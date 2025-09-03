@@ -1,6 +1,7 @@
 import Icon from '@src/components/Icon'
 import { UserRound } from 'lucide-react'
 
+
 interface AvatarProps {
   src?: string
   alt?: string
