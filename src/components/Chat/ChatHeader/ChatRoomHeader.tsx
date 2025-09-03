@@ -8,7 +8,7 @@ interface ChatRoomHeaderProps {
   onClose: () => void
 }
 
-function ChatRoomHeader({
+export default function ChatRoomHeader({
   title,
   onlineCount,
   onBack,
@@ -49,4 +49,3 @@ function ChatRoomHeader({
     </div>
   )
 }
-export default ChatRoomHeader
