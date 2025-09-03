@@ -45,7 +45,7 @@ export default function TestUIPage() {
         onSelect={setSelectedSort}
         rightIcon={ChevronDown}
         placeholder="정렬 선택"
-        width="w-full"
+        className="w-[378px]"
       />
 
       {/* 비활성화된 드롭다운 */}
@@ -54,7 +54,7 @@ export default function TestUIPage() {
         options={[]}
         disabled
         rightIcon={ChevronDown}
-        width="w-full"
+        className="w-[378px]"
       />
 
       {/* 페이지 링크 */}
