@@ -28,12 +28,6 @@ export default function TestUIPage() {
   const sortOptions = ['인기순', '최신순', '가격낮은순', '평점높은순']
   return (
     <div className="space-y-4 p-4">
-      {/* 드롭다운 */}
-      <DropDown
-        dropdownTitle="전체 카테고리"
-        leftIcon={FolderIcon}
-        rightIcon={ChevronDown}
-      />
       {/* 선택 가능한 드롭다운 */}
       <DropDown
         selected={selectedCategory}
