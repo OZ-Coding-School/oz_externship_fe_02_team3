@@ -11,11 +11,11 @@ export default function ParticipantsList({
   participants,
 }: ParticipantsListProps) {
   return (
-    <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-2 pt-2 pb-[9px]">
+    <div className="scrollbar-hide flex flex-nowrap items-center gap-2 overflow-x-auto border-b border-gray-200 bg-gray-50 px-2 pt-2 pb-[9px]">
       {participants.map((participant, index) => (
         <div
           key={index}
-          className="flex items-center gap-1 rounded-full bg-white px-2 py-1"
+          className="flex flex-shrink-0 items-center gap-1 rounded-full bg-white px-2 py-1"
         >
           <div
             className={`${

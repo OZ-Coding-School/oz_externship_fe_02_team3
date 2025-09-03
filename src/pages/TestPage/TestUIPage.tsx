@@ -2,6 +2,7 @@ import Badge from '@components/Badge'
 import Button from '@components/Button'
 import DropDown from '@components/DropDown'
 import PageLink from '@components/PageLink'
+import ChatFloatButton from '@src/components/chat/ChatFloatButton'
 import {
   ChevronDown,
   FolderIcon,
@@ -104,6 +105,8 @@ export default function TestUIPage() {
 
       {/* 뱃지 */}
       <Badge badgeTitle="거절됨" sideClass="bg-danger-100 text-danger-800" />
+
+      <ChatFloatButton className="m-0" />
     </div>
   )
 }
