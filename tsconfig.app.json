@@ -28,14 +28,15 @@
       "@src/*": ["src/*"],
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
-      "@hooks/*": ["src/hook/*"],
+      "@hooks/*": ["src/hooks/*"],
       "@assets/*": ["src/assets/*"],
       "@api/*": ["src/api/*"],
       "@store/*": ["src/store/*"],
       "@type/*": ["src/type/*"],
       "@utils/*": ["src/utils/*"],
       "@data/*": ["src/data/*"],
-      "@constants/*": ["src/constants/*"]
+      "@constants/*": ["src/constants/*"],
+      "@layouts/*": ["src/layouts/*"]
     }
   },
   "include": ["src"]
