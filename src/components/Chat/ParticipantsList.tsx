@@ -7,7 +7,9 @@ interface ParticipantsListProps {
   participants: Participant[]
 }
 
-export const ParticipantsList = ({ participants }: ParticipantsListProps) => {
+export default function ParticipantsList({
+  participants,
+}: ParticipantsListProps) {
   return (
     <div className="flex items-center gap-2 border-b border-gray-200 bg-gray-50 px-2 pt-2 pb-[9px]">
       {participants.map((participant, index) => (

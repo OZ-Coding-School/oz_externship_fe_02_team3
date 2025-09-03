@@ -1,6 +1,7 @@
 import Icon from '@components/Icon'
 import type { LucideIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
+
 interface PageLinkProps {
   pageLinkInnerText: string
   icon?: LucideIcon
@@ -15,7 +16,7 @@ interface PageLinkProps {
   linkTo?: string
 }
 
-const PageLink = ({
+export default function PageLink({
   pageLinkInnerText,
   icon,
   iconClassName = '',
@@ -27,13 +28,13 @@ const PageLink = ({
   hoverTextColor = 'hover:text-primary-600',
   fontWeight = 'normal',
   linkTo = '/',
-}: PageLinkProps) => {
+}: PageLinkProps) {
   const weightMap = {
     normal: 'font-normal',
     medium: 'font-medium',
     semibold: 'font-semibold',
     bold: 'font-bold',
-  }
+  } as const
 
   const appliedHoverBgColor =
     variant === 'outline' ? 'hover:bg-primary-50' : 'hover:bg-primary-600'
@@ -51,7 +52,7 @@ const PageLink = ({
 
   return (
     <Link
-      to={`${linkTo}`}
+      to={linkTo}
       className={`flex w-fit items-center gap-2 ${getStyles()}`}
     >
       {icon && (
@@ -67,5 +68,3 @@ const PageLink = ({
     </Link>
   )
 }
-
-export default PageLink

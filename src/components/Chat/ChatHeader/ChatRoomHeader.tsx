@@ -8,12 +8,12 @@ interface ChatRoomHeaderProps {
   onClose: () => void
 }
 
-const ChatRoomHeader = ({
+export default function ChatRoomHeader({
   title,
   onlineCount,
   onBack,
   onClose,
-}: ChatRoomHeaderProps) => {
+}: ChatRoomHeaderProps) {
   return (
     <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-3 pt-3 pb-[13px]">
       <div className="flex gap-2">
@@ -49,4 +49,3 @@ const ChatRoomHeader = ({
     </div>
   )
 }
-export default ChatRoomHeader

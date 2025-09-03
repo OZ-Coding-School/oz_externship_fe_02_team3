@@ -1,7 +1,7 @@
 import { X } from 'lucide-react'
 
 // 모달 헤더 props 타입 정의
-type ModalHeaderProps = {
+interface ModalHeaderProps {
   title: React.ReactNode
   subTitle?: React.ReactNode
   onClose: () => void
@@ -31,7 +31,10 @@ export default function ModalHeader({
           </p>
         )}
       </div>
-      <button onClick={onClose} className="text-gray-400 hover:text-gray-900">
+      <button
+        onClick={onClose}
+        className="cursor-pointer text-gray-400 hover:text-gray-900"
+      >
         <X className="h-5 w-5" />
       </button>
     </header>
