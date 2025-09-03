@@ -10,8 +10,22 @@ import {
   UserRoundPlus,
   X,
 } from 'lucide-react'
+import { useState } from 'react'
 
 export default function TestUIPage() {
+  const [selectedCategory, setSelectedCategory] = useState('전체')
+  const [selectedSort, setSelectedSort] = useState('인기순')
+
+  // 임시 데이터 (나중에 상수로 분리)
+  const categories = [
+    '전체',
+    '프론트엔드',
+    'JavaScript',
+    'React',
+    '백엔드',
+    '클라우드',
+  ]
+  const sortOptions = ['인기순', '최신순', '가격낮은순', '평점높은순']
   return (
     <div className="space-y-4 p-4">
       {/* 드롭다운 */}
@@ -19,6 +33,34 @@ export default function TestUIPage() {
         dropdownTitle="전체 카테고리"
         leftIcon={FolderIcon}
         rightIcon={ChevronDown}
+      />
+      {/* 선택 가능한 드롭다운 */}
+      <DropDown
+        selected={selectedCategory}
+        options={categories}
+        onSelect={setSelectedCategory}
+        leftIcon={FolderIcon}
+        rightIcon={ChevronDown}
+        placeholder="카테고리 선택"
+        width="w-full"
+      />
+      {/* 정렬 드롭다운 */}
+      <DropDown
+        selected={selectedSort}
+        options={sortOptions}
+        onSelect={setSelectedSort}
+        rightIcon={ChevronDown}
+        placeholder="정렬 선택"
+        width="w-full"
+      />
+
+      {/* 비활성화된 드롭다운 */}
+      <DropDown
+        selected="비활성화됨"
+        options={[]}
+        disabled
+        rightIcon={ChevronDown}
+        width="w-full"
       />
 
       {/* 페이지 링크 */}
