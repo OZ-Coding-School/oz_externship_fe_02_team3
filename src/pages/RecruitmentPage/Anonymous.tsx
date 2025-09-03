@@ -15,7 +15,11 @@ export default function Anonymous() {
         <p>를 추천해드립니다</p>
       </div>
       <div className="flex gap-4">
-        <PageLink pageLinkInnerText="로그인 하기" icon={LogIn} />
+        <PageLink
+          pageLinkInnerText="로그인 하기"
+          variant="filled"
+          icon={LogIn}
+        />
         <PageLink
           pageLinkInnerText="회원가입하기"
           icon={UserPlus}
