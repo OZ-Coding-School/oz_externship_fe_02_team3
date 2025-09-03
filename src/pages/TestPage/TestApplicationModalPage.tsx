@@ -1,7 +1,7 @@
 import ApplicationModal from '@src/components/recruitment/application/ApplicationModal'
 import { useState } from 'react'
 
-export default function TestModalPage() {
+export default function TestApplicationModalPage() {
   const [open, setOpen] = useState(false)
 
   return (

@@ -1,8 +1,9 @@
 import Button from '@components/Button'
 import Icon from '@components/Icon'
 import PageLink from '@components/PageLink'
-import { NOTIFICATION_ICON_CONFIG, ROUTES, Z_INDEX } from '@constants/ui'
+import { NOTIFICATION_ICON_CONFIG, Z_INDEX } from '@constants/ui'
 import notificationsData from '@data/notificationsData'
+import { ROUTES } from '@src/constants/routes'
 import type { NotificationItem } from '@src/types/notification'
 import {
   Bell,
@@ -14,7 +15,7 @@ import {
   X,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate } from 'react-router-dom'
 
 const getNotificationIcon = (type: NotificationItem['type']) => {
   const config = NOTIFICATION_ICON_CONFIG.find((item) => item.type === type)
@@ -195,17 +196,8 @@ const HeaderUserSection = () => {
                         onClick={linkToRecruitmentManage}
                       >
                         {getNotificationIcon(notification.type)}
-                        {/* <div className="flex"> */}
                         <div className="flex flex-col gap-1">
-                          {/* <div
-                                  className={`-webkit-box relative h-10 w-[286px] shrink-0 flex-col justify-center overflow-hidden font-['Pretendard:Regular',_sans-serif] text-[14px] leading-[0] overflow-ellipsis not-italic ${notification.isUnread ? 'text-gray-900' : 'text-gray-700'}`}
-                                  style={{
-                                    display: '-webkit-box',
-                                    WebkitLineClamp: 2,
-                                    WebkitBoxOrient: 'vertical',
-                                  }}
-                                > */}
-                          <p className="text-left text-sm text-gray-900">
+                          <p className="line-clamp-2 text-left text-sm text-gray-900">
                             {notification.message}
                           </p>
                           {/* </div> */}
