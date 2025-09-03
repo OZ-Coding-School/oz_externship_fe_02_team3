@@ -1,6 +1,6 @@
 export interface Course {
   id: number
-  provider: 'Udemy' | 'INflearn' | 'Fastcampus' | string
+  provider: 'Udemy' | 'Inflearn' | 'Fastcampus' | string
   title: string
   instructor: string
   description: string

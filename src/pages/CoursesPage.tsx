@@ -1,178 +1,57 @@
-import { useState, useMemo, useEffect } from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import Card from '@src/components/Card'
-import SearchFilter from '@components/SearchFilter'
-import { getRecommendedCourses, type Course } from '../data/coursesData'
-import { courseFetcher } from '../api/courseFetcher'
-import { sortCourses } from '../utils/sortUtils'
+import React from 'react'
+import SearchFilter from '@src/components/Course/SearchFilter'
+import { CATEGORY_LIST, SORT_LABELS } from '../constants/courses'
 import { cn } from '../utils/cn'
 import {
-  CATEGORIES,
-  SORT_OPTIONS,
-  SORT_LABELS,
-  CATEGORY_LIST,
-  PAGINATION,
-} from '../constants/courses'
-import CourseCardWithBookmark from '@src/components/CourseCardWithBookmark'
-
-// 검색 필터링 함수
-const filterBySearch = (courses: Course[], query: string): Course[] => {
-  if (!query.trim()) return courses
-
-  return courses.filter(
-    (course) =>
-      course.title.toLowerCase().includes(query.toLowerCase()) ||
-      course.author.toLowerCase().includes(query.toLowerCase()) ||
-      course.description.toLowerCase().includes(query.toLowerCase())
-  )
-}
+  useCourses,
+  useCourseFilters,
+  usePagination,
+  useRecommendedCourses,
+  useBookmark,
+} from '@src/hooks/Course'
 
 interface CoursesPageProps {
   className?: string
 }
 
-const CoursesPage = ({ className }: CoursesPageProps = {}) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>(
-    CATEGORIES.ALL
-  )
-  const [sortBy, setSortBy] = useState<string>(SORT_OPTIONS.POPULARITY)
-  const [searchQuery, setSearchQuery] = useState<string>('')
-  const [displayedCount, setDisplayedCount] = useState<number>(
-    PAGINATION.INITIAL_COUNT
-  )
+const CoursesPage: React.FC<CoursesPageProps> = ({ className }) => {
+  // 비즈니스 로직 훅들
+  const { courses, loading, error, refetch } = useCourses()
+  const {
+    filteredCourses,
+    selectedCategory,
+    setSelectedCategory,
+    sortBy,
+    setSortBy,
+    searchQuery,
+    setSearchQuery,
+    totalCount,
+    filteredCount,
+  } = useCourseFilters(courses)
 
-  // API 연동을 위한 상태들
-  const [courses, setCourses] = useState<Course[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { displayedItems, hasMore, loadMore, currentCount } =
+    usePagination(filteredCourses)
+  const {
+    visibleCourses: visibleRecommended,
+    canGoLeft,
+    canGoRight,
+    goLeft,
+    goRight,
+  } = useRecommendedCourses(courses)
 
-  // 추천 강의 상태
-  const [recommendedCourses, setRecommendedCourses] = useState<Course[]>([])
-  const [currentRecommendedIndex, setCurrentRecommendedIndex] =
-    useState<number>(0)
+  const { toggleBookmark } = useBookmark()
 
-  // 컴포넌트 마운트 시 데이터 로딩
-  useEffect(() => {
-    const loadCourses = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        const data = await courseFetcher.getAll()
-        setCourses(data)
-
-        // 추천 강의 설정
-        const recommended = getRecommendedCourses(
-          data,
-          PAGINATION.RECOMMENDED_COUNT
-        )
-        setRecommendedCourses(recommended)
-      } catch (err) {
-        setError('강의 목록을 불러오는데 실패했습니다.')
-        console.error('Failed to fetch courses:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadCourses()
-  }, [])
-
-  // 필터링 및 정렬된 강의 목록
-  const processedCourses = useMemo(() => {
-    let filtered = courses
-
-    // 검색 필터링
-    filtered = filterBySearch(filtered, searchQuery)
-
-    // 카테고리 필터링
-    if (selectedCategory !== CATEGORIES.ALL) {
-      filtered = filtered.filter(
-        (course) => course.category === selectedCategory
-      )
-    }
-
-    // 정렬
-    return sortCourses(filtered, sortBy)
-  }, [courses, selectedCategory, sortBy, searchQuery])
-
-  // 현재 표시할 강의 목록
-  const displayedCourses = processedCourses.slice(0, displayedCount)
-  const hasMore = displayedCount < processedCourses.length
-
-  // 더 보기 핸들러
-  const handleLoadMore = () => {
-    setDisplayedCount((prev) =>
-      Math.min(prev + PAGINATION.LOAD_MORE_COUNT, processedCourses.length)
-    )
-  }
-
-  // 북마크 핸들러
-  const handleBookmark = (courseId: number, isBookmarked: boolean) => {
-    // TODO: 북마크 API 호출
-    console.log(`Course ${courseId} bookmark status: ${isBookmarked}`)
-
-    // 추후 북마크 상태 관리나 API 호출 로직 추가
-    // if (isBookmarked) {
-    //   // 북마크 추가 API
-    // } else {
-    //   // 북마크 제거 API
-    // }
-  }
-
-  // 추천 강의 표시용
-  const visibleRecommended = recommendedCourses.slice(
-    currentRecommendedIndex,
-    currentRecommendedIndex + PAGINATION.RECOMMENDED_VISIBLE
-  )
-  const canGoLeft = currentRecommendedIndex > 0
-  const canGoRight =
-    currentRecommendedIndex + PAGINATION.RECOMMENDED_VISIBLE <
-    recommendedCourses.length
-
-  // 추천 강의 네비게이션
-  const handleRecommendedNav = (direction: 'left' | 'right') => {
-    if (direction === 'left' && canGoLeft) {
-      setCurrentRecommendedIndex((prev) =>
-        Math.max(0, prev - PAGINATION.RECOMMENDED_VISIBLE)
-      )
-    } else if (direction === 'right' && canGoRight) {
-      setCurrentRecommendedIndex((prev) =>
-        Math.min(
-          prev + PAGINATION.RECOMMENDED_VISIBLE,
-          recommendedCourses.length - PAGINATION.RECOMMENDED_VISIBLE
-        )
-      )
-    }
-  }
-
-  // 로딩 상태
+  // 로딩 상태 처리
   if (loading) {
-    return (
-      <div className={cn('min-h-screen bg-gray-50', className)}>
-        <div className="flex items-center justify-center py-20">
-          <p className="text-gray-500">강의 목록을 불러오는 중...</p>
-        </div>
-      </div>
-    )
+    return <LoadingSpinner />
   }
 
-  // 에러 상태
+  // 에러 상태 처리
   if (error) {
-    return (
-      <div className={cn('min-h-screen bg-gray-50', className)}>
-        <div className="flex flex-col items-center justify-center py-20">
-          <p className="mb-4 text-red-600">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-primary-500 hover:bg-primary-600 rounded-lg px-4 py-2 text-white"
-          >
-            다시 시도
-          </button>
-        </div>
-      </div>
-    )
+    return <ErrorMessage error={error} onRetry={refetch} />
   }
 
+  // 메인 렌더링 (순수한 뷰 로직)
   return (
     <div className={cn('min-h-screen bg-gray-50', className)}>
       {/* 페이지 헤더 */}
@@ -189,59 +68,14 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
 
       <div className="mx-auto max-w-7xl px-6 py-8">
         {/* 추천 강의 섹션 */}
-        <div className="mb-12">
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">추천 강의</h2>
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleRecommendedNav('left')}
-                disabled={!canGoLeft}
-                className={cn(
-                  'rounded-full border p-2',
-                  canGoLeft
-                    ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                    : 'cursor-not-allowed border-gray-200 text-gray-400'
-                )}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => handleRecommendedNav('right')}
-                disabled={!canGoRight}
-                className={cn(
-                  'rounded-full border p-2',
-                  canGoRight
-                    ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                    : 'cursor-not-allowed border-gray-200 text-gray-400'
-                )}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* 추천 강의 카드 */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {visibleRecommended.map((course) => (
-              <div
-                key={`recommended-${course.id}`}
-                className="transition-all duration-200 hover:scale-105"
-              >
-                <CourseCardWithBookmark
-                  cardTitle={course.title}
-                  author={course.author}
-                  cardDescription={course.description}
-                  reviewRating={course.reviewRating}
-                  reviewCount={course.reviewCount}
-                  originalPrice={course.originalPrice}
-                  price={course.price}
-                  courseId={course.id}
-                  onBookmarkClick={handleBookmark}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+        <RecommendedSection
+          visibleCourses={visibleRecommended}
+          canGoLeft={canGoLeft}
+          canGoRight={canGoRight}
+          goLeft={goLeft}
+          goRight={goRight}
+          onBookmark={toggleBookmark}
+        />
 
         {/* 검색 및 필터 영역 */}
         <SearchFilter
@@ -255,60 +89,21 @@ const CoursesPage = ({ className }: CoursesPageProps = {}) => {
           sortOptions={SORT_LABELS}
         />
 
-        {/* 강의 목록 */}
+        {/* 강의 목록 섹션 */}
         <div className="mb-6">
-          <div className="mb-4 flex items-center justify-between">
-            <p className="text-gray-600">
-              {displayedCourses.length}개 표시 / 총 {processedCourses.length}개
-              {searchQuery && (
-                <span className="text-primary-600 ml-2">
-                  {searchQuery} 검색 결과
-                </span>
-              )}
-            </p>
-          </div>
+          {/* 통계 정보 */}
+          <CourseStats
+            displayedCount={currentCount}
+            totalCount={totalCount}
+            filteredCount={filteredCount}
+            searchQuery={searchQuery}
+          />
 
-          {displayedCourses.length === 0 ? (
-            <div className="flex items-center justify-center py-20">
-              <p className="text-gray-500">검색 결과가 없습니다.</p>
-            </div>
-          ) : (
-            <>
-              {/* 강의 카드 그리드 */}
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {displayedCourses.map((course) => (
-                  <div
-                    key={course.id}
-                    className="transition-all duration-200 hover:scale-105"
-                  >
-                    <CourseCardWithBookmark
-                      cardTitle={course.title}
-                      author={course.author}
-                      cardDescription={course.description}
-                      reviewRating={course.reviewRating}
-                      reviewCount={course.reviewCount}
-                      originalPrice={course.originalPrice}
-                      price={course.price}
-                      courseId={course.id}
-                      onBookmarkClick={handleBookmark}
-                    />
-                  </div>
-                ))}
-              </div>
+          {/* 강의 그리드 */}
+          <CourseGrid courses={displayedItems} onBookmark={toggleBookmark} />
 
-              {/* 더 보기 버튼 */}
-              {hasMore && (
-                <div className="mt-12 flex justify-center">
-                  <button
-                    onClick={handleLoadMore}
-                    className="rounded-lg border border-gray-300 bg-white px-8 py-3 text-gray-700 transition-colors hover:bg-gray-50"
-                  >
-                    더 보기
-                  </button>
-                </div>
-              )}
-            </>
-          )}
+          {/* 더 보기 버튼 */}
+          {hasMore && <LoadMoreButton onClick={loadMore} />}
         </div>
       </div>
     </div>
