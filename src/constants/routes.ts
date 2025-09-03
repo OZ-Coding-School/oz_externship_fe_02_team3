@@ -1,8 +1,16 @@
 export const ROUTES = {
   HOME: '/',
   COURSES: '/courses',
+  MYPAGE: '/mypage',
   STUDY_GROUP: '/study-group',
+  STUDY_GROUP_ID: '/study-group/:id',
+  STUDY_GROUP_CREATE: '/study-group/create',
   RECRUITMENT: '/recruitment',
+  RECRUITMENT_ID: '/recruitment/:id',
+  RECRUITMENT_CREATE: '/recruitment/create',
   RECRUITMENT_MANAGE: '/recruitment/manage',
-  LOGIN: '/login',
+  LOGIN: '/auth/login',
+  SIGNUP: '/auth/signup',
+  FIND_EMAIL: '/auth/find-email',
+  FIND_PASSWORD: '/auth/find-password',
 } as const
