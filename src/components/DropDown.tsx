@@ -10,9 +10,9 @@ interface DropDownProps {
   rightIcon?: LucideIcon
   leftIconClassName?: string
   rightIconClassName?: string
-  width?: string
   disabled?: boolean
   placeholder?: string
+  className?: string
 }
 
 function DropDown({
@@ -23,7 +23,7 @@ function DropDown({
   rightIcon,
   leftIconClassName = '',
   rightIconClassName = '',
-  width = 'w-[378px]',
+  className = '',
   disabled = false,
   placeholder = '선택하세요',
 }: DropDownProps) {
@@ -58,7 +58,7 @@ function DropDown({
   return (
     <div className="relative" ref={dropdownRef}>
       <div
-        className={`relative flex ${width} items-center rounded-lg border border-gray-300 py-[9px] ${
+        className={`relative flex ${className} items-center rounded-lg border border-gray-300 py-[9px] ${
           !disabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
         }`}
         onClick={handleClick}
@@ -99,7 +99,7 @@ function DropDown({
         <>
           {/* 옵션 리스트 */}
           <div
-            className={`absolute top-full left-0 z-20 mt-1 ${width} rounded-lg border border-gray-200 bg-white shadow-lg`}
+            className={`absolute top-full left-0 z-20 mt-1 ${className} rounded-lg border border-gray-200 bg-white shadow-lg`}
           >
             {options.map((option) => (
               <button
