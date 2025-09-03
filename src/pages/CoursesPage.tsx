@@ -1,21 +1,24 @@
 import React from 'react'
 import SearchFilter from '@src/components/Course/SearchFilter'
-import { CATEGORY_LIST, SORT_LABELS } from '../constants/courses'
-import { cn } from '../utils/cn'
-import {
-  useCourses,
-  useCourseFilters,
-  usePagination,
-  useRecommendedCourses,
-  useBookmark,
-} from '@src/hooks/Course'
+import { CATEGORY_LIST, SORT_LABELS } from '@src/constants/courses'
+import { cn } from '@src/utils/cn'
+import { useCourses } from '@src/hooks/Course/useCourse'
+import { useCourseFilters } from '@src/hooks/Course/useCourseFilters'
+import { usePagination } from '@src/hooks/Course/usePagination'
+import { useRecommendedCourses } from '@src/hooks/Course/useRecommendedCourses'
+import { useBookmark } from '@src/hooks/Course/useBookmark'
+import LoadingSpinner from '@src/components/Course/LoadingSpinner'
+import ErrorMessage from '@src/components/Course/ErrorMessage'
+import CourseStats from '@src/components/Course/CourseStats'
+import RecommendedSection from '@src/components/Course/RecommendedSection'
+import CourseGrid from '@src/components/Course/CourseGrid'
+import LoadMoreButton from '@src/components/Course/LoadMoreButton'
 
 interface CoursesPageProps {
   className?: string
 }
 
-const CoursesPage: React.FC<CoursesPageProps> = ({ className }) => {
-  // 비즈니스 로직 훅들
+export default function CoursesPage({ className }: CoursesPageProps) {
   const { courses, loading, error, refetch } = useCourses()
   const {
     filteredCourses,
@@ -41,12 +44,10 @@ const CoursesPage: React.FC<CoursesPageProps> = ({ className }) => {
 
   const { toggleBookmark } = useBookmark()
 
-  // 로딩 상태 처리
   if (loading) {
     return <LoadingSpinner />
   }
 
-  // 에러 상태 처리
   if (error) {
     return <ErrorMessage error={error} onRetry={refetch} />
   }
@@ -109,5 +110,3 @@ const CoursesPage: React.FC<CoursesPageProps> = ({ className }) => {
     </div>
   )
 }
-
-export default CoursesPage

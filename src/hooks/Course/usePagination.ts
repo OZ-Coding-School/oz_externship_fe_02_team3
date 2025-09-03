@@ -3,6 +3,7 @@ import { PAGINATION } from '@src/constants/courses'
 import type { Course } from '@src/types/course'
 import type { UsePaginationReturn } from '@src/types/hooks'
 
+// ✅ Named Export + 화살표 함수
 export const usePagination = (
   items: Course[],
   initialCount: number = PAGINATION.INITIAL_COUNT
@@ -21,12 +22,14 @@ export const usePagination = (
 
   const hasMore: boolean = displayedCount < items.length
 
+  // ✅ 화살표 함수
   const loadMore = (): void => {
     setDisplayedCount((prev) =>
       Math.min(prev + PAGINATION.LOAD_MORE_COUNT, items.length)
     )
   }
 
+  // ✅ 화살표 함수
   const reset = (): void => {
     setDisplayedCount(initialCount)
   }

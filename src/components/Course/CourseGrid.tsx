@@ -1,5 +1,5 @@
 import React from 'react'
-import CourseCardWithBookmark from '@src/components/Course/CourseCardWithBookmark'
+import CourseCardWithBookmark from './CourseCardWithBookmark'
 import type { Course } from '@src/types/course'
 
 interface CourseGridProps {
@@ -7,7 +7,8 @@ interface CourseGridProps {
   onBookmark: (courseId: number, isBookmarked: boolean) => void
 }
 
-const CourseGrid: React.FC<CourseGridProps> = ({ courses, onBookmark }) => {
+// ✅ Default Export + function
+export default function CourseGrid({ courses, onBookmark }: CourseGridProps) {
   if (courses.length === 0) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -31,12 +32,14 @@ const CourseGrid: React.FC<CourseGridProps> = ({ courses, onBookmark }) => {
         >
           <CourseCardWithBookmark
             cardTitle={course.title}
-            author={course.author}
+            instructor={course.instructor}
             cardDescription={course.description}
-            reviewRating={course.reviewRating}
+            rating={course.rating}
             reviewCount={course.reviewCount}
             originalPrice={course.originalPrice}
             price={course.price}
+            thumbnailUrl={course.thumbnailUrl}
+            provider={course.provider}
             courseId={course.id}
             onBookmarkClick={onBookmark}
           />

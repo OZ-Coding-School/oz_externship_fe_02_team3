@@ -3,13 +3,16 @@ import { PAGINATION } from '@src/constants/courses'
 import type { Course } from '@src/types/course'
 import type { UseRecommendedCoursesReturn } from '@src/types/hooks'
 
-// ✅ 로컬 함수로 새로 정의!
-const getRecommendedCourses = (
-  courses: Course[],
-  limit: number = 4
-): Course[] => {
+interface GetRecommendedCoursesFunction {
+  (courses: Course[], limit: number): Course[]
+}
+
+const getRecommendedCourses: GetRecommendedCoursesFunction = (
+  courses,
+  limit = 4
+) => {
   return courses
-    .filter((course) => course.rating >= 4.7) // rating 사용
+    .filter((course) => course.rating >= 4.7)
     .sort((a, b) => b.reviewCount - a.reviewCount)
     .slice(0, limit)
 }
@@ -25,7 +28,6 @@ export const useRecommendedCourses = (
     [courses]
   )
 
-  // 강의 목록이 변경되면 인덱스 리셋
   useEffect(() => {
     setCurrentIndex(0)
   }, [courses.length])

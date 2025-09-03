@@ -3,7 +3,15 @@ import { CATEGORIES, SORT_OPTIONS } from '@src/constants/courses'
 import type { Course } from '@src/types/course'
 import type { UseCourseFiltersReturn } from '@src/types/hooks'
 
-const sortCourses = (courses: Course[], sortBy: string): Course[] => {
+interface SortCoursesFunction {
+  (courses: Course[], sortBy: string): Course[]
+}
+
+interface FilterBySearchFunction {
+  (courses: Course[], query: string): Course[]
+}
+
+const sortCourses: SortCoursesFunction = (courses, sortBy) => {
   const sortedCourses = [...courses]
 
   switch (sortBy) {
@@ -34,8 +42,7 @@ const sortCourses = (courses: Course[], sortBy: string): Course[] => {
   }
 }
 
-// 검색 필터링 함수 (순수 함수로 분리)
-const filterBySearch = (courses: Course[], query: string): Course[] => {
+const filterBySearch: FilterBySearchFunction = (courses, query) => {
   if (!query.trim()) return courses
 
   const lowercaseQuery = query.toLowerCase()
@@ -57,14 +64,17 @@ export const useCourseFilters = (courses: Course[]): UseCourseFiltersReturn => {
 
   const filteredCourses = useMemo((): Course[] => {
     let result = courses
+
     if (searchQuery.trim()) {
       result = filterBySearch(result, searchQuery)
     }
+
     if (selectedCategory !== CATEGORIES.ALL) {
       result = result.filter(
         (course: Course) => course.category === selectedCategory
       )
     }
+
     return sortCourses(result, sortBy)
   }, [courses, selectedCategory, sortBy, searchQuery])
 
