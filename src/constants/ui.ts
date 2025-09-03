@@ -39,14 +39,7 @@ export const NOTIFICATION_ICON_CONFIG = [
     icon: 'CalendarCheck',
   },
 ]
-export const ROUTES = {
-  HOME: '/',
-  COURSES: '/courses',
-  STUDY_GROUP: '/study-group',
-  RECRUITMENT: '/recruitment',
-  RECRUITMENT_MANAGE: '/recruitment/manage',
-  LOGIN: '/login',
-} as const
+
 export const Z_INDEX = {
   HEADER: 2,
   DROPDOWN: 2,

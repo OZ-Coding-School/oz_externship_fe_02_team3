@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import AuthBased from './AuthBased'
 
-export default function AuthTestPage() {
+export default function RecruitmentPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const toggleAuth = () => setIsAuthenticated((prev) => !prev)
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-8">
+    <div className="flex w-full flex-col items-center justify-center p-8">
       {/* 로그인, 로그아웃 확인용 임시 버튼 */}
       <button
         onClick={toggleAuth}
