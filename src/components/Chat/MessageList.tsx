@@ -1,4 +1,4 @@
-import { Message } from './Message'
+import Message from './Message'
 
 interface MessageData {
   id: number
@@ -12,7 +12,7 @@ interface MessageListProps {
   messages: MessageData[]
 }
 
-export function MessageList({ messages }: MessageListProps) {
+export default function MessageList({ messages }: MessageListProps) {
   return (
     <div className="flex max-h-[217px] flex-col gap-3 overflow-y-auto p-3">
       {messages.map((message) => (

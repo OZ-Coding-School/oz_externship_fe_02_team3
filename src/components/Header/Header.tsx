@@ -1,9 +1,9 @@
 import { Z_INDEX } from '@constants/ui'
 
-import Logo from '@src/components/header/components/Logo'
-import Navigation from '@src/components/header/components/Navigation'
+import Logo from './components/Logo'
+import Navigation from './components/Navigation'
 
-function Header() {
+export default function Header() {
   return (
     <header
       className={`sticky top-0 z-[${Z_INDEX.HEADER}] flex h-16 w-full items-center justify-center px-20`}
@@ -15,5 +15,3 @@ function Header() {
     </header>
   )
 }
-
-export default Header

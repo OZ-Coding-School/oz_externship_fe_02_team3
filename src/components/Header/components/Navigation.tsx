@@ -1,8 +1,8 @@
-import HeaderUserSection from '@src/components/header/components/HeaderUserSection'
 import { NAV_ITEMS } from '@src/constants/ui'
 import { Link } from 'react-router-dom'
+import HeaderUserSection from './HeaderUserSection'
 
-function Navigation() {
+export default function Navigation() {
   return (
     <nav className="flex items-center gap-8">
       {NAV_ITEMS.map((item) => (
@@ -18,5 +18,3 @@ function Navigation() {
     </nav>
   )
 }
-
-export default Navigation

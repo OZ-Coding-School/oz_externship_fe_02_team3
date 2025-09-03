@@ -5,7 +5,7 @@ interface ChatListProps {
   openChatRoom: (chatData: Chat) => void
 }
 
-function ChatList({ openChatRoom }: ChatListProps) {
+export default function ChatList({ openChatRoom }: ChatListProps) {
   return (
     <div className="flex max-h-[310px] w-[318px] flex-col divide-y divide-gray-200 overflow-y-auto">
       {chatData.map((data) => (
@@ -41,5 +41,3 @@ function ChatList({ openChatRoom }: ChatListProps) {
     </div>
   )
 }
-
-export default ChatList

@@ -45,7 +45,7 @@ const iconMap = {
   UsersRound,
   CalendarCheck,
 }
-function HeaderUserSection() {
+export default function HeaderUserSection() {
   const navigate = useNavigate()
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
   const [notifications, setNotifications] =
@@ -250,5 +250,3 @@ function HeaderUserSection() {
     </div>
   )
 }
-
-export default HeaderUserSection
