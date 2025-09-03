@@ -1,4 +1,5 @@
 import PageLink from '@components/PageLink'
+import { ROUTES } from '@src/constants/routes'
 import { LogIn, User, UserPlus } from 'lucide-react'
 
 export default function Anonymous() {
@@ -19,10 +20,12 @@ export default function Anonymous() {
           pageLinkInnerText="로그인 하기"
           variant="filled"
           icon={LogIn}
+          linkTo={ROUTES.LOGIN}
         />
         <PageLink
           pageLinkInnerText="회원가입하기"
           icon={UserPlus}
+          linkTo={ROUTES.SIGNUP}
           variant="outline"
         />
       </div>
