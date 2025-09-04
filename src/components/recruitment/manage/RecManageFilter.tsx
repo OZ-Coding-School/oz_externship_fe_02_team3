@@ -1,5 +1,4 @@
-import SortingDropDown from '../common/SortingDropDown'
-import StatusDropDown from '../common/StatusDropDown'
+import SelectRecDropDown from '../common/SelectRecDropDown'
 
 const RecManageFilter = () => {
   return (
@@ -7,12 +6,12 @@ const RecManageFilter = () => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="min-w-0">
           <p className="mb-2 text-sm font-medium text-[#374151]">상태</p>
-          <StatusDropDown />
+          <SelectRecDropDown variant={'status'} />
         </div>
 
         <div className="min-w-0">
           <p className="mb-2 text-sm font-medium text-[#374151]">정렬</p>
-          <SortingDropDown />
+          <SelectRecDropDown variant={'sort'} />
         </div>
       </div>
     </div>
