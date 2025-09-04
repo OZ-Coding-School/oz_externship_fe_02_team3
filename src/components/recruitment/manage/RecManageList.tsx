@@ -1,21 +1,34 @@
 import JobPostCard from '@src/components/JobPostCard'
+import DUMMYCARDSVG from '@assets/card_click_dummy.svg'
+import { useNavigate } from 'react-router-dom'
 
-const mock: Parameters<typeof JobPostCard>[0] = {
+type CardProps = Parameters<typeof JobPostCard>[0]
+type JobItem = CardProps & { id: number }
+
+const base: CardProps = {
   postTitle: 'Unity 게임 개발 프로젝트 팀원 모집',
   viewCount: 412,
   commentCount: 105,
   memberLimit: 0,
   deadline: '2025. 12. 30.',
   courses: ['Unity 게임 개발 마스터클래스 - 박유니티'],
-  tags: ['Unity', '', '게임개발', '3D게임'],
-  image: '/images/RecManageDummyImg.svg',
+  tags: ['Unity', '게임개발', '3D게임'],
+  image: DUMMYCARDSVG,
 }
 
 const RecManageList = () => {
-  const items: Parameters<typeof JobPostCard>[0][] = Array.from(
-    { length: 4 },
-    () => ({ ...mock })
-  )
+  const navigate = useNavigate()
+
+  const items: JobItem[] = Array.from({ length: 4 }, (_, idx) => {
+    const id = idx + 1
+    return {
+      ...base,
+      id,
+      editTo: `/recruitment/${id}/edit`,
+      applyLabel: '지원 내역',
+      onClickApply: () => navigate(`/recruitment/create`),
+    }
+  })
 
   return (
     <section>
