@@ -1,5 +1,8 @@
 import RecDropDown from '@src/components/recruitment/common/RecDropDown'
-import { ChevronDown, Folder } from 'lucide-react'
+import {
+  ChevronDown as ChevronDownICON,
+  Folder as FolderIcon,
+} from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 const SORT_OPTION = ['최신순', '조회수 높은 순', '북마크 많은 순']
@@ -27,8 +30,8 @@ const SelectRecDropDown = ({ variant }: Props) => {
       >
         <RecDropDown
           dropdownTitle={selected}
-          leftIcon={Folder}
-          rightIcon={ChevronDown}
+          leftIcon={FolderIcon}
+          rightIcon={ChevronDownICON}
           rightIconClassName={`stroke-gray-600 transition-transform ${open ? 'rotate-180' : ''}`}
           className="h-10 w-full"
         />
