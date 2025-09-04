@@ -1,5 +1,5 @@
 import Button from '@components/Button'
-import { X } from 'lucide-react'
+import { X as CloseIcon } from 'lucide-react'
 
 interface ChatListHeaderProps {
   unreadCount: number
@@ -19,7 +19,7 @@ export default function ChatListHeader({
         </p>
       </div>
       <Button
-        icon={X}
+        icon={CloseIcon}
         iconOnly
         variant="ghost"
         iconSize="sm"

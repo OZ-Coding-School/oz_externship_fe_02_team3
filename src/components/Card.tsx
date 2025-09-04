@@ -1,4 +1,4 @@
-import { ChevronDown, Star } from 'lucide-react'
+import { ChevronDown as ChevronDownIcon, Star as StarIcon } from 'lucide-react'
 
 import Badge from '@components/Badge'
 import Button from '@components/Button'
@@ -46,7 +46,7 @@ function Card({
             {[...Array(5)].map((_, i) => (
               <Icon
                 key={i}
-                icon={Star}
+                icon={StarIcon}
                 className={
                   i < Math.floor(reviewRating)
                     ? 'stroke-primary-400 fill-primary-400'
@@ -70,7 +70,11 @@ function Card({
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <Icon icon={ChevronDown} className="stroke-primary-600" size="sm" />
+            <Icon
+              icon={ChevronDownIcon}
+              className="stroke-primary-600"
+              size="sm"
+            />
             <p className="text-primary-600 text-sm font-medium">리뷰 보기</p>
           </div>
 

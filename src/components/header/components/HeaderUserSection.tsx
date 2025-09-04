@@ -6,13 +6,13 @@ import notificationsData from '@mock/notificationsData'
 import { ROUTES } from '@src/constants/routes'
 import type { NotificationItem } from '@src/types/notification'
 import {
-  Bell,
-  CalendarCheck,
-  Check,
-  UserRound,
-  UserRoundPlus,
-  UsersRound,
-  X,
+  Bell as BellIcon,
+  CalendarCheck as CalendarCheckIcon,
+  Check as CheckIcon,
+  UserRound as UserRoundIcon,
+  UserRoundPlus as UserRoundPlusIcon,
+  UsersRound as UsersRoundIcon,
+  X as CloseIcon,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -39,11 +39,11 @@ const getNotificationIcon = (type: NotificationItem['type']) => {
   )
 }
 const iconMap = {
-  UserRoundPlus,
-  Check,
-  X,
-  UsersRound,
-  CalendarCheck,
+  UserRoundPlusIcon,
+  CheckIcon,
+  CloseIcon,
+  UsersRoundIcon,
+  CalendarCheckIcon,
 }
 export default function HeaderUserSection() {
   const navigate = useNavigate()
@@ -112,7 +112,7 @@ export default function HeaderUserSection() {
             className="relative flex size-10 items-center justify-center rounded-full"
             onClick={handleNotificationToggle}
           >
-            <Icon icon={Bell} size="md" className={`stroke-gray-600`} />
+            <Icon icon={BellIcon} size="md" className={`stroke-gray-600`} />
             <p className="bg-danger-500 absolute -top-1 left-6 flex h-5 w-5 items-center justify-center rounded-full text-xs font-semibold text-white">
               3
             </p>
@@ -221,7 +221,7 @@ export default function HeaderUserSection() {
           <a className="flex items-center gap-2">
             <div className="bg-primary-100 flex h-8 w-8 items-center justify-center rounded-full">
               <Icon
-                icon={UserRound}
+                icon={UserRoundIcon}
                 size="sm"
                 className={`stroke-primary-600`}
               />

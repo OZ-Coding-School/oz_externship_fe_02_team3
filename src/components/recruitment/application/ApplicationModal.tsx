@@ -4,7 +4,7 @@ import FormField from '@src/components/modal/FormField'
 import ModalFooter from '@src/components/modal/ModalFooter'
 import ModalHeader from '@src/components/modal/ModalHeader'
 import TextareaWithCounter from '@src/components/modal/TextareaWithCounter'
-import { Send } from 'lucide-react'
+import { Send as SendIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
 interface Props {
@@ -184,7 +184,7 @@ export default function ApplicationModal({
             />
             <Button
               buttonInnerText="지원서 제출"
-              icon={Send}
+              icon={SendIcon}
               bgColor="bg-primary-500"
               borderColor="border-primary-500"
               disabled={!isValid || isSubmitting}
