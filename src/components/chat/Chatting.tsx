@@ -3,8 +3,8 @@ import { useState } from 'react'
 
 import ChatList from './ChatList'
 
-import ChatListHeader from './chatheader/ChatListHeader'
-import ChatRoomHeader from './chatheader/ChatRoomHeader'
+import ChatListHeader from './chat-header/ChatListHeader'
+import ChatRoomHeader from './chat-header/ChatRoomHeader'
 import MessageInput from './MessageInput'
 import MessageList from './MessageList'
 import ParticipantsList from './ParticipantsList'
