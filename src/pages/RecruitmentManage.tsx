@@ -5,7 +5,7 @@ import RecManageTotalCard from '@src/components/recruitment/manage/RecManageTota
 
 const RecruitmentManage = () => {
   return (
-    <div className="h-screen w-full bg-[#F9FAFB]">
+    <div className="min-h-dvh w-full bg-[#F9FAFB]">
       <div className="mx-auto h-auto max-w-[1440px] px-20">
         {/* 내부 시작 */}
         <div className="max-w-7xl p-8">
@@ -22,7 +22,7 @@ const RecruitmentManage = () => {
             <RecManageFilter />
           </div>
           {/* 4. 공고 목록 (주영님이 만들어주시는 컴포넌트 연결할 예정.) */}
-          <div className="rec-manage-section h-[1276px]">
+          <div className="rec-manage-section">
             <RecManageList />
           </div>
         </div>
