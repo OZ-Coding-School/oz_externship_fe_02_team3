@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import NotificationBadge from '../common/NotificationBadge'
 
-const RecManageTotalCard = () => {
+function RecManageTotalCard() {
   return (
     <div className="flex gap-[24px]">
       <NotificationBadge

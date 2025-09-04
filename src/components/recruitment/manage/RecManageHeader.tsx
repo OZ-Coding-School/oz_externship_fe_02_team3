@@ -2,7 +2,7 @@ import Button from '@src/components/Button'
 import BackButton from '../common/BackButton'
 import { Plus as PlusIcon } from 'lucide-react'
 
-const RecManageHeader = () => {
+function RecManageHeader() {
   return (
     <div className="flex h-full w-full items-center justify-between">
       {/* 공고관리 header Left */}
