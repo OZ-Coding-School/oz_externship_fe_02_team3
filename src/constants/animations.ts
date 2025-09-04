@@ -1,0 +1,45 @@
+import type { Variants } from 'framer-motion'
+
+export const fade: Variants = {
+  initial: { opacity: 0 },
+  animate: { opacity: 1 },
+  exit: { opacity: 0 },
+}
+
+export const scaleUp: Variants = {
+  initial: { opacity: 0, scale: 0.95 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.98 },
+}
+
+export const slideUp: Variants = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: 8 },
+}
+
+export const ANIMATIONS = {
+  fade,
+  scaleUp,
+  slideUp,
+} as const
+
+export type AnimationKey = keyof typeof ANIMATIONS
+
+export type Speed = 'fast' | 'normal' | 'slow'
+export const speedToTransition = {
+  fast: { duration: 0.15, ease: 'easeOut' },
+  normal: { duration: 0.25, ease: 'easeOut' },
+  slow: { duration: 0.4, ease: 'easeOut' },
+} as const
+
+export function applySpeed(v: Variants, speed: Speed): Variants {
+  return {
+    ...v,
+    animate: {
+      ...(v.animate ?? {}),
+      transition: { ...speedToTransition[speed] },
+    },
+    exit: { ...(v.exit ?? {}), transition: { ...speedToTransition[speed] } },
+  }
+}
