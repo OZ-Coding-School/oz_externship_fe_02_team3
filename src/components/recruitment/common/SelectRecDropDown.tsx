@@ -8,11 +8,11 @@ import { useMemo, useState } from 'react'
 const SORT_OPTION = ['최신순', '조회수 높은 순', '북마크 많은 순']
 const STATUS_OPTION = ['전체 (4)', '모집중 (2)', '마감됨 (1)']
 
-type Props = {
+interface Props {
   variant: 'status' | 'sort'
 }
 
-const SelectRecDropDown = ({ variant }: Props) => {
+function SelectRecDropDown({ variant }: Props) {
   const options = useMemo(
     () => (variant === 'sort' ? SORT_OPTION : STATUS_OPTION),
     [variant]
