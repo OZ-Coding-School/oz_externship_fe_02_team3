@@ -1,7 +1,7 @@
 import { Bookmark, Calendar, Eye, UsersRound } from 'lucide-react'
 import Badge from './Badge'
 import Icon from './Icon'
-import type { JobPost } from '@src/data/jobPosts'
+import type { JobPost } from '@mock/jobPosts'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@src/constants/routes'
 
