@@ -12,7 +12,7 @@ interface RecDropDownProps {
   height?: number | string
 }
 
-const RecDropDown = ({
+function RecDropDown({
   dropdownTitle,
   leftIcon,
   rightIcon,
@@ -21,7 +21,7 @@ const RecDropDown = ({
   className = '',
   width,
   height,
-}: RecDropDownProps) => {
+}: RecDropDownProps) {
   return (
     <div
       className={`relative flex h-10 w-full items-center rounded-lg border border-gray-300 ${className}`}
