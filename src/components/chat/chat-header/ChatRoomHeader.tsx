@@ -1,5 +1,5 @@
 import Button from '@components/Button'
-import { ArrowLeft as ArrowLeftIcon, X as XIcon } from 'lucide-react'
+import { ArrowLeft as ArrowLeftIcon, X as CloseIcon } from 'lucide-react'
 
 interface ChatRoomHeaderProps {
   title: string
@@ -38,7 +38,7 @@ export default function ChatRoomHeader({
         </div>
       </div>
       <Button
-        icon={XIcon}
+        icon={CloseIcon}
         iconOnly
         variant="ghost"
         iconSize="sm"

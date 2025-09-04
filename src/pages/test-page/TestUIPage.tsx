@@ -8,7 +8,7 @@ import {
   LogIn as LogInIcon,
   MousePointer2 as MousePointer2Icon,
   UserRoundPlus as UserRoundPlusIcon,
-  X as XIcon,
+  X as CloseIcon,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -93,7 +93,7 @@ export default function TestUIPage() {
         bgColor="bg-danger-500"
         borderColor="border-danger-500"
         textColor="text-danger-500"
-        icon={XIcon}
+        icon={CloseIcon}
       />
       <Button
         buttonInnerText="선택 완료"

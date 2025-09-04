@@ -12,7 +12,7 @@ import {
   UserRound as UserRoundIcon,
   UserRoundPlus as UserRoundPlusIcon,
   UsersRound as UsersRoundIcon,
-  X as XIcon,
+  X as CloseIcon,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -41,7 +41,7 @@ const getNotificationIcon = (type: NotificationItem['type']) => {
 const iconMap = {
   UserRoundPlusIcon,
   CheckIcon,
-  XIcon,
+  CloseIcon,
   UsersRoundIcon,
   CalendarCheckIcon,
 }

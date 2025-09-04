@@ -1,6 +1,6 @@
 import Button from '@components/Button'
 import Chat from '@src/components/chat/Chatting'
-import { MessageCircle as MessageIcon, X as XIcon } from 'lucide-react'
+import { MessageCircle as MessageIcon, X as CloseIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
 interface ChatFloatButtonProps {
@@ -39,7 +39,7 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
         className={`fixed right-6 bottom-6 z-50 ${className} bg-primary-500 flex size-16 cursor-pointer items-center justify-center rounded-full shadow-lg`}
       >
         <Button
-          icon={isOpen ? XIcon : MessageIcon}
+          icon={isOpen ? CloseIcon : MessageIcon}
           iconOnly
           variant="ghost"
           iconSize={'lg'}
