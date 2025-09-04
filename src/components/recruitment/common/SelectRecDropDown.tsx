@@ -1,6 +1,6 @@
 import RecDropDown from '@src/components/recruitment/common/RecDropDown'
 import {
-  ChevronDown as ChevronDownICON,
+  ChevronDown as ChevronDownIcon,
   Folder as FolderIcon,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
@@ -31,7 +31,7 @@ const SelectRecDropDown = ({ variant }: Props) => {
         <RecDropDown
           dropdownTitle={selected}
           leftIcon={FolderIcon}
-          rightIcon={ChevronDownICON}
+          rightIcon={ChevronDownIcon}
           rightIconClassName={`stroke-gray-600 transition-transform ${open ? 'rotate-180' : ''}`}
           className="h-10 w-full"
         />
