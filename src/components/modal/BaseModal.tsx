@@ -2,7 +2,7 @@ import { useEffect, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
 // 모달 타입 정의
-type BaseModalProps = {
+interface BaseModalProps {
   open: boolean
   onClose: () => void
   children: ReactNode
@@ -17,25 +17,25 @@ export default function BaseModal({
   size = 'vertical',
   dismissByOverlay = true,
 }: BaseModalProps) {
-  if (typeof document === 'undefined') return null
-  const root = getOrCreateRoot()
+  const isBrowser = typeof document !== 'undefined'
 
   //   닫기
   useEffect(() => {
-    if (!open) return
+    if (!isBrowser || !open) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [open, onClose])
+  }, [isBrowser, open, onClose])
 
   //   스크롤 방지
   useEffect(() => {
-    if (!open) return
+    if (!isBrowser || !open) return
     lockScroll()
     return () => unlockScroll()
-  }, [open])
+  }, [isBrowser, open])
 
-  if (!open) return null
+  const root: HTMLElement | null = isBrowser ? getOrCreateRoot() : null
+  if (!isBrowser || !open || !root) return null
 
   return createPortal(
     <div
@@ -50,7 +50,7 @@ export default function BaseModal({
       <div className="absolute inset-0 bg-black/50" />
       <div
         className={`relative w-[92%] ${
-          size === 'horizontal' ? 'max-w-[896px]' : 'max-w-[672px]'
+          size === 'horizontal' ? 'max-w-[920px]' : 'max-w-[672px]'
         } min-h-[200px] min-w-[320px] rounded-[12px] bg-white shadow-2xl`}
       >
         {children}

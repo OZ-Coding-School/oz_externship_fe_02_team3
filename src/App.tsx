@@ -1,22 +1,28 @@
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import HomePage from './pages'
+import MainLayout from '@layouts/MainLayout'
+import TestHub from '@src/pages/test-page/TestHub'
+import TestApplicationModalPage from './pages/test-page/TestModalPage'
+import { ROUTES } from './constants/routes'
+import RecruitmentPase from '@src/pages/recruitment-page/RecruitmentPage'
+import TestUIPage from './pages/test-page/TestUIPage'
 
-function App() {
+export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<TestHub />} />
 
-      <Route path="/courses" />
+        {/** PAGE */}
+        <Route path={ROUTES.RECRUITMENT} element={<RecruitmentPase />} />
 
-      {/* recruitment 라우트 */}
-      <Route path="/recruitment">
-        <Route path=":id" />
-        <Route path="create" />
-        <Route path="manage" />
+        {/** TEST */}
+        <Route
+          path="/test/ApplicationModal"
+          element={<TestApplicationModalPage />}
+        />
+        <Route path="/test/UI" element={<TestUIPage />} />
       </Route>
     </Routes>
   )
 }
-
-export default App
