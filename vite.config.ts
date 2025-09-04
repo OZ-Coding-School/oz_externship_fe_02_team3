@@ -19,7 +19,7 @@ export default defineConfig({
       '@store': fileURLToPath(new URL('./src/store', import.meta.url)),
       '@type': fileURLToPath(new URL('./src/type', import.meta.url)),
       '@utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
-      '@data': fileURLToPath(new URL('./src/data', import.meta.url)),
+      '@mock': fileURLToPath(new URL('./src/mock', import.meta.url)),
       '@constants': fileURLToPath(new URL('./src/constants', import.meta.url)),
       '@layouts': fileURLToPath(new URL('./src/layouts', import.meta.url)),
     },

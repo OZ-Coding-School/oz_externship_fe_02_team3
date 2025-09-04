@@ -2,7 +2,7 @@ import Button from '@components/Button'
 import Icon from '@components/Icon'
 import PageLink from '@components/PageLink'
 import { NOTIFICATION_ICON_CONFIG, Z_INDEX } from '@constants/ui'
-import notificationsData from '@data/notificationsData'
+import notificationsData from '@mock/notificationsData'
 import { ROUTES } from '@src/constants/routes'
 import type { NotificationItem } from '@src/types/notification'
 import {

@@ -1,4 +1,4 @@
-import chatData from '@src/data/chatData'
+import chatData from '@mock/chatData'
 import type { Chat } from '@src/types/chat'
 
 interface ChatListProps {

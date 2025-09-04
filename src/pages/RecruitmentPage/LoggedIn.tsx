@@ -1,5 +1,5 @@
 import JobPostCard from '@components/JobPostCard'
-import { RecruitmentJobPosts } from '@src/data/jobPosts'
+import { RecruitmentJobPosts } from '@mock/jobPosts'
 
 export default function LoggedIn() {
   const userName = '김스터디' // 임시
