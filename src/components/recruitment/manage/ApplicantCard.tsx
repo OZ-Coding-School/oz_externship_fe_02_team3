@@ -1,12 +1,11 @@
 import Badge from '@src/components/Badge'
 import Avatar from '../common/Avatar'
-import { Calendar } from 'lucide-react'
+import { Calendar as CalendarIcon } from 'lucide-react'
 import InfoRow from './InfoRow'
 import { formatDate } from '@src/utils/date'
 import StatusBadge from '@src/components/StatusBadge'
 
 export type ApplicantStatus = 'pending' | 'approved' | 'rejected'
-
 
 export interface Applicant {
   id: string | number // 상세 모달 API 호출용으로 필요
@@ -60,7 +59,7 @@ export default function ApplicantCard({ data, onClick }: Props) {
         <InfoRow
           label="지원 일시"
           value={formatDate(appliedAt)}
-          icon={Calendar}
+          icon={CalendarIcon}
           direction="row"
         />
         <InfoRow label="가능한 시간대" value={availability} direction="col" />

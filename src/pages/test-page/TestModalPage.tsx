@@ -1,6 +1,6 @@
 import ApplicationModal from '@src/components/recruitment/application/ApplicationModal'
 import ManageApplicantsModal from '@src/components/recruitment/manage/ManageApplicantsModal'
-import { dummyApplicants } from '@src/data/applicants'
+import { dummyApplicants } from '@mock/applicants'
 import { useState } from 'react'
 
 // 팀 규칙: 선언식 + default export

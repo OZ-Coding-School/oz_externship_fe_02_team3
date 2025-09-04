@@ -1,5 +1,5 @@
 import Button from '@components/Button'
-import { Send } from 'lucide-react'
+import { Send as SendIcon } from 'lucide-react'
 import { useState } from 'react'
 interface MessageInputProps {
   onSend: (message: string) => void
@@ -29,7 +29,7 @@ export default function MessageInput({ onSend }: MessageInputProps) {
         className={`flex size-8 cursor-pointer items-center justify-center rounded-full`}
       >
         <Button
-          icon={Send}
+          icon={SendIcon}
           iconOnly
           variant="ghost"
           iconSize="sm"
