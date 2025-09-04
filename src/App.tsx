@@ -6,6 +6,7 @@ import TestApplicationModalPage from './pages/test-page/TestModalPage'
 import { ROUTES } from './constants/routes'
 import RecruitmentPase from '@src/pages/recruitment-page/RecruitmentPage'
 import TestUIPage from './pages/test-page/TestUIPage'
+import RecruitmentManage from '@pages/RecruitmentManage'
 
 export default function App() {
   return (
@@ -15,6 +16,11 @@ export default function App() {
 
         {/** PAGE */}
         <Route path={ROUTES.RECRUITMENT} element={<RecruitmentPase />} />
+
+        <Route
+          path={ROUTES.RECRUITMENT_MANAGE}
+          element={<RecruitmentManage />}
+        />
 
         {/** TEST */}
         <Route
