@@ -6,6 +6,7 @@ import TestApplicationModalPage from './pages/TestPage/TestApplicationModalPage'
 import { ROUTES } from './constants/routes'
 import RecruitmentPase from '@pages/RecruitmentPage/RecruitmentPage'
 import TestUIPage from './pages/TestPage/TestUIPage'
+import CoursesPage from './pages/CoursesPage'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
 
         {/** PAGE */}
         <Route path={ROUTES.RECRUITMENT} element={<RecruitmentPase />} />
+        <Route path={ROUTES.COURSES} element={<CoursesPage />} />
 
         {/** TEST */}
         <Route

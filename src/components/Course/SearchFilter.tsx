@@ -1,5 +1,5 @@
 import { ChevronDown, FolderIcon } from 'lucide-react'
-import SelectableDropDown from './SelectableDropDown'
+import SelectableDropDown from '../SelectableDropDown'
 
 interface SearchFilterProps {
   searchQuery: string
