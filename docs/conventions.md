@@ -48,7 +48,7 @@
 
 ---
 
-## 4. 네이밍 컨벤션
+## 4. 코드 네이밍 컨벤션
 
 | 타입            | 예시                                      |
 | --------------- | ----------------------------------------- |
@@ -67,12 +67,11 @@
 
 ## 5. 파일 네이밍 컨벤션
 
-| 파일 타입        | 네이밍 예시                                          |
-| ---------------- | ---------------------------------------------------- |
-| 컴포넌트         | PascalCase (UserCard.tsx, LoginForm.tsx)             |
-| 이미지           | kebab-case (logo-icon.png, user-avatar.jpg)          |
-| 유틸/함수        | camelCase (fetchUser.ts, calculateSum.ts)            |
-| 스타일(CSS/SCSS) | dot notation (tokens.colors.css, tokens.spacing.css) |
-| 스타일(JS/TS)    | camelCase (buttonStyle.ts, inputStyle.ts)            |
-| 타입/인터페이스  | PascalCase (User.ts, ProductType.ts)                 |
-| constants        | kebab-case (ui-constants.ts, api-constants.ts)       |
+| 파일 타입 | 네이밍                                               |
+| --------- | ---------------------------------------------------- |
+| conponent | PascalCase (UserCard.tsx, LoginForm.tsx)             |
+| image     | kebab-case (logo-icon.png, user-avatar.jpg)          |
+| util      | camelCase (fetchUser.ts, calculateSum.ts)            |
+| style     | dot notation (tokens.colors.css, tokens.spacing.css) |
+| type      | camelCase (user.ts, productType.ts)                  |
+| constant  | kebab-case (ui-constants.ts, api-constants.ts)       |
