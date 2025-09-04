@@ -3,12 +3,12 @@ import Button from '@components/Button'
 import DropDown from '@components/DropDown'
 import PageLink from '@components/PageLink'
 import {
-  ChevronDown,
+  ChevronDown as ChevronDownIcon,
   FolderIcon,
-  LogIn,
-  MousePointer2,
-  UserRoundPlus,
-  X,
+  LogIn as LogInIcon,
+  MousePointer2 as MousePointer2Icon,
+  UserRoundPlus as UserRoundPlusIcon,
+  X as XIcon,
 } from 'lucide-react'
 import { useState } from 'react'
 
@@ -34,7 +34,7 @@ export default function TestUIPage() {
         options={categories}
         onSelect={setSelectedCategory}
         leftIcon={FolderIcon}
-        rightIcon={ChevronDown}
+        rightIcon={ChevronDownIcon}
         placeholder="카테고리 선택"
         className="w-[378px]"
       />
@@ -43,7 +43,7 @@ export default function TestUIPage() {
         selected={selectedSort}
         options={sortOptions}
         onSelect={setSelectedSort}
-        rightIcon={ChevronDown}
+        rightIcon={ChevronDownIcon}
         placeholder="정렬 선택"
         className="w-[378px]"
       />
@@ -53,20 +53,20 @@ export default function TestUIPage() {
         selected="비활성화됨"
         options={[]}
         disabled
-        rightIcon={ChevronDown}
+        rightIcon={ChevronDownIcon}
         className="w-[378px]"
       />
 
       {/* 페이지 링크 */}
-      <PageLink pageLinkInnerText="로그인 후 공고 작성" icon={LogIn} />
+      <PageLink pageLinkInnerText="로그인 후 공고 작성" icon={LogInIcon} />
       <PageLink
         pageLinkInnerText="지원하기"
-        icon={MousePointer2}
+        icon={MousePointer2Icon}
         iconClassName="rotate-[90deg]"
       />
       <PageLink
         pageLinkInnerText="회원가입하기"
-        icon={UserRoundPlus}
+        icon={UserRoundPlusIcon}
         variant="outline"
         textColor="text-primary-600"
         fontWeight="medium"
@@ -75,7 +75,7 @@ export default function TestUIPage() {
       {/* 버튼 */}
       <Button
         buttonInnerText="지원서 제출"
-        icon={MousePointer2}
+        icon={MousePointer2Icon}
         iconClassName="rotate-[90deg]"
         size="base"
       />
@@ -93,7 +93,7 @@ export default function TestUIPage() {
         bgColor="bg-danger-500"
         borderColor="border-danger-500"
         textColor="text-danger-500"
-        icon={X}
+        icon={XIcon}
       />
       <Button
         buttonInnerText="선택 완료"

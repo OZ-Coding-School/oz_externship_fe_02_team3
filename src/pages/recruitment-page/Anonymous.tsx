@@ -1,12 +1,16 @@
 import PageLink from '@components/PageLink'
 import { ROUTES } from '@src/constants/routes'
-import { LogIn, User, UserPlus } from 'lucide-react'
+import {
+  LogIn as LogInIcon,
+  User as UserIcon,
+  UserPlus as UserPlusIcon,
+} from 'lucide-react'
 
 export default function Anonymous() {
   return (
     <div className="flex w-[1150px] flex-col items-center">
       <div className="bg-primary-100 mb-3 flex h-16 w-16 items-center justify-center rounded-full">
-        <User className="text-primary-600 h-6 w-6"></User>
+        <UserIcon className="text-primary-600 h-6 w-6" />
       </div>
       <h2 className="mb-3 text-2xl font-semibold">
         개인 맞춤 스터디 공고를 받아보세요
@@ -19,12 +23,12 @@ export default function Anonymous() {
         <PageLink
           pageLinkInnerText="로그인 하기"
           variant="filled"
-          icon={LogIn}
+          icon={LogInIcon}
           linkTo={ROUTES.LOGIN}
         />
         <PageLink
           pageLinkInnerText="회원가입하기"
-          icon={UserPlus}
+          icon={UserPlusIcon}
           linkTo={ROUTES.SIGNUP}
           variant="outline"
         />

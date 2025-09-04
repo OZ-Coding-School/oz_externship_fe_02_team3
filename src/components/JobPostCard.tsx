@@ -1,4 +1,9 @@
-import { Bookmark, Calendar, Eye, UsersRound } from 'lucide-react'
+import {
+  Bookmark as BookmarkIcon,
+  Calendar as CalendarIcon,
+  Eye as EyeIcon,
+  UsersRound as UsersRoundIcon,
+} from 'lucide-react'
 import Badge from './Badge'
 import Icon from './Icon'
 import type { JobPost } from '@src/data/jobPosts'
@@ -40,11 +45,15 @@ export default function JobPostCard({ post }: JobPostCardProps) {
             </p>
             <div className="text ml-2 flex items-start gap-2">
               <div className="flex items-center gap-1">
-                <Icon icon={Eye} size="sm" className="stroke-gray-500" />
+                <Icon icon={EyeIcon} size="sm" className="stroke-gray-500" />
                 <p className="text-sm text-gray-500">{viewCount}</p>
               </div>
               <div className="flex items-center gap-1">
-                <Icon icon={Bookmark} size="sm" className="stroke-gray-500" />
+                <Icon
+                  icon={BookmarkIcon}
+                  size="sm"
+                  className="stroke-gray-500"
+                />
                 <p className="text-sm text-gray-500">{commentCount}</p>
               </div>
             </div>
@@ -53,13 +62,17 @@ export default function JobPostCard({ post }: JobPostCardProps) {
           {/* 모집인원, 마감일 */}
           <div className="flex flex-col gap-3 pb-4">
             <div className="flex items-center gap-2">
-              <Icon icon={UsersRound} size="sm" className="stroke-gray-400" />
+              <Icon
+                icon={UsersRoundIcon}
+                size="sm"
+                className="stroke-gray-400"
+              />
               <p className="text-sm text-gray-600">
                 모집 인원: {memberLimit}명
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Icon icon={Calendar} size="sm" className="stroke-gray-400" />
+              <Icon icon={CalendarIcon} size="sm" className="stroke-gray-400" />
               <p className="text-sm text-gray-600">마감일: {deadline}</p>
             </div>
           </div>
