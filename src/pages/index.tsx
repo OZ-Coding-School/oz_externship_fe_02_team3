@@ -1,5 +1,5 @@
 import ChatFloatButton from '@src/components/chat/ChatFloatButton'
-import Header from '@src/components/temp-header/Header'
+import Header from '@src/components/header/Header'
 
 export default function HomePage() {
   return (

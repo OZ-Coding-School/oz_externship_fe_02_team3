@@ -1,4 +1,4 @@
-import Header from '@src/components/temp-header/Header'
+import Header from '@src/components/header/Header'
 import { Outlet } from 'react-router-dom'
 
 export default function MainLayout() {
