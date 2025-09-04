@@ -6,7 +6,7 @@ const RecManageTotalCard = () => {
     <div className="flex gap-[24px]">
       <NotificationBadge
         Icon={FileText}
-        count={7}
+        count={4}
         title={'전체'}
         bgColor="#F3F4F6"
         iconColor="#4B5563"
