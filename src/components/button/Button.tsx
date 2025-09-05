@@ -28,6 +28,7 @@ function Button({
   onClick,
   ...props
 }: ButtonProps) {
+  const hasIconAndText = icon && !iconOnly && buttonInnerText
   return (
     <button
       type="button"
@@ -43,8 +44,10 @@ function Button({
       aria-label={ariaLabel || buttonInnerText}
       {...props}
     >
-      {icon && <Icon icon={icon} size={iconSize} className={iconClassName} />}
-      {!iconOnly && buttonInnerText && <span>{buttonInnerText}</span>}
+      <span className={hasIconAndText ? 'flex items-center gap-2' : undefined}>
+        {icon && <Icon icon={icon} size={iconSize} className={iconClassName} />}
+        {!iconOnly && buttonInnerText && <span>{buttonInnerText}</span>}
+      </span>
     </button>
   )
 }
