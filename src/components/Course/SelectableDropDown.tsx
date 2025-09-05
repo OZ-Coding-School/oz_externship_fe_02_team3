@@ -14,6 +14,7 @@ interface SelectableDropDownProps {
   width?: string
   disabled?: boolean
   placeholder?: string
+  className?: string // 추가된 속성
 }
 
 const SelectableDropDown = ({
@@ -27,6 +28,7 @@ const SelectableDropDown = ({
   width = 'w-full',
   disabled = false,
   placeholder = '선택하세요',
+  className, // 추가된 props
 }: SelectableDropDownProps) => {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -43,7 +45,9 @@ const SelectableDropDown = ({
   const displayText = selected || placeholder
 
   return (
-    <div className="relative">
+    <div className={cn('relative', className)}>
+      {' '}
+      {/* className 적용 */}
       <div
         className={cn(
           'relative flex h-[38px] items-center rounded-lg border border-gray-300 bg-white transition-colors',
@@ -88,7 +92,6 @@ const SelectableDropDown = ({
           </div>
         )}
       </div>
-
       {/* 드롭다운 옵션 리스트 */}
       {isOpen && (
         <>
