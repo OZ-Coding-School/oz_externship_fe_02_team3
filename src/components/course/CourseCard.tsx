@@ -22,20 +22,27 @@ function CourseCard({
   originalPrice,
   price,
 }: CourseCardProps) {
+  const isDiscounted = originalPrice > price && originalPrice !== price
+  const discountPercentage = isDiscounted
+    ? Math.round(((originalPrice - price) / originalPrice) * 100)
+    : 0
+
   return (
     <div className="flex h-auto min-h-[500px] w-full max-w-sm flex-col overflow-hidden rounded-xl border border-solid border-gray-200">
-      {/* 이미지 영역 */}
       <div className="relative flex aspect-video flex-col bg-gray-100">
         <div className="h-full w-full bg-cover bg-center bg-no-repeat" />
         <div className="absolute top-3 right-2 left-2 flex justify-between">
           <div className="flex flex-col items-start gap-4">
             <Badge badgeTitle="Udemy" sideClass="bg-primary-500 text-white" />
-            <Badge badgeTitle="28% 할인" sideClass="bg-danger-500 text-white" />
+            {isDiscounted && (
+              <Badge
+                badgeTitle={`${discountPercentage}% 할인`}
+                sideClass="bg-danger-500 text-white"
+              />
+            )}
           </div>
         </div>
       </div>
-
-      {/* 콘텐츠 영역 */}
       <div className="flex flex-grow flex-col p-5">
         <div className="pb-3">
           <Badge badgeTitle="클라우드" sideClass="bg-gray-100 text-gray-700" />
@@ -67,16 +74,16 @@ function CourseCard({
           <p className="text-sm font-medium text-gray-700">{reviewRating}</p>
           <p className="text-sm text-gray-500">({reviewCount}개 리뷰)</p>
         </div>
-
         <div className="flex items-center pb-4">
           <p className="mr-2 text-xl font-bold text-gray-900">
             ₩{price.toLocaleString()}
           </p>
-          <p className="text-sm text-gray-500 line-through">
-            ₩{originalPrice.toLocaleString()}
-          </p>
+          {isDiscounted && (
+            <p className="text-sm text-gray-500 line-through">
+              ₩{originalPrice.toLocaleString()}
+            </p>
+          )}
         </div>
-
         <div className="mt-auto flex items-center justify-between">
           <div className="flex items-center gap-1">
             <Icon
