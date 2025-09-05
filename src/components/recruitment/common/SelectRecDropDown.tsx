@@ -12,7 +12,7 @@ interface Props {
   variant: 'status' | 'sort'
 }
 
-function SelectRecDropDown({ variant }: Props) {
+export default function SelectRecDropDown({ variant }: Props) {
   const options = useMemo(
     () => (variant === 'sort' ? SORT_OPTION : STATUS_OPTION),
     [variant]
@@ -61,5 +61,3 @@ function SelectRecDropDown({ variant }: Props) {
     </div>
   )
 }
-
-export default SelectRecDropDown

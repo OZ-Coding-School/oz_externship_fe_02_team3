@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 type CardProps = Parameters<typeof JobPostCard>[0]
 
-function RecManageList() {
+export default function RecManageList() {
   const navigate = useNavigate()
 
   const items: CardProps[] = Array.from({ length: 4 }, (_, idx) => {
@@ -43,5 +43,3 @@ function RecManageList() {
     </section>
   )
 }
-
-export default RecManageList

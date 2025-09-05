@@ -12,7 +12,7 @@ interface RecDropDownProps {
   height?: number | string
 }
 
-function RecDropDown({
+export default function RecDropDown({
   dropdownTitle,
   leftIcon,
   rightIcon,
@@ -49,5 +49,3 @@ function RecDropDown({
     </div>
   )
 }
-
-export default RecDropDown

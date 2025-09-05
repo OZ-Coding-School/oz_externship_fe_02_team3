@@ -3,7 +3,7 @@ import RecManageHeader from '@src/components/recruitment/manage/RecManageHeader'
 import RecManageList from '@src/components/recruitment/manage/RecManageList'
 import RecManageTotalCard from '@src/components/recruitment/manage/RecManageTotalCard'
 
-const RecruitmentManage = () => {
+export default function RecruitmentManage() {
   return (
     <div className="min-h-dvh w-full bg-[#F9FAFB]">
       <div className="mx-auto h-auto max-w-[1440px] px-20">
@@ -30,5 +30,3 @@ const RecruitmentManage = () => {
     </div>
   )
 }
-
-export default RecruitmentManage
