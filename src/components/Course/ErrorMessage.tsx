@@ -1,4 +1,5 @@
 import { ActionButton } from './ActionButton'
+import { BUTTON_TEXT, ERROR_UI } from '@src/constants/ui'
 
 interface ErrorMessageProps {
   error: string
@@ -10,8 +11,8 @@ interface ErrorMessageProps {
 export default function ErrorMessage({
   error,
   onRetry,
-  title = '오류가 발생했습니다',
-  iconEmoji = '⚠️',
+  title = ERROR_UI.DEFAULT_TITLE,
+  iconEmoji = ERROR_UI.DEFAULT_EMOJI,
 }: ErrorMessageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
@@ -22,7 +23,7 @@ export default function ErrorMessage({
           <p className="mb-6 text-lg text-red-600">{error}</p>
           {onRetry && (
             <ActionButton variant="primary" onClick={onRetry}>
-              다시 시도
+              {BUTTON_TEXT.RETRY}
             </ActionButton>
           )}
         </div>

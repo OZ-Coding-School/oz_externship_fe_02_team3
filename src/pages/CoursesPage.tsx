@@ -1,6 +1,7 @@
 import React from 'react'
 import SearchFilter from '@src/components/course/SearchFilter'
 import { CATEGORY_LIST, SORT_LABELS } from '@src/constants/courses'
+import { PAGE_TITLES, PAGE_DESCRIPTIONS } from '@src/constants/ui'
 import { cn } from '@src/utils/cn'
 import { useCourses } from '@src/hooks/course/useCourse'
 import { useCourseFilters } from '@src/hooks/course/useCourseFilters'
@@ -52,17 +53,17 @@ export default function CoursesPage({ className }: CoursesPageProps) {
     return <ErrorMessage error={error} onRetry={refetch} />
   }
 
-  // 메인 렌더링 (순수한 뷰 로직)
+  // 메인 렌더링
   return (
     <div className={cn('min-h-screen bg-gray-50', className)}>
       {/* 페이지 헤더 */}
       <div className="border-b border-gray-200 bg-white px-6 py-6">
         <div className="mx-auto max-w-7xl">
           <h1 className="mb-2 text-2xl font-bold text-gray-900">
-            IT 강의 목록
+            {PAGE_TITLES.COURSES} {/* ui.ts 상수 사용 */}
           </h1>
           <p className="text-gray-600">
-            개발자를 위한 최고의 강의들을 만나보세요
+            {PAGE_DESCRIPTIONS.COURSES} {/* ui.ts 상수 사용 */}
           </p>
         </div>
       </div>

@@ -1,11 +1,12 @@
 import React from 'react'
+import { LOADING_MESSAGES } from '@src/constants/ui'
 
 interface LoadingSpinnerProps {
   message?: string
 }
 
 export default function LoadingSpinner({
-  message = '강의 목록을 불러오는 중...',
+  message = LOADING_MESSAGES.COURSES,
 }: LoadingSpinnerProps) {
   return (
     <div className="min-h-screen bg-gray-50">

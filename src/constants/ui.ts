@@ -17,7 +17,7 @@ export const LIST_SETTINGS = {
     TABLET: 2,
     DESKTOP: 3,
   },
-  PREVIEW_ITEMS: 6 as number, // 첫 화면에서 미리보기로 보여줄 강의 수
+  PREVIEW_ITEMS: 2 as number, // 첫 화면에서 미리보기로 보여줄 강의 수
   MAX_TITLE_LENGTH: 50 as number, // 강의 제목 최대 길이
   MAX_DESCRIPTION_LENGTH: 100 as number, // 강의 설명 최대 길이
 } as const
@@ -220,3 +220,39 @@ export const NAV_ITEMS = [
   { to: '/study-group', label: '스터디 그룹' },
   { to: '/recruitment', label: '구인 공고' },
 ]
+
+// 페이지 제목과 설명
+export const PAGE_TITLES = {
+  COURSES: 'IT 강의 목록',
+  STUDY_GROUP: '스터디 그룹',
+  RECRUITMENT: '구인 공고',
+} as const
+
+export const PAGE_DESCRIPTIONS = {
+  COURSES: '개발자를 위한 최고의 강의들을 만나보세요',
+  STUDY_GROUP: '함께 성장할 스터디원을 찾아보세요',
+  RECRUITMENT: '최신 개발자 채용 공고를 확인하세요',
+} as const
+
+// 에러 관련 UI 텍스트
+export const ERROR_UI = {
+  DEFAULT_TITLE: '오류가 발생했습니다',
+  DEFAULT_EMOJI: '⚠️',
+} as const
+
+// ARIA 레이블
+export const ARIA_LABELS = {
+  SEARCH_FILTER: '검색 및 필터',
+  COURSE_GRID: '강의 목록',
+  NAVIGATION: '네비게이션',
+} as const
+
+// 통계 텍스트 (CourseStats용)
+export const STATS_TEXT = {
+  DISPLAYED_COUNT: (count: number) => `${count}개`,
+  TOTAL_PREFIX: '표시 / 총',
+  TOTAL_COUNT: (count: number) => `${count}개`,
+  SEARCH_RESULT_TAG: '검색 결과',
+  FILTERED_PREFIX: '전체',
+  FILTERED_SUFFIX: '중 필터링됨',
+} as const

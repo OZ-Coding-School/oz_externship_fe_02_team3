@@ -1,6 +1,7 @@
 import { SearchInput } from './SearchInput'
 import { CategoryFilter } from './CategoryFilter'
 import { SortFilter } from './SortFilter'
+import { ARIA_LABELS } from '@src/constants/ui'
 
 interface SearchFilterProps {
   searchQuery: string
@@ -24,7 +25,7 @@ const SearchFilter = ({
   sortOptions,
 }: SearchFilterProps) => {
   return (
-    <section className="mb-8" aria-label="검색 및 필터">
+    <section className="mb-8" aria-label={ARIA_LABELS.SEARCH_FILTER}>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <SearchInput
           searchQuery={searchQuery}

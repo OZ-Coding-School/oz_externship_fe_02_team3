@@ -1,3 +1,5 @@
+import { STATS_TEXT } from '@src/constants/ui'
+
 interface CourseStatsProps {
   displayedCount: number
   totalCount: number
@@ -15,11 +17,16 @@ export default function CourseStats({
     <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center">
         <p className="text-gray-600">
-          <span className="font-medium">{displayedCount}개</span> 표시 / 총{' '}
-          <span className="font-medium">{filteredCount}개</span>
+          <span className="font-medium">
+            {STATS_TEXT.DISPLAYED_COUNT(displayedCount)}
+          </span>{' '}
+          {STATS_TEXT.TOTAL_PREFIX}{' '}
+          <span className="font-medium">
+            {STATS_TEXT.TOTAL_COUNT(filteredCount)}
+          </span>
           {searchQuery && (
             <span className="ml-2 rounded-full bg-blue-100 px-2 py-1 text-sm text-blue-700">
-              {searchQuery} 검색 결과
+              {searchQuery} {STATS_TEXT.SEARCH_RESULT_TAG}
             </span>
           )}
         </p>
@@ -27,7 +34,11 @@ export default function CourseStats({
 
       {filteredCount !== totalCount && (
         <p className="text-sm text-gray-500">
-          전체 <span className="font-medium">{totalCount}개</span> 중 필터링됨
+          {STATS_TEXT.FILTERED_PREFIX}{' '}
+          <span className="font-medium">
+            {STATS_TEXT.TOTAL_COUNT(totalCount)}
+          </span>{' '}
+          {STATS_TEXT.FILTERED_SUFFIX}
         </p>
       )}
     </div>

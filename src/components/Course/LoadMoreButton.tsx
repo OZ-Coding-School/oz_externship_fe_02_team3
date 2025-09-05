@@ -1,5 +1,6 @@
 import { ActionButton } from './ActionButton'
 import { cn } from '@src/utils/cn'
+import { BUTTON_TEXT } from '@src/constants/ui'
 
 interface LoadMoreButtonProps {
   onClick: () => void
@@ -23,7 +24,7 @@ export default function LoadMoreButton({
         disabled={isDisabled}
         isLoading={isLoading}
       >
-        더 보기
+        {BUTTON_TEXT.LOAD_MORE}
       </ActionButton>
     </div>
   )
