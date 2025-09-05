@@ -1,3 +1,5 @@
+import { cn } from '@utils/cn'
+
 interface Participant {
   name: string
   status: 'online' | 'offline'
@@ -18,9 +20,10 @@ export default function ParticipantsList({
           className="flex items-center gap-1 rounded-full bg-white px-2 py-1"
         >
           <div
-            className={`${
+            className={cn(
+              'size-2 rounded-full',
               participant.status === 'online' ? 'bg-green-400' : 'bg-gray-300'
-            } size-2 rounded-full`}
+            )}
           />
           <span
             className={`text-xs ${

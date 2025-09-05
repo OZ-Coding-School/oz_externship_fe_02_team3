@@ -1,7 +1,7 @@
 import { ChevronDown as ChevronDownIcon, Star as StarIcon } from 'lucide-react'
 
 import Badge from '@components/Badge'
-import Button from '@components/Button'
+import Button from '@src/components/button/Button'
 import Icon from '@components/Icon'
 interface CardProps {
   cardTitle: string

@@ -1,4 +1,4 @@
-import Button from '@src/components/Button'
+import Button from '@src/components/button/Button'
 import BackButton from '../common/BackButton'
 import { Plus as PlusIcon } from 'lucide-react'
 
@@ -23,7 +23,7 @@ export default function RecManageHeader() {
         <Button
           buttonInnerText="새 공고 작성하기"
           icon={PlusIcon}
-          variant="filled"
+          variant="primary"
         />
       </div>
     </div>

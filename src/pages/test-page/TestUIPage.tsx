@@ -1,5 +1,5 @@
 import Badge from '@components/Badge'
-import Button from '@components/Button'
+import Button from '@src/components/button/Button'
 import DropDown from '@components/DropDown'
 import PageLink from '@components/PageLink'
 import {
@@ -79,20 +79,11 @@ export default function TestUIPage() {
         iconClassName="rotate-[90deg]"
         size="base"
       />
-      <Button
-        buttonInnerText="취소"
-        size="base"
-        variant="outline"
-        bgColor="bg-transparent"
-        borderColor="border-gray-300"
-      />
+      <Button buttonInnerText="취소" size="base" variant="outline" />
       <Button
         buttonInnerText="거절"
         size="base"
-        variant="outline"
-        bgColor="bg-danger-500"
-        borderColor="border-danger-500"
-        textColor="text-danger-500"
+        variant="danger"
         icon={CloseIcon}
       />
       <Button
