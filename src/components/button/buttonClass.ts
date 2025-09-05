@@ -1,7 +1,7 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 
 export const buttonClass = cva(
-  'flex items-center justify-center font-medium rounded-lg transition-colors',
+  'flex items-center justify-center font-medium rounded-lg transition-colors cursor-pointer',
   {
     variants: {
       variant: {

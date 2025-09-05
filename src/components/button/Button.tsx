@@ -11,6 +11,7 @@ interface ButtonProps
   iconClassName?: string
   iconSize?: 'xs' | 'sm' | 'md' | 'lg'
   ariaLabel?: string
+  className?: string
 }
 
 function Button({
