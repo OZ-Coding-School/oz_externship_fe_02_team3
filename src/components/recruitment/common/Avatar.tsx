@@ -1,6 +1,5 @@
 import Icon from '@src/components/Icon'
-import { UserRound } from 'lucide-react'
-
+import { UserRound as UserRoundIcon } from 'lucide-react'
 
 interface AvatarProps {
   src?: string
@@ -33,7 +32,7 @@ export default function Avatar({
     <div
       className={`${classes} bg-primary-100 flex items-center justify-center text-gray-600 rounded-${rounded}`}
     >
-      <Icon icon={UserRound} size={size} className="stroke-primary-600" />
+      <Icon icon={UserRoundIcon} size={size} className="stroke-primary-600" />
     </div>
   )
 }

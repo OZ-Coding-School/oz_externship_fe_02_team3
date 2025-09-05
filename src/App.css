@@ -7,3 +7,10 @@
 @import './styles/tokens.typography.css' layer(theme);
 /* 폰트(base 레이어로 직접 삽입) */
 @import './styles/fonts.css' layer(base);
+
+/* RecruitmentManage 공통 css */
+@layer components {
+  .rec-manage-section {
+    @apply mb-8 max-w-[1216px];
+  }
+}

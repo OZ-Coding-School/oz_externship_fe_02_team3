@@ -1,8 +1,8 @@
 ---
 name: Bug Report
 about: 버그 발생 시 작성해주세요.
-title: 'fix: 버그 요약'
-labels: bug
+title: 'bug: 버그 요약'
+labels: BUG
 assignees: ''
 ---
 

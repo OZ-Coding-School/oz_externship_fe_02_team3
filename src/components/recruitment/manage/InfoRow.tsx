@@ -1,5 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
-
+import { cn } from '@src/utils/cn'
+import { cva } from 'class-variance-authority'
 
 interface Base {
   label: string
@@ -19,6 +20,18 @@ type InfoRowWithBadge = Base & {
 
 export type InfoRowProps = InfoRowWithValue | InfoRowWithBadge
 
+const infoRow = cva('text-sm text-gray-800', {
+  variants: {
+    direction: {
+      row: 'grid grid-cols-[96px_1fr] items-center gap-2',
+      col: 'flex flex-col gap-1',
+    },
+  },
+  defaultVariants: {
+    direction: 'row',
+  },
+})
+
 export default function InfoRow({
   label,
   icon: Icon,
@@ -31,24 +44,16 @@ export default function InfoRow({
       {label}
     </span>
   )
-
-  // rest 객체 안에 badge라는 속성 찾아 분기 랜더링
+  const PROP_BADGE = 'badge' as const
   const Content =
-    'badge' in rest ? (
+    PROP_BADGE in rest ? (
       <div className="min-w-0">{rest.badge}</div>
     ) : (
       <p className="truncate text-sm text-gray-800">{rest.value}</p>
     )
-  if (direction === 'col') {
-    return (
-      <div className="flex flex-col gap-1 text-sm">
-        {Label}
-        {Content}
-      </div>
-    )
-  }
+
   return (
-    <div className="grid grid-cols-[96px_1fr] items-center gap-2 text-sm">
+    <div className={cn(infoRow({ direction }))}>
       {Label}
       {Content}
     </div>

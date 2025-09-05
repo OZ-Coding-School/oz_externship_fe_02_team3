@@ -1,0 +1,46 @@
+name: CI (Build & Test)
+
+# pr(pull request) 발생시에 발동
+on:
+  pull_request:
+    branches: [develop, main]
+
+# 중복 실행 방지!
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# 저장소 컨텐츠 읽기 권한 허용
+permissions:
+  contents: read
+
+# 실행
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+        # 테스트 스크립트가 생기면 동작, 없다면 스킵
+      - name: Test
+        run: npm test --if-present
+
+        # Lint 오타 수정 작업
+      - name: Lint
+        run: npm run lint --if-present
+
+        # 타입체크: build 전에 실패를 감지
+      - name: Typecheck
+        run: npx tsc --noEmit --pretty false
+
+      - name: Build
+        run: npm run build
