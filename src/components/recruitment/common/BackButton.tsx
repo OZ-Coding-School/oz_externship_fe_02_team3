@@ -1,7 +1,7 @@
 import { ArrowLeft as ArrowLeftIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-function BackButton() {
+export default function BackButton() {
   const navigate = useNavigate()
 
   const handleBack = () => {
@@ -15,11 +15,9 @@ function BackButton() {
   return (
     <button
       onClick={handleBack}
-      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#F3F4F6] transition-colors delay-200 duration-300 hover:cursor-pointer hover:bg-[#cbcdcf] hover:delay-100"
+      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition-colors delay-0 duration-300 hover:cursor-pointer hover:bg-gray-200"
     >
       <ArrowLeftIcon size={20} strokeWidth={2} />
     </button>
   )
 }
-
-export default BackButton

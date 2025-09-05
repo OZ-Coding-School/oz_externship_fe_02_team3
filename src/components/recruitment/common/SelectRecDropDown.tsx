@@ -4,6 +4,7 @@ import {
   Folder as FolderIcon,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { Z_INDEX } from '@src/constants/ui'
 
 const SORT_OPTION = ['최신순', '조회수 높은 순', '북마크 많은 순']
 const STATUS_OPTION = ['전체 (4)', '모집중 (2)', '마감됨 (1)']
@@ -12,7 +13,7 @@ interface Props {
   variant: 'status' | 'sort'
 }
 
-function SelectRecDropDown({ variant }: Props) {
+export default function SelectRecDropDown({ variant }: Props) {
   const options = useMemo(
     () => (variant === 'sort' ? SORT_OPTION : STATUS_OPTION),
     [variant]
@@ -40,7 +41,7 @@ function SelectRecDropDown({ variant }: Props) {
       {open && (
         <ul
           role="listbox"
-          className="absolute right-0 left-0 z-20 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow"
+          className={`z-[${Z_INDEX.DROPDOWN}] absolute right-0 left-0 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow`}
         >
           {options.map((option) => (
             <li
@@ -61,5 +62,3 @@ function SelectRecDropDown({ variant }: Props) {
     </div>
   )
 }
-
-export default SelectRecDropDown

@@ -1,7 +1,8 @@
 import Badge from '@components/Badge'
-import Button from '@components/Button'
+import Button from '@src/components/button/Button'
 import DropDown from '@components/DropDown'
 import PageLink from '@components/PageLink'
+import ChatFloatButton from '@src/components/chat/ChatFloatButton'
 import {
   ChevronDown as ChevronDownIcon,
   FolderIcon,
@@ -79,20 +80,11 @@ export default function TestUIPage() {
         iconClassName="rotate-[90deg]"
         size="base"
       />
-      <Button
-        buttonInnerText="취소"
-        size="base"
-        variant="outline"
-        bgColor="bg-transparent"
-        borderColor="border-gray-300"
-      />
+      <Button buttonInnerText="취소" size="base" variant="outline" />
       <Button
         buttonInnerText="거절"
         size="base"
-        variant="outline"
-        bgColor="bg-danger-500"
-        borderColor="border-danger-500"
-        textColor="text-danger-500"
+        variant="danger"
         icon={CloseIcon}
       />
       <Button
@@ -104,6 +96,8 @@ export default function TestUIPage() {
 
       {/* 뱃지 */}
       <Badge badgeTitle="거절됨" sideClass="bg-danger-100 text-danger-800" />
+
+      <ChatFloatButton className="m-0" />
     </div>
   )
 }

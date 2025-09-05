@@ -1,4 +1,4 @@
-import Button from '@components/Button'
+import Button from '@src/components/button/Button'
 import { ArrowLeft as ArrowLeftIcon, X as CloseIcon } from 'lucide-react'
 
 interface ChatRoomHeaderProps {

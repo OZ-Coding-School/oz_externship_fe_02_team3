@@ -17,6 +17,11 @@ const chatData: Chat[] = [
       { name: '박리액트', status: 'online' },
       { name: '이프론트', status: 'offline' },
       { name: '최자바', status: 'online' },
+      { name: '김오즈', status: 'online' },
+      { name: '이조교', status: 'online' },
+      { name: '민매니저', status: 'online' },
+      { name: '오코치', status: 'online' },
+      { name: '양타입스크립트', status: 'online' },
     ],
     messages: [
       {

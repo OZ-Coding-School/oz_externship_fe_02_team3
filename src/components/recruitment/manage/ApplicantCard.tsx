@@ -4,6 +4,7 @@ import { Calendar as CalendarIcon } from 'lucide-react'
 import InfoRow from './InfoRow'
 import { formatDate } from '@src/utils/date'
 import StatusBadge from '@src/components/StatusBadge'
+import { useCallback, memo } from 'react'
 
 export type ApplicantStatus = 'pending' | 'approved' | 'rejected'
 
@@ -23,7 +24,12 @@ interface Props {
   onClick?: (applicant: Applicant) => void
 }
 
-export default function ApplicantCard({ data, onClick }: Props) {
+const EXP_BADGE = {
+  true: { title: '경험 있음', className: 'bg-success-100 text-success-800' },
+  false: { title: '경험 없음', className: 'bg-gray-200 text-gray-800' },
+} as const
+
+export default memo(function ApplicantCard({ data, onClick }: Props) {
   const {
     // id, // 현재안쓰임
     name,
@@ -35,12 +41,28 @@ export default function ApplicantCard({ data, onClick }: Props) {
     status,
   } = data
 
+  const { title: expTitle, className: badgeClass } =
+    EXP_BADGE[String(hasExp) as 'true' | 'false']
+
+  const handleClick = useCallback(() => onClick?.(data), [onClick, data])
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        onClick?.(data)
+      }
+    },
+    [onClick, data]
+  )
+
   return (
     <article
       role="button"
       tabIndex={0}
-      onClick={() => onClick?.(data)}
-      onKeyDown={(e) => e.key === 'Enter' && onClick?.(data)}
+      aria-label={`${name} 지원자 카드 열기`}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
       className="group relative grid min-h-[204px] w-full cursor-pointer grid-cols-[48px_1fr] grid-rows-[auto_1fr] gap-x-3 gap-y-5 rounded-md bg-gray-100 p-3 shadow"
     >
       <div className="row-span-2 flex items-start pl-0.5">
@@ -66,18 +88,9 @@ export default function ApplicantCard({ data, onClick }: Props) {
         <InfoRow
           label="스터디 경험"
           direction="row"
-          badge={
-            <Badge
-              badgeTitle={hasExp ? '경험 있음' : '경험 없음'}
-              sideClass={
-                hasExp
-                  ? 'bg-emerald-100 text-emerald-700'
-                  : 'bg-gray-200 text-gray-600'
-              }
-            />
-          }
+          badge={<Badge badgeTitle={expTitle} sideClass={badgeClass} />}
         />
       </div>
     </article>
   )
-}
+})

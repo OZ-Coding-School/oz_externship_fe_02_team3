@@ -1,7 +1,7 @@
-import Button from '@components/Button'
+import Button from '@src/components/button/Button'
 import Icon from '@components/Icon'
 import PageLink from '@components/PageLink'
-import { NOTIFICATION_ICON_CONFIG, Z_INDEX } from '@constants/ui'
+import { Z_INDEX } from '@constants/ui'
 import notificationsData from '@mock/notificationsData'
 import { ROUTES } from '@src/constants/routes'
 import type { NotificationItem } from '@src/types/notification'
@@ -16,35 +16,35 @@ import {
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import {
+  notificationIconClass,
+  notificationIconStrokeClass,
+  tabClass,
+} from './notificationIconClass'
+
+const iconMap = {
+  application: UserRoundPlusIcon,
+  approval: CheckIcon,
+  rejection: CloseIcon,
+  join: UsersRoundIcon,
+  study_end: CalendarCheckIcon,
+  reminder: BellIcon,
+}
 
 const getNotificationIcon = (type: NotificationItem['type']) => {
-  const config = NOTIFICATION_ICON_CONFIG.find((item) => item.type === type)
-
-  if (!config) {
-    return (
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100">
-        <div className="h-5 w-5 rounded-full bg-gray-500" />
-      </div>
-    )
-  }
-  const IconComponent = iconMap[config.icon as keyof typeof iconMap]
-  // "config.icon은 iconMap의 키 중 하나야"라고 알려주는 것
+  const IconComponent = iconMap[type] || BellIcon
 
   return (
-    <div
-      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${config.bgColor}`}
-    >
-      <Icon icon={IconComponent} className={config.strokeColor} size="s" />
+    <div className={notificationIconClass({ type })}>
+      <Icon
+        icon={IconComponent}
+        className={notificationIconStrokeClass({ type })}
+        size="s"
+      />
     </div>
   )
 }
-const iconMap = {
-  UserRoundPlusIcon,
-  CheckIcon,
-  CloseIcon,
-  UsersRoundIcon,
-  CalendarCheckIcon,
-}
+
 export default function HeaderUserSection() {
   const navigate = useNavigate()
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
@@ -138,22 +138,18 @@ export default function HeaderUserSection() {
                   <div
                     role="tab"
                     onClick={() => setNotificationFilter('all')}
-                    className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
-                      notificationFilter === 'all'
-                        ? 'border-primary-500 text-primary-600 border-b-2'
-                        : 'border-b-2 border-transparent text-gray-500'
-                    }`}
+                    className={tabClass({
+                      active: notificationFilter === 'all',
+                    })}
                   >
                     전체보기 ({notifications.length})
                   </div>
                   <div
                     role="tab"
                     onClick={() => setNotificationFilter('unread')}
-                    className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
-                      notificationFilter === 'unread'
-                        ? 'border-primary-500 text-primary-600 border-b-2'
-                        : 'border-b-2 border-transparent text-gray-500'
-                    }`}
+                    className={tabClass({
+                      active: notificationFilter === 'unread',
+                    })}
                   >
                     읽지 않음 (
                     {
@@ -166,11 +162,9 @@ export default function HeaderUserSection() {
                   <div
                     role="tab"
                     onClick={() => setNotificationFilter('read')}
-                    className={`flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm ${
-                      notificationFilter === 'read'
-                        ? 'border-primary-500 text-primary-600 border-b-2'
-                        : 'border-b-2 border-transparent text-gray-500'
-                    }`}
+                    className={tabClass({
+                      active: notificationFilter === 'read',
+                    })}
                   >
                     읽음 (
                     {
@@ -241,8 +235,7 @@ export default function HeaderUserSection() {
           <Button
             buttonInnerText="회원가입"
             size="base"
-            bgColor="bg-primary-500"
-            borderColor="border-primary-500"
+            variant="primary"
             fontWeight="medium"
           />
         </>

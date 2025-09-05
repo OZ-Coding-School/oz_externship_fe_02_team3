@@ -8,7 +8,7 @@ interface BadgeProps {
   iconColor: string
 }
 
-function NotificationBadge({
+export default function NotificationBadge({
   Icon,
   count,
   title,
@@ -30,5 +30,3 @@ function NotificationBadge({
     </div>
   )
 }
-
-export default NotificationBadge
