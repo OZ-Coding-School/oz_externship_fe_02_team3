@@ -17,7 +17,7 @@ interface SelectableDropDownProps {
   className?: string // 추가된 속성
 }
 
-const SelectableDropDown = ({
+function SelectableDropDown({
   selected,
   options,
   onSelect,
@@ -29,7 +29,7 @@ const SelectableDropDown = ({
   disabled = false,
   placeholder = '선택하세요',
   className, // 추가된 props
-}: SelectableDropDownProps) => {
+}: SelectableDropDownProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleClick = () => {

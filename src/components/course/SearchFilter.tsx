@@ -14,7 +14,7 @@ interface SearchFilterProps {
   sortOptions: Record<string, string>
 }
 
-const SearchFilter = ({
+function SearchFilter({
   searchQuery,
   onSearchChange,
   selectedCategory,
@@ -23,7 +23,7 @@ const SearchFilter = ({
   onSortChange,
   categories,
   sortOptions,
-}: SearchFilterProps) => {
+}: SearchFilterProps) {
   return (
     <section className="mb-8" aria-label={ARIA_LABELS.SEARCH_FILTER}>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">

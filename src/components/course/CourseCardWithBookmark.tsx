@@ -1,4 +1,4 @@
-import Card from '@components/Card'
+import CourseCard from './CourseCard'
 import { BookmarkButton } from './BookmarkButton'
 import { cn } from '@src/utils/cn'
 
@@ -25,20 +25,17 @@ function CourseCardWithBookmark({
     <article
       className={cn(
         'relative cursor-pointer',
-        'overflow-hidden', // 넘치는 요소들을 숨김
-        'min-w-0', // flex-shrink 방지
+        'w-full',
+        'overflow-hidden',
+        'min-w-0',
         className
       )}
     >
-      <Card {...cardProps} />
+      <CourseCard {...cardProps} />
 
       {/* 북마크 버튼 컨테이너 */}
       <div
-        className={cn(
-          'absolute top-3 right-3',
-          'z-10', // 다른 요소 위에 표시
-          'pointer-events-auto' // 클릭 가능하도록
-        )}
+        className={cn('absolute top-2 right-2', 'z-10', 'pointer-events-auto')}
       >
         <BookmarkButton
           courseId={courseId}

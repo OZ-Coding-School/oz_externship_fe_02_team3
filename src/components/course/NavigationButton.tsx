@@ -8,12 +8,12 @@ interface NavigationButtonProps {
   className?: string
 }
 
-export const NavigationButton = ({
+export function NavigationButton({
   direction,
   onClick,
   isDisabled,
   className,
-}: NavigationButtonProps) => {
+}: NavigationButtonProps) {
   const Icon = direction === 'left' ? ChevronLeft : ChevronRight
   const ariaLabel = direction === 'left' ? '이전 강의 보기' : '다음 강의 보기'
 

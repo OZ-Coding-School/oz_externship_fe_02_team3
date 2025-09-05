@@ -9,12 +9,12 @@ interface SortFilterProps {
   className?: string
 }
 
-export const SortFilter = ({
+export function SortFilter({
   selectedSort,
   onSortChange,
   sortOptions,
   className,
-}: SortFilterProps) => {
+}: SortFilterProps) {
   const handleSortSelection = (selectedLabel: string) => {
     const sortKey =
       Object.keys(sortOptions).find(

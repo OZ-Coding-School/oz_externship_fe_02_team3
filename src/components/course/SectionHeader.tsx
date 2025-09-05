@@ -11,7 +11,7 @@ interface SectionHeaderProps {
   className?: string
 }
 
-export const SectionHeader = ({
+export function SectionHeader({
   title,
   showNavigation = false,
   canNavigateLeft = false,
@@ -19,7 +19,7 @@ export const SectionHeader = ({
   onNavigateLeft,
   onNavigateRight,
   className,
-}: SectionHeaderProps) => {
+}: SectionHeaderProps) {
   return (
     <header className={cn('mb-6 flex items-center justify-between', className)}>
       <h2 className="text-xl font-bold text-gray-900">{title}</h2>

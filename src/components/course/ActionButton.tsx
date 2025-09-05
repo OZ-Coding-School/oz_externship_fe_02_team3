@@ -9,7 +9,7 @@ interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   isLoading?: boolean
 }
 
-export const ActionButton = ({
+export function ActionButton({
   variant = 'secondary',
   size = 'medium',
   children,
@@ -17,7 +17,7 @@ export const ActionButton = ({
   disabled,
   isLoading = false,
   ...props
-}: ActionButtonProps) => {
+}: ActionButtonProps) {
   const baseClasses =
     'cursor-pointer font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed'
 

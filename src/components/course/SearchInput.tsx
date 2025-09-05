@@ -8,12 +8,12 @@ interface SearchInputProps {
   className?: string
 }
 
-export const SearchInput = ({
+export function SearchInput({
   searchQuery,
   onSearchChange,
   placeholder = '강의를 검색해보세요...',
   className,
-}: SearchInputProps) => {
+}: SearchInputProps) {
   return (
     <div className={cn('relative', className)}>
       <input

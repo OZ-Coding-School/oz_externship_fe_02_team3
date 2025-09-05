@@ -1,6 +1,7 @@
 import React from 'react'
 import { SectionHeader } from './SectionHeader'
 import CourseCardWithBookmark from './CourseCardWithBookmark'
+import { CARD, LIST_SETTINGS } from '@src/constants/ui'
 import type { Course } from '@src/types/course'
 
 interface RecommendedSectionProps {
@@ -31,16 +32,28 @@ export default function RecommendedSection({
         onNavigateRight={goRight}
       />
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div
+        className={`grid gap-6 grid-cols-${LIST_SETTINGS.COURSES_PER_ROW.MOBILE} md:grid-cols-${LIST_SETTINGS.COURSES_PER_ROW.TABLET} lg:grid-cols-${LIST_SETTINGS.COURSES_PER_ROW.DESKTOP} `}
+      >
         {visibleCourses.map((course: Course) => (
           <div
             key={`recommended-${course.id}`}
-            className="transition-all duration-200 hover:scale-105"
+            className={`${CARD.TRANSITION} ${CARD.HOVER_SCALE}`}
+            style={{ minHeight: `${CARD.MIN_HEIGHT}px` }}
           >
             <CourseCardWithBookmark
-              cardTitle={course.title}
+              cardTitle={
+                course.title.length > LIST_SETTINGS.MAX_TITLE_LENGTH
+                  ? `${course.title.substring(0, LIST_SETTINGS.MAX_TITLE_LENGTH)}...`
+                  : course.title
+              }
               author={course.instructor ?? '미정'}
-              cardDescription={course.description}
+              cardDescription={
+                course.description &&
+                course.description.length > LIST_SETTINGS.MAX_DESCRIPTION_LENGTH
+                  ? `${course.description.substring(0, LIST_SETTINGS.MAX_DESCRIPTION_LENGTH)}...`
+                  : course.description || ''
+              }
               reviewRating={course.rating ?? 0}
               reviewCount={course.reviewCount ?? 0}
               originalPrice={course.originalPrice ?? course.price ?? 0}

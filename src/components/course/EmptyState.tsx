@@ -4,11 +4,11 @@ interface EmptyStateProps {
   iconEmoji?: string
 }
 
-export const EmptyState = ({
+export function EmptyState({
   title = '검색 결과가 없습니다.',
   description = '다른 검색어나 필터를 시도해보세요.',
   iconEmoji = '📚',
-}: EmptyStateProps) => {
+}: EmptyStateProps) {
   return (
     <div className="flex items-center justify-center py-20">
       <div className="text-center">

@@ -9,12 +9,12 @@ interface BookmarkButtonProps {
   className?: string
 }
 
-export const BookmarkButton = ({
+export function BookmarkButton({
   courseId,
   initialBookmarkedState = false,
   onBookmarkToggle,
   className,
-}: BookmarkButtonProps) => {
+}: BookmarkButtonProps) {
   const [isCurrentlyBookmarked, setIsCurrentlyBookmarked] = useState(
     initialBookmarkedState
   )

@@ -1,5 +1,6 @@
-import { ChevronDown, FolderIcon } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import SelectableDropDown from './SelectableDropDown'
+import { FILTER_SORT } from '@src/constants/ui'
 import { cn } from '@src/utils/cn'
 
 interface CategoryFilterProps {
@@ -9,21 +10,20 @@ interface CategoryFilterProps {
   className?: string
 }
 
-export const CategoryFilter = ({
+export function CategoryFilter({
   selectedCategory,
   onCategoryChange,
   categories,
   className,
-}: CategoryFilterProps) => {
+}: CategoryFilterProps) {
   return (
     <div className={cn('relative', className)}>
       <SelectableDropDown
         selected={selectedCategory}
         options={categories}
         onSelect={onCategoryChange}
-        leftIcon={FolderIcon}
         rightIcon={ChevronDown}
-        placeholder="카테고리 선택"
+        placeholder={FILTER_SORT.DEFAULT_CATEGORY}
         className="cursor-pointer"
       />
     </div>
