@@ -46,6 +46,7 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
           icon={isOpen ? CloseIcon : MessageIcon}
           iconOnly
           variant="ghost"
+          className="hover:bg-transparent active:bg-transparent"
           iconSize={'lg'}
           iconClassName={'stroke-white'}
           onClick={() => setIsOpen(!isOpen)}
