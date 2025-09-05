@@ -6,7 +6,10 @@ interface TestPage {
   label: string
 }
 
-const pageItems: TestPage[] = [{ to: ROUTES.RECRUITMENT, label: '공고 페이지' }]
+const pageItems: TestPage[] = [
+  { to: ROUTES.RECRUITMENT, label: '공고 페이지' },
+  { to: ROUTES.RECRUITMENT_MANAGE, label: '공고 관리 페이지' },
+]
 
 const testItems: TestPage[] = [
   { to: '/test/ApplicationModal', label: '지원서 작성 모달 테스트' },
