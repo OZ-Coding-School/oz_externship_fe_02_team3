@@ -14,11 +14,25 @@ export default function CourseGrid({ courses, onBookmark }: CourseGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div
+      className={
+        // 반응형 그리드 + 최소 카드 크기 보장
+        'grid gap-6 ' +
+        'grid-cols-1' + // 모바일: 1열
+        'sm:grid-cols-2' + // 작은 화면: 2열
+        'lg:grid-cols-3' + // 큰 화면: 3열
+        'auto-rows-fr' // 모든 행 높이 동일
+      }
+    >
       {courses.map((course: Course) => (
         <div
           key={course.id}
-          className="transition-all duration-200 hover:scale-105"
+          className={
+            'transition-all duration-200 hover:scale-105 ' +
+            'min-w-0' + // flex-shrink 방지
+            'w-full' + // 전체 너비 사용
+            'mx-auto max-w-sm' // 최대 너비 제한 + 중앙 정렬
+          }
         >
           <CourseCardWithBookmark
             cardTitle={course.title}

@@ -15,17 +15,31 @@ interface CourseCardWithBookmarkProps {
   className?: string
 }
 
-const CourseCardWithBookmark = ({
+function CourseCardWithBookmark({
   courseId,
   onBookmarkClick,
   className,
   ...cardProps
-}: CourseCardWithBookmarkProps) => {
+}: CourseCardWithBookmarkProps) {
   return (
-    <article className={cn('relative cursor-pointer', className)}>
+    <article
+      className={cn(
+        'relative cursor-pointer',
+        'overflow-hidden', // 넘치는 요소들을 숨김
+        'min-w-0', // flex-shrink 방지
+        className
+      )}
+    >
       <Card {...cardProps} />
 
-      <div className="absolute top-3 right-3">
+      {/* 북마크 버튼 컨테이너 */}
+      <div
+        className={cn(
+          'absolute top-3 right-3',
+          'z-10', // 다른 요소 위에 표시
+          'pointer-events-auto' // 클릭 가능하도록
+        )}
+      >
         <BookmarkButton
           courseId={courseId}
           onBookmarkToggle={onBookmarkClick}
