@@ -8,26 +8,25 @@ import RecruitmentPase from '@src/pages/recruitment-page/RecruitmentPage'
 import TestUIPage from './pages/test-page/TestUIPage'
 import RecruitmentManage from '@pages/RecruitmentManage'
 
+const routes = [
+  { index: true, element: <TestHub /> },
+  { path: ROUTES.RECRUITMENT, element: <RecruitmentPase /> },
+  { path: ROUTES.RECRUITMENT_MANAGE, element: <RecruitmentManage /> },
+  { path: '/test/ApplicationModal', element: <TestApplicationModalPage /> },
+  { path: '/test/UI', element: <TestUIPage /> },
+]
+
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<MainLayout />}>
-        <Route index element={<TestHub />} />
-
-        {/** PAGE */}
-        <Route path={ROUTES.RECRUITMENT} element={<RecruitmentPase />} />
-
-        <Route
-          path={ROUTES.RECRUITMENT_MANAGE}
-          element={<RecruitmentManage />}
-        />
-
-        {/** TEST */}
-        <Route
-          path="/test/ApplicationModal"
-          element={<TestApplicationModalPage />}
-        />
-        <Route path="/test/UI" element={<TestUIPage />} />
+      <Route element={<MainLayout />}>
+        {routes.map((route, i) => (
+          <Route
+            key={route.path ?? `index-${i}`}
+            path={route.path}
+            element={route.element}
+          />
+        ))}
       </Route>
     </Routes>
   )
