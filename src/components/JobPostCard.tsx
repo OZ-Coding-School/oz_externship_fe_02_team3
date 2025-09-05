@@ -42,15 +42,11 @@ export default function JobPostCard({
   return (
     <Link to={`${ROUTES.RECRUITMENT}/${id}`}>
       <div className="flex h-full gap-4 rounded-lg border border-solid border-gray-200 bg-white p-[25px]">
-        {image ? (
-          <img
-            src={image}
-            alt={title}
-            className="h-24 w-32 rounded-lg bg-cover bg-center bg-no-repeat object-cover"
-          />
-        ) : (
-          <div className="h-24 w-32 rounded-lg bg-gray-100" />
-        )}
+        <img
+          src={image || 'https://placehold.co/320x240/e5e7eb/e5e7eb.png'}
+          alt={title}
+          className="h-24 w-32 rounded-lg object-cover"
+        />
 
         <div className="flex w-full flex-col">
           {/* 제목과 조회수/댓글 + (옵션) 편집 버튼 */}
