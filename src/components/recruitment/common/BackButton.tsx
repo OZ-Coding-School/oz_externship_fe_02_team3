@@ -1,7 +1,7 @@
 import { ArrowLeft as ArrowLeftIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-function BackButton() {
+export default function BackButton() {
   const navigate = useNavigate()
 
   const handleBack = () => {
@@ -21,5 +21,3 @@ function BackButton() {
     </button>
   )
 }
-
-export default BackButton
