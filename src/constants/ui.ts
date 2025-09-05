@@ -17,7 +17,8 @@ export const LIST_SETTINGS = {
     TABLET: 2,
     DESKTOP: 3,
   },
-  PREVIEW_ITEMS: 2 as number, // 첫 화면에서 미리보기로 보여줄 강의 수
+
+  PREVIEW_ITEMS: 6 as number, // 첫 화면에서 미리보기로 보여줄 강의 수
   MAX_TITLE_LENGTH: 50 as number, // 강의 제목 최대 길이
   MAX_DESCRIPTION_LENGTH: 100 as number, // 강의 설명 최대 길이
 } as const
@@ -208,11 +209,11 @@ export const NOTIFICATION_ICON_CONFIG = [
 ]
 
 export const Z_INDEX = {
-  HEADER: 2,
-  DROPDOWN: 2,
-  MODAL: 400,
-  POPUP: 600,
-  TOAST: 1000,
+  HEADER: 100,
+  DROPDOWN: 200,
+  MODAL: 1000,
+  POPUP: 1100,
+  TOAST: 1200,
 } as const
 
 export const NAV_ITEMS = [

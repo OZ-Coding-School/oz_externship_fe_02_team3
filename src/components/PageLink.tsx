@@ -1,6 +1,7 @@
 import Icon from '@components/Icon'
 import type { LucideIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
+
 interface PageLinkProps {
   pageLinkInnerText: string
   icon?: LucideIcon
@@ -15,7 +16,7 @@ interface PageLinkProps {
   linkTo?: string
 }
 
-const PageLink = ({
+export default function PageLink({
   pageLinkInnerText,
   icon,
   iconClassName = '',
@@ -23,31 +24,35 @@ const PageLink = ({
   bgColor = 'bg-primary-500',
   borderColor = 'border-primary-500',
   textColor = 'text-primary-600',
-  hoverBgColor = 'hover:bg-primary-50',
+  hoverBgColor,
   hoverTextColor = 'hover:text-primary-600',
   fontWeight = 'normal',
   linkTo = '/',
-}: PageLinkProps) => {
+}: PageLinkProps) {
   const weightMap = {
     normal: 'font-normal',
     medium: 'font-medium',
     semibold: 'font-semibold',
     bold: 'font-bold',
-  }
+  } as const
+
+  const appliedHoverBgColor =
+    variant === 'outline' ? 'hover:bg-primary-50' : 'hover:bg-primary-600'
+
   const getStyles = () => {
     switch (variant) {
       case 'ghost':
         return `${textColor} ${hoverTextColor} transition-colors px-2`
       case 'outline':
-        return `border-1 ${borderColor} ${textColor} ${hoverBgColor} transition-colors px-6 py-2 rounded-lg`
+        return `border-1 ${borderColor} ${textColor} ${hoverBgColor || appliedHoverBgColor}  transition-colors px-6 py-2 rounded-lg`
       default:
-        return `${bgColor} text-white ${hoverBgColor || 'hover:bg-primary-600'} transition-colors px-6 py-2 rounded-lg`
+        return `${bgColor} text-white ${hoverBgColor || appliedHoverBgColor} transition-colors px-6 py-2 rounded-lg`
     }
   }
 
   return (
     <Link
-      to={`${linkTo}`}
+      to={linkTo}
       className={`flex w-fit items-center gap-2 ${getStyles()}`}
     >
       {icon && (
@@ -63,5 +68,3 @@ const PageLink = ({
     </Link>
   )
 }
-
-export default PageLink

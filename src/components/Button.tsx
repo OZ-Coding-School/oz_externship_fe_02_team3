@@ -20,7 +20,7 @@ interface ButtonProps {
   onClick?: () => void
 }
 
-const Button = ({
+function Button({
   buttonInnerText,
   icon,
   className = '',
@@ -36,7 +36,7 @@ const Button = ({
   iconOnly = false,
   ariaLabel,
   onClick,
-}: ButtonProps) => {
+}: ButtonProps) {
   // size별 텍스트 사이즈 매핑
   const sizeMap = { sm: 'text-sm', base: 'text-base', lg: 'text-lg' }
   // fontWeight 매핑

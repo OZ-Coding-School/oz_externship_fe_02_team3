@@ -10,14 +10,14 @@ interface IconProps {
   size?: 'xs' | 's' | 'sm' | 'md' | 'lg' | 'xl' | number
 }
 
-const Icon = ({
+function Icon({
   icon: IconComponent,
   className = '',
   containerClassName,
   fill = false,
   strokeWidth = 2,
   size = 'sm',
-}: IconProps) => {
+}: IconProps) {
   // 사이즈 매핑
   const sizeClasses = {
     xs: 'h-3 w-3', // 12px
