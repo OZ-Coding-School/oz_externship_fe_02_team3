@@ -8,7 +8,6 @@ import {
   ERROR_MESSAGES,
   EMPTY_MESSAGES,
   LIST_SETTINGS,
-  BREAKPOINTS,
 } from '@src/constants/ui'
 import { cn } from '@src/utils/cn'
 import { useCourses } from '@src/hooks/course/useCourse'
@@ -40,6 +39,8 @@ export default function CoursesPage({ className }: CoursesPageProps) {
     setSearchQuery,
     totalCount,
     filteredCount,
+    appliedFiltersCount,
+    resetFilters,
   } = useCourseFilters(courses)
 
   const { displayedItems, hasMore, loadMore, currentCount } =
@@ -130,6 +131,8 @@ export default function CoursesPage({ className }: CoursesPageProps) {
           onSortChange={setSortBy}
           categories={CATEGORY_LIST}
           sortOptions={SORT_LABELS}
+          appliedFiltersCount={appliedFiltersCount}
+          onResetFilters={resetFilters}
         />
 
         {/* 강의 목록 섹션 */}
@@ -160,7 +163,7 @@ export default function CoursesPage({ className }: CoursesPageProps) {
               title={EMPTY_MESSAGES.FILTERED_COURSES}
               description={
                 searchQuery
-                  ? `'${searchQuery}' 검색 결과가 없습니다. 다른 검색어를 시도해보세요.`
+                  ? `'${searchQuery}' ${EMPTY_MESSAGES.SEARCH_RESULTS.replace('검색 결과가 없습니다.', '검색 결과가 없습니다. 다른 검색어를 시도해보세요.')}`
                   : '선택한 필터 조건에 맞는 강의가 없습니다. 필터를 조정해보세요.'
               }
               iconEmoji="🔍"

@@ -1,86 +1,74 @@
 import { useState, useMemo } from 'react'
-import { CATEGORIES, SORT_OPTIONS } from '@src/constants/courses'
+import { FILTER_SORT } from '@src/constants/ui'
+import { getComparatorBySortKey } from '@src/utils/courseComparators'
 import type { Course } from '@src/types/course'
-import type { UseCourseFiltersReturn } from '@src/types/hooks'
 
-interface SortCoursesFunction {
-  (courses: Course[], sortBy: string): Course[]
+interface UseCourseFiltersResult {
+  filteredCourses: Course[]
+  selectedCategory: string
+  setSelectedCategory: (category: string) => void
+  sortBy: string
+  setSortBy: (sort: string) => void
+  searchQuery: string
+  setSearchQuery: (query: string) => void
+  totalCount: number
+  filteredCount: number
+  appliedFiltersCount: number
+  resetFilters: () => void
 }
 
-interface FilterBySearchFunction {
-  (courses: Course[], query: string): Course[]
-}
-
-const sortCourses: SortCoursesFunction = (courses, sortBy) => {
-  const sortedCourses = [...courses]
-
-  switch (sortBy) {
-    case 'popularity':
-    case 'POPULARITY':
-      return sortedCourses.sort((a, b) => b.reviewCount - a.reviewCount)
-
-    case 'latest':
-    case 'LATEST':
-      return sortedCourses.sort((a, b) => b.id - a.id)
-
-    case 'rating':
-    case 'RATING':
-      return sortedCourses.sort((a, b) => b.rating - a.rating)
-
-    case 'price_low':
-    case 'PRICE_LOW':
-    case 'priceAsc':
-      return sortedCourses.sort((a, b) => a.price - b.price)
-
-    case 'price_high':
-    case 'PRICE_HIGH':
-    case 'priceDesc':
-      return sortedCourses.sort((a, b) => b.price - a.price)
-
-    default:
-      return sortedCourses
-  }
-}
-
-const filterBySearch: FilterBySearchFunction = (courses, query) => {
-  if (!query.trim()) return courses
-
-  const lowercaseQuery = query.toLowerCase()
-  return courses.filter(
-    (course: Course) =>
-      course.title.toLowerCase().includes(lowercaseQuery) ||
-      course.instructor.toLowerCase().includes(lowercaseQuery) ||
-      course.description.toLowerCase().includes(lowercaseQuery) ||
-      course.tags?.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
-  )
-}
-
-export const useCourseFilters = (courses: Course[]): UseCourseFiltersReturn => {
+export function useCourseFilters(courses: Course[]): UseCourseFiltersResult {
   const [selectedCategory, setSelectedCategory] = useState<string>(
-    CATEGORIES.ALL
+    FILTER_SORT.DEFAULT_CATEGORY
   )
-  const [sortBy, setSortBy] = useState<string>(SORT_OPTIONS.POPULARITY)
+  const [sortBy, setSortBy] = useState<string>(FILTER_SORT.DEFAULT_SORT)
   const [searchQuery, setSearchQuery] = useState<string>('')
 
-  const filteredCourses = useMemo((): Course[] => {
-    let result = courses
+  // 필터링 및 정렬된 강의 목록
+  const filteredCourses = useMemo(() => {
+    let result = [...courses]
 
-    if (searchQuery.trim()) {
-      result = filterBySearch(result, searchQuery)
-    }
-
-    if (selectedCategory !== CATEGORIES.ALL) {
+    // 카테고리 필터링
+    if (selectedCategory !== FILTER_SORT.DEFAULT_CATEGORY) {
       result = result.filter(
-        (course: Course) => course.category === selectedCategory
+        (course) =>
+          course.category?.toLowerCase() === selectedCategory.toLowerCase()
       )
     }
 
-    return sortCourses(result, sortBy)
+    // 검색어 필터링
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim()
+      result = result.filter(
+        (course) =>
+          course.title.toLowerCase().includes(query) ||
+          course.description?.toLowerCase().includes(query) ||
+          course.instructor?.toLowerCase().includes(query)
+      )
+    }
+
+    // 정렬 적용 (comparator 객체 사용)
+    const comparator = getComparatorBySortKey(sortBy)
+    result.sort(comparator)
+
+    return result
   }, [courses, selectedCategory, sortBy, searchQuery])
 
-  const resetFilters = (): void => {
-    setSelectedCategory(CATEGORIES.ALL)
-    setSortBy(SORT_OPTIONS.POPULARITY)
+  // 적용된 필터 개수 계산
+  const appliedFiltersCount = useMemo(() => {
+    let count = 0
+
+    if (selectedCategory !== FILTER_SORT.DEFAULT_CATEGORY) count++
+    if (searchQuery.trim()) count++
+    if (sortBy !== FILTER_SORT.DEFAULT_SORT) count++
+
+    return count
+  }, [selectedCategory, searchQuery, sortBy])
+
+  // 필터 초기화
+  const resetFilters = () => {
+    setSelectedCategory(FILTER_SORT.DEFAULT_CATEGORY)
+    setSortBy(FILTER_SORT.DEFAULT_SORT)
     setSearchQuery('')
   }
 
@@ -92,8 +80,9 @@ export const useCourseFilters = (courses: Course[]): UseCourseFiltersReturn => {
     setSortBy,
     searchQuery,
     setSearchQuery,
-    resetFilters,
     totalCount: courses.length,
     filteredCount: filteredCourses.length,
+    appliedFiltersCount,
+    resetFilters,
   }
 }

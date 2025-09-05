@@ -1,6 +1,7 @@
 import { SearchInput } from './SearchInput'
 import { CategoryFilter } from './CategoryFilter'
 import { SortFilter } from './SortFilter'
+import { FilterResetButton } from './FilterResetButton'
 import { ARIA_LABELS } from '@src/constants/ui'
 
 interface SearchFilterProps {
@@ -12,6 +13,8 @@ interface SearchFilterProps {
   onSortChange: (sort: string) => void
   categories: string[]
   sortOptions: Record<string, string>
+  appliedFiltersCount?: number
+  onResetFilters?: () => void
 }
 
 function SearchFilter({
@@ -23,10 +26,12 @@ function SearchFilter({
   onSortChange,
   categories,
   sortOptions,
+  appliedFiltersCount = 0,
+  onResetFilters,
 }: SearchFilterProps) {
   return (
     <section className="mb-8" aria-label={ARIA_LABELS.SEARCH_FILTER}>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
         <SearchInput
           searchQuery={searchQuery}
           onSearchChange={onSearchChange}
@@ -46,6 +51,17 @@ function SearchFilter({
           sortOptions={sortOptions}
           className="lg:col-span-1"
         />
+
+        {/* 필터 리셋 버튼 */}
+        <div className="lg:col-span-1">
+          {onResetFilters && (
+            <FilterResetButton
+              onReset={onResetFilters}
+              appliedFiltersCount={appliedFiltersCount}
+              className="h-full"
+            />
+          )}
+        </div>
       </div>
     </section>
   )
