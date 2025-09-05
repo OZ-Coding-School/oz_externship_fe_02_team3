@@ -1,4 +1,4 @@
-import Button from '@src/components/Button'
+import Button from '@src/components/button/Button'
 import BaseModal from '@src/components/modal/BaseModal'
 import FormField from '@src/components/modal/FormField'
 import ModalFooter from '@src/components/modal/ModalFooter'
@@ -177,16 +177,11 @@ export default function ApplicationModal({
             <Button
               buttonInnerText="취소"
               variant="outline"
-              bgColor="text-gray-500"
-              textColor="text-gray-700"
-              borderColor="border-gray-300"
               onClick={handleClose}
             />
             <Button
               buttonInnerText="지원서 제출"
               icon={SendIcon}
-              bgColor="bg-primary-500"
-              borderColor="border-primary-500"
               disabled={!isValid || isSubmitting}
               onClick={handleSubmit(onSubmit)}
             />

@@ -1,4 +1,4 @@
-import Button from '@components/Button'
+import Button from '@src/components/button/Button'
 import { Send as SendIcon } from 'lucide-react'
 import { useState } from 'react'
 interface MessageInputProps {

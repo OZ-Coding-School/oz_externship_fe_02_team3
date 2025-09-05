@@ -1,4 +1,4 @@
-import Button from '@components/Button'
+import Button from '@src/components/button/Button'
 import Icon from '@components/Icon'
 import PageLink from '@components/PageLink'
 import { NOTIFICATION_ICON_CONFIG, Z_INDEX } from '@constants/ui'
@@ -241,8 +241,7 @@ export default function HeaderUserSection() {
           <Button
             buttonInnerText="회원가입"
             size="base"
-            bgColor="bg-primary-500"
-            borderColor="border-primary-500"
+            variant="primary"
             fontWeight="medium"
           />
         </>
