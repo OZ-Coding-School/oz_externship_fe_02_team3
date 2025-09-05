@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
-import Icon from './Icon'
-import { cn } from '../utils/cn'
+import Icon from '../Icon'
+import { cn } from '../../utils/cn'
 
 interface SelectableDropDownProps {
   selected: string

@@ -1,5 +1,5 @@
 import { ChevronDown, FolderIcon } from 'lucide-react'
-import SelectableDropDown from '../SelectableDropDown'
+import SelectableDropDown from './SelectableDropDown'
 import { cn } from '@src/utils/cn'
 
 interface CategoryFilterProps {
