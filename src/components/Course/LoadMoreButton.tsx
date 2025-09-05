@@ -1,29 +1,30 @@
-import React from 'react'
+import { ActionButton } from './ActionButton'
 import { cn } from '@src/utils/cn'
 
 interface LoadMoreButtonProps {
   onClick: () => void
-  disabled?: boolean
+  isDisabled?: boolean
+  isLoading?: boolean
+  className?: string
 }
 
 export default function LoadMoreButton({
   onClick,
-  disabled = false,
+  isDisabled = false,
+  isLoading = false,
+  className,
 }: LoadMoreButtonProps) {
   return (
-    <div className="mt-12 flex justify-center">
-      <button
+    <div className={cn('mt-12 flex justify-center', className)}>
+      <ActionButton
+        variant="secondary"
+        size="medium"
         onClick={onClick}
-        disabled={disabled}
-        className={cn(
-          'rounded-lg border px-8 py-3 font-medium transition-colors',
-          disabled
-            ? 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400'
-            : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-        )}
+        disabled={isDisabled}
+        isLoading={isLoading}
       >
         더 보기
-      </button>
+      </ActionButton>
     </div>
   )
 }

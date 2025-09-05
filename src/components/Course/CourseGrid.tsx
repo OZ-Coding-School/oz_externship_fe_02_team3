@@ -1,5 +1,6 @@
 import React from 'react'
 import CourseCardWithBookmark from './CourseCardWithBookmark'
+import { EmptyState } from './EmptyState'
 import type { Course } from '@src/types/course'
 
 interface CourseGridProps {
@@ -9,17 +10,7 @@ interface CourseGridProps {
 
 export default function CourseGrid({ courses, onBookmark }: CourseGridProps) {
   if (courses.length === 0) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="text-center">
-          <div className="mb-4 text-6xl text-gray-400">📚</div>
-          <p className="text-lg text-gray-500">검색 결과가 없습니다.</p>
-          <p className="mt-2 text-sm text-gray-400">
-            다른 검색어나 필터를 시도해보세요.
-          </p>
-        </div>
-      </div>
-    )
+    return <EmptyState />
   }
 
   return (

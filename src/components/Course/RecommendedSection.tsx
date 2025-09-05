@@ -1,6 +1,5 @@
 import React from 'react'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { cn } from '@src/utils/cn'
+import { SectionHeader } from './SectionHeader'
 import CourseCardWithBookmark from './CourseCardWithBookmark'
 import type { Course } from '@src/types/course'
 
@@ -22,36 +21,15 @@ export default function RecommendedSection({
   onBookmark,
 }: RecommendedSectionProps) {
   return (
-    <div className="mb-12">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-bold text-gray-900">추천 강의</h2>
-        <div className="flex gap-2">
-          <button
-            onClick={goLeft}
-            disabled={!canGoLeft}
-            className={cn(
-              'rounded-full border p-2 transition-colors',
-              canGoLeft
-                ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                : 'cursor-not-allowed border-gray-200 text-gray-400'
-            )}
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-          <button
-            onClick={goRight}
-            disabled={!canGoRight}
-            className={cn(
-              'rounded-full border p-2 transition-colors',
-              canGoRight
-                ? 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                : 'cursor-not-allowed border-gray-200 text-gray-400'
-            )}
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
+    <section className="mb-12" aria-labelledby="recommended-courses-title">
+      <SectionHeader
+        title="추천 강의"
+        showNavigation
+        canNavigateLeft={canGoLeft}
+        canNavigateRight={canGoRight}
+        onNavigateLeft={goLeft}
+        onNavigateRight={goRight}
+      />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {visibleCourses.map((course: Course) => (
@@ -73,6 +51,6 @@ export default function RecommendedSection({
           </div>
         ))}
       </div>
-    </div>
+    </section>
   )
 }
