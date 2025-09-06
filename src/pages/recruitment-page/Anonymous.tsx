@@ -1,4 +1,4 @@
-import PageLink from '@components/PageLink'
+import PageLink from '@src/components/page-link/PageLink'
 import { ROUTES } from '@src/constants/routes'
 import {
   LogIn as LogInIcon,
@@ -24,13 +24,15 @@ export default function Anonymous() {
           pageLinkInnerText="로그인 하기"
           variant="filled"
           icon={LogInIcon}
-          linkTo={ROUTES.LOGIN}
+          size="lg"
+          link={ROUTES.LOGIN}
         />
         <PageLink
           pageLinkInnerText="회원가입하기"
           icon={UserPlusIcon}
-          linkTo={ROUTES.SIGNUP}
+          link={ROUTES.SIGNUP}
           variant="outline"
+          size="base"
         />
       </div>
       <div className="mt-8 flex flex-col gap-4 text-center">

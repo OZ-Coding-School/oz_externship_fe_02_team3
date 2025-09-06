@@ -1,6 +1,5 @@
-import Button from '@src/components/button/Button'
 import Icon from '@components/Icon'
-import PageLink from '@components/PageLink'
+import PageLink from '@components/page-link/PageLink'
 import { Z_INDEX } from '@constants/ui'
 import notificationsData from '@mock/notificationsData'
 import { ROUTES } from '@src/constants/routes'
@@ -39,7 +38,7 @@ const getNotificationIcon = (type: NotificationItem['type']) => {
       <Icon
         icon={IconComponent}
         className={notificationIconStrokeClass({ type })}
-        size="s"
+        size="sm"
       />
     </div>
   )
@@ -53,13 +52,21 @@ export default function HeaderUserSection() {
   const [notificationFilter, setNotificationFilter] = useState<
     'all' | 'unread' | 'read'
   >('all')
+
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+
   // 개발단계에선 해당 값을 true 와 false 로 합니다.
   const user = true
 
   const notificationRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+
   const handleNotificationToggle = () => {
     setIsNotificationOpen(!isNotificationOpen)
+  }
+
+  const handleAvatarToggle = () => {
+    setIsUserMenuOpen(!isUserMenuOpen)
   }
 
   const handleMarkAllAsRead = () => {
@@ -119,7 +126,7 @@ export default function HeaderUserSection() {
             {isNotificationOpen && (
               <div
                 ref={notificationRef}
-                className={`absolute top-12 right-0 z-[${Z_INDEX.DROPDOWN}] max-h-[819.2px] w-96 overflow-hidden rounded-lg border border-gray-200 bg-white`}
+                className={`absolute top-12 right-0 z-[${Z_INDEX.DROPDOWN}] max-h-[819.2px] overflow-hidden rounded-lg border border-gray-200 bg-white`}
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between px-4 pt-4 pb-[17px]">
@@ -191,10 +198,9 @@ export default function HeaderUserSection() {
                       >
                         {getNotificationIcon(notification.type)}
                         <div className="flex flex-col gap-1">
-                          <p className="line-clamp-2 text-left text-sm text-gray-900">
+                          <p className="line-clamp-2 min-w-72 text-left text-sm text-gray-900">
                             {notification.message}
                           </p>
-                          {/* </div> */}
                           <p className="flex items-center text-xs text-gray-500">
                             {notification.date}
                           </p>
@@ -212,7 +218,10 @@ export default function HeaderUserSection() {
               </div>
             )}
           </button>
-          <a className="flex items-center gap-2">
+          <div
+            className="relative flex items-center gap-2"
+            onClick={handleAvatarToggle}
+          >
             <div className="bg-primary-100 flex h-8 w-8 items-center justify-center rounded-full">
               <Icon
                 icon={UserRoundIcon}
@@ -221,22 +230,42 @@ export default function HeaderUserSection() {
               />
             </div>
             <p className="text-base text-gray-700">김스터디</p>
-          </a>
+            {isUserMenuOpen && (
+              <div
+                className={`absolute top-12 right-0 z-[${Z_INDEX.DROPDOWN}] w-48 rounded-lg border border-gray-200 bg-white py-2`}
+              >
+                <PageLink
+                  pageLinkInnerText="마이페이지"
+                  variant="ghost"
+                  link="/profile"
+                  className="text-sm"
+                  fontWeight="normal"
+                />
+                <PageLink
+                  pageLinkInnerText="로그아웃"
+                  variant="ghost"
+                  link="/logout"
+                  className="text-sm"
+                  fontWeight="normal"
+                />
+              </div>
+            )}
+          </div>
         </>
       ) : (
         <>
           <PageLink
             pageLinkInnerText="로그인"
             variant="ghost"
-            hoverTextColor="text-gray-700"
             fontWeight="normal"
-            linkTo="/login"
+            link="/login"
           />
-          <Button
-            buttonInnerText="회원가입"
+          <PageLink
+            pageLinkInnerText="회원가입"
+            variant="filled"
             size="base"
-            variant="primary"
             fontWeight="medium"
+            link="/signup"
           />
         </>
       )}
