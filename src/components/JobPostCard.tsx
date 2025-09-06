@@ -40,7 +40,7 @@ export default function JobPostCard({
   } = post
 
   return (
-    <Link to={`${ROUTES.RECRUITMENT}/${id}`}>
+    <Link to={`${ROUTES.RECRUITMENT_ID(id)}`}>
       <div className="flex h-full gap-4 rounded-lg border border-solid border-gray-200 bg-white p-[25px]">
         <img
           src={image || 'https://placehold.co/320x240/e5e7eb/e5e7eb.png'}
