@@ -1,9 +1,9 @@
 import Button from '@src/components/button/Button'
 import Modal from '@src/components/modal'
-import FormField from '@src/components/modal/FormField'
-import TextareaWithCounter from '@src/components/modal/TextareaWithCounter'
-import { Send as SendIcon } from 'lucide-react'
+import { FormField, TextareaWithCounter } from '@src/components/form'
+import { MousePointer2 as MousePointer2Icon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 
 interface Props {
   open: boolean
@@ -20,6 +20,38 @@ interface Form {
   expDetail?: string
 }
 
+const TEXT_MAX = 500
+
+//반복되는 필드들
+const TEXT_FIELDS: Array<{
+  name: keyof Pick<Form, 'intro' | 'motive' | 'goal' | 'availability'>
+  label: string
+  placeholder: string
+}> = [
+  {
+    name: 'intro',
+    label: '자기소개',
+    placeholder:
+      '본인에 대해 간략하게 소개해주세요. (학습, 배경, 관심분야, 현재 수준 등)',
+  },
+  {
+    name: 'motive',
+    label: '지원동기',
+    placeholder: '이 스터디에 지원하게 된 동기를 작성해 주세요.',
+  },
+  {
+    name: 'goal',
+    label: '스터디목표',
+    placeholder: '이 스터디를 통해 달성하고 싶은 목표를 작성해주세요.',
+  },
+  {
+    name: 'availability',
+    label: '가능한 시간대',
+    placeholder:
+      '스터디 참여가 가능한 요일과 시간대를 작성해주세요(예: 평일 저녁 7~9시, 주말 오후).',
+  },
+]
+
 export default function ApplicationModal({
   open,
   onClose,
@@ -30,15 +62,12 @@ export default function ApplicationModal({
     handleSubmit,
     watch,
     reset,
+    clearErrors,
+    setValue,
     formState: { errors, isValid, isSubmitting },
   } = useForm<Form>({ mode: 'onChange' })
 
-  const intro = watch('intro') ?? ''
-  const motive = watch('motive') ?? ''
-  const goal = watch('goal') ?? ''
-  const availability = watch('availability') ?? ''
   const hasExp = watch('hasExp') ?? false
-  const expDetail = watch('expDetail') ?? ''
 
   const onSubmit = (data: Form) => {
     console.log(data)
@@ -51,7 +80,13 @@ export default function ApplicationModal({
     onClose()
   }
 
-  if (!open) return null
+  // 경험 체크 박스 풀었을때 에러메시지 초기화
+  useEffect(() => {
+    if (!hasExp) {
+      clearErrors('expDetail')
+      setValue('expDetail', '') // 내용도 초기화
+    }
+  }, [hasExp, clearErrors])
 
   return (
     <Modal
@@ -68,78 +103,31 @@ export default function ApplicationModal({
       </Modal.Header>
 
       <div className="max-h-[80vh] min-h-0 flex-1 space-y-6 overflow-y-auto px-10 py-4">
-        <FormField
-          id="intro"
-          label="자기소개"
-          required
-          error={errors.intro?.message}
-        >
-          <TextareaWithCounter
-            id="intro"
-            maxLength={500}
-            valueLength={intro.length}
-            {...register('intro', {
-              required: '자기소개를 입력해주세요.',
-              maxLength: 500,
-            })}
-            placeholder="본인에 대해 간략하게 소개해주세요. (학습, 배경, 관심분야, 현재 수준 등)"
-          />
-        </FormField>
-
-        <FormField
-          id="motive"
-          label="지원동기"
-          required
-          error={errors.motive?.message}
-        >
-          <TextareaWithCounter
-            id="motive"
-            maxLength={500}
-            valueLength={motive.length}
-            {...register('motive', {
-              required: '지원동기를 입력해 주세요.',
-              maxLength: 500,
-            })}
-            placeholder="이 스터디에 지원하게 된 동기를 작성해 주세요."
-          />
-        </FormField>
-
-        <FormField
-          id="goal"
-          label="스터디목표"
-          required
-          error={errors.goal?.message}
-        >
-          <TextareaWithCounter
-            id="goal"
-            maxLength={500}
-            valueLength={goal.length}
-            {...register('goal', {
-              required: '스터디 목표를 입력해 주세요.',
-              maxLength: 500,
-            })}
-            placeholder="이 스터디를 통해 달성하고 싶은 목표를 작성해주세요."
-          />
-        </FormField>
-
-        <FormField
-          id="availability"
-          label="가능한 시간대"
-          required
-          error={errors.availability?.message}
-        >
-          <TextareaWithCounter
-            id="availability"
-            maxLength={500}
-            valueLength={availability.length}
-            {...register('availability', {
-              required: '가능한 시간을 입력해 주세요.',
-              maxLength: 500,
-            })}
-            placeholder="스터디 참여가 가능한 요일과 시간대를 작성해주세요(예: 평일 저녁 7~9시, 주말 오후)."
-          />
-        </FormField>
-
+        {/* 반복되는 텍스트영역 map */}
+        {TEXT_FIELDS.map(({ name, label, placeholder }) => {
+          const value = (watch(name) as string) ?? ''
+          const errMsg = (errors[name]?.message as string) || undefined
+          return (
+            <FormField
+              key={name}
+              id={name}
+              label={label}
+              required
+              error={errMsg}
+            >
+              <TextareaWithCounter
+                id={name}
+                maxLength={TEXT_MAX}
+                valueLength={value.length}
+                placeholder={placeholder}
+                {...register(name, {
+                  required: `${label}를 입력해주세요.`,
+                  maxLength: TEXT_MAX,
+                })}
+              />
+            </FormField>
+          )
+        })}
         <FormField id="hasExp" label="스터디 경험 유무">
           <div className="inline-flex items-center gap-2">
             <input
@@ -160,10 +148,13 @@ export default function ApplicationModal({
           <TextareaWithCounter
             id="expDetail"
             maxLength={500}
-            valueLength={expDetail.length}
+            valueLength={(watch('expDetail') ?? '').length}
             disabled={!hasExp}
             {...register('expDetail', {
-              required: hasExp ? '경험이 있다면 상세히 입력해주세요.' : false,
+              validate: (value) =>
+                !hasExp ||
+                (value as string).trim()?.length > 0 ||
+                '경험이 있다면 상세히 입력해주세요.',
               maxLength: 500,
             })}
             placeholder="스터디 경험이 없으시면 비워두셔도 됩니다."
@@ -183,10 +174,14 @@ export default function ApplicationModal({
           />
           <Button
             buttonInnerText="지원서 제출"
-            icon={SendIcon}
-            iconSize="sm"
+            icon={MousePointer2Icon}
+            variant="primary"
+            size="base"
+            fontWeight="medium"
+            iconClassName="rotate-[90deg]"
             disabled={!isValid || isSubmitting}
             onClick={handleSubmit(onSubmit)}
+            iconSize="sm"
           />
         </div>
       </Modal.Footer>

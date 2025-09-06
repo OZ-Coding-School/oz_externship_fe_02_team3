@@ -1,7 +1,8 @@
 import Badge from '@components/Badge'
 import Button from '@src/components/button/Button'
 import DropDown from '@components/DropDown'
-import PageLink from '@src/components/page-link/PageLink'
+import PageLink from '@components/page-link/PageLink'
+import ChatFloatButton from '@src/components/chat/ChatFloatButton'
 import {
   ChevronDown as ChevronDownIcon,
   FolderIcon,
@@ -11,7 +12,6 @@ import {
   X as CloseIcon,
 } from 'lucide-react'
 import { useState } from 'react'
-import ChatFloatButton from '@src/components/chat/ChatFloatButton'
 
 export default function TestUIPage() {
   const [selectedCategory, setSelectedCategory] = useState('전체')

@@ -28,13 +28,13 @@ export default function ManageApplicantsModal({
       </Modal.Header>
 
       <div className="max-h-[80vh] min-h-0 flex-1 overflow-y-auto px-6 py-4">
-        {applicants.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:[grid-template-columns:repeat(auto-fill,minmax(416px,1fr))]">
+        {applicants && (
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {applicants.map((a) => (
               <ApplicantCard key={a.id} data={a} />
             ))}
           </div>
-        ) : null}
+        )}
       </div>
     </Modal>
   )
