@@ -146,7 +146,7 @@ export default function ApplicationModal({
               id="hasExp"
               type="checkbox"
               {...register('hasExp')}
-              className="checked:bg-primary-500 rounded-xs checked:border-1 h-3 w-3 appearance-none border border-gray-500"
+              className="checked:bg-primary-500 h-3 w-3 appearance-none rounded-xs border border-gray-500 checked:border-1"
             />
             <span>스터디 참여 경험이 있습니다</span>
           </div>
@@ -184,7 +184,7 @@ export default function ApplicationModal({
           <Button
             buttonInnerText="지원서 제출"
             icon={SendIcon}
-            variant="primary" // 또는 variant 생략(기본값이 primary/filled)
+            iconSize="sm"
             disabled={!isValid || isSubmitting}
             onClick={handleSubmit(onSubmit)}
           />

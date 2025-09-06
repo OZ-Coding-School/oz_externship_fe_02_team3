@@ -2,6 +2,7 @@ import { buttonClass, type ButtonClassProps } from './buttonClass'
 import Icon from '@components/Icon'
 import type { LucideIcon } from 'lucide-react'
 import type { ButtonHTMLAttributes } from 'react'
+import { cn } from '@utils/cn'
 
 interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
@@ -9,45 +10,47 @@ interface ButtonProps
   buttonInnerText?: string
   icon?: LucideIcon
   iconClassName?: string
-  iconSize?: 'xs' | 'sm' | 'md' | 'lg'
+  iconSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   ariaLabel?: string
 }
 
 function Button({
   buttonInnerText,
   icon,
-  className = '',
-  iconClassName = '',
+  iconClassName,
   size = 'base',
+  iconButtonSize = 'md',
   variant = 'primary',
-  fontWeight = 'medium',
+  fontWeight,
   disabled = false,
-  iconSize = 'sm',
-  iconOnly = false,
+  iconSize = 'md',
   ariaLabel,
   onClick,
+  className,
   ...props
 }: ButtonProps) {
-  const hasIconAndText = icon && !iconOnly && buttonInnerText
+  const iconOnly = !!icon && !buttonInnerText
+
   return (
     <button
       type="button"
       disabled={disabled}
-      className={buttonClass({
-        size,
-        variant,
-        fontWeight,
-        iconOnly,
-        className,
-      })}
+      className={cn(
+        buttonClass({
+          size: !iconOnly ? size : undefined,
+          iconButtonSize: iconOnly ? iconButtonSize : undefined,
+          variant,
+          fontWeight,
+          iconOnly,
+        }),
+        className
+      )}
       onClick={onClick}
       aria-label={ariaLabel || buttonInnerText}
       {...props}
     >
-      <span className={hasIconAndText ? 'flex items-center gap-2' : undefined}>
-        {icon && <Icon icon={icon} size={iconSize} className={iconClassName} />}
-        {!iconOnly && buttonInnerText && <span>{buttonInnerText}</span>}
-      </span>
+      {icon && <Icon icon={icon} size={iconSize} className={iconClassName} />}
+      {buttonInnerText}
     </button>
   )
 }
