@@ -39,7 +39,7 @@ const getNotificationIcon = (type: NotificationItem['type']) => {
       <Icon
         icon={IconComponent}
         className={notificationIconStrokeClass({ type })}
-        size="s"
+        size="sm"
       />
     </div>
   )
