@@ -1,6 +1,7 @@
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import Icon from './Icon'
+import { cn } from '@utils/cn'
 
 interface DropDownProps {
   selected?: string
@@ -58,9 +59,12 @@ export default function DropDown({
   return (
     <div className="relative" ref={dropdownRef}>
       <div
-        className={`relative flex ${className} items-center rounded-lg border border-gray-300 py-[9px] ${
-          !disabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
-        }`}
+        // ...
+        className={cn(
+          'relative flex items-center rounded-lg border border-gray-300 py-[9px]',
+          !disabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50',
+          className
+        )}
         onClick={handleClick}
       >
         {leftIcon && (
@@ -99,15 +103,19 @@ export default function DropDown({
         <>
           {/* 옵션 리스트 */}
           <div
-            className={`absolute top-full left-0 z-20 mt-1 ${className} rounded-lg border border-gray-200 bg-white shadow-lg`}
+            className={cn(
+              'absolute top-full left-0 z-20 mt-1 rounded-lg border border-gray-200 bg-white shadow-lg',
+              className
+            )}
           >
             {options.map((option) => (
               <button
                 key={option}
                 onClick={() => handleSelect(option)}
-                className={`w-full px-4 py-2 text-left text-sm transition-colors first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50 ${
-                  option === selected ? 'bg-primary-50 text-primary-600' : ''
-                }`}
+                className={cn(
+                  'w-full px-4 py-2 text-left text-sm transition-colors first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50',
+                  option === selected && 'bg-primary-50 text-primary-600'
+                )}
               >
                 {option}
               </button>
