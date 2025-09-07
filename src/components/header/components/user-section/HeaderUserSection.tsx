@@ -4,6 +4,7 @@ import { Z_INDEX } from '@constants/ui'
 import notificationsData from '@mock/notificationsData'
 import { ROUTES } from '@src/constants/routes'
 import type { NotificationItem } from '@src/types/notification'
+import { cn } from '@utils/cn'
 import {
   Bell as BellIcon,
   CalendarCheck as CalendarCheckIcon,
@@ -127,7 +128,10 @@ export default function HeaderUserSection() {
             {isNotificationOpen && (
               <div
                 ref={notificationRef}
-                className={`absolute top-12 right-0 z-[${Z_INDEX.DROPDOWN}] max-h-[819.2px] overflow-hidden rounded-lg border border-gray-200 bg-white`}
+                className={cn(
+                  'absolute top-12 right-0 max-h-[819.2px] overflow-hidden rounded-lg border border-gray-200 bg-white',
+                  `z-[${Z_INDEX.DROPDOWN}]`
+                )}
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between px-4 pt-4 pb-[17px]">
@@ -233,7 +237,10 @@ export default function HeaderUserSection() {
             <p className="text-base text-gray-700">김스터디</p>
             {isUserMenuOpen && (
               <div
-                className={`absolute top-12 right-0 z-[${Z_INDEX.DROPDOWN}] flex w-48 flex-col divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white py-2 shadow-lg`}
+                className={cn(
+                  'absolute top-12 right-0 flex w-48 flex-col divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white py-2 shadow-lg',
+                  `z-[${Z_INDEX.DROPDOWN}]`
+                )}
               >
                 <PageLink
                   pageLinkInnerText="마이페이지"
