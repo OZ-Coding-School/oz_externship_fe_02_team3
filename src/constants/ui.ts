@@ -1,3 +1,12 @@
+import {
+  AlertTriangle,
+  BookOpen,
+  Search,
+  AlertCircle,
+  XCircle,
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+
 // 페이지네이션 설정
 export const PAGINATION = {
   MAX_VISIBLE_PAGES: 5, // 한 번에 보여줄 페이지 번호 개수
@@ -17,6 +26,7 @@ export const LIST_SETTINGS = {
     TABLET: 2,
     DESKTOP: 3,
   },
+
   PREVIEW_ITEMS: 6 as number, // 첫 화면에서 미리보기로 보여줄 강의 수
   MAX_TITLE_LENGTH: 50 as number, // 강의 제목 최대 길이
   MAX_DESCRIPTION_LENGTH: 100 as number, // 강의 설명 최대 길이
@@ -115,7 +125,7 @@ export const CARD = {
   TRANSITION: 'transition-all duration-200', // 애니메이션 지속시간
 } as const
 
-// 빈 상태 메시지
+// 빈 상태 메시지와 아이콘
 export const EMPTY_MESSAGES = {
   COURSES: '등록된 강의가 없습니다.',
   FILTERED_COURSES: '해당 조건의 강의가 없습니다.',
@@ -124,13 +134,43 @@ export const EMPTY_MESSAGES = {
   FALLBACK: '데이터가 없습니다.',
 } as const
 
-// 에러 메시지
+export const EMPTY_STATE_ICONS: Record<
+  keyof typeof EMPTY_MESSAGES,
+  LucideIcon
+> = {
+  COURSES: BookOpen,
+  FILTERED_COURSES: Search,
+  BOOKMARKS: BookOpen,
+  SEARCH_RESULTS: Search,
+  FALLBACK: AlertCircle,
+} as const
+
+// 에러 메시지와 아이콘
 export const ERROR_MESSAGES = {
   LOAD_COURSES: '강의 목록을 불러오는데 실패했습니다.',
   LOAD_COURSE_DETAIL: '강의 상세 정보를 불러오는데 실패했습니다.',
   NETWORK_ERROR: '네트워크 오류가 발생했습니다.',
   SERVER_ERROR: '서버 오류가 발생했습니다.',
   UNKNOWN: '알 수 없는 오류가 발생했습니다.',
+} as const
+
+export const ERROR_ICONS: Record<keyof typeof ERROR_MESSAGES, LucideIcon> = {
+  LOAD_COURSES: AlertTriangle,
+  LOAD_COURSE_DETAIL: AlertTriangle,
+  NETWORK_ERROR: XCircle,
+  SERVER_ERROR: AlertCircle,
+  UNKNOWN: AlertTriangle,
+} as const
+
+// 에러 관련 UI 텍스트 (아이콘으로 대체)
+export const ERROR_UI = {
+  DEFAULT_TITLE: '오류가 발생했습니다',
+  DEFAULT_ICON: AlertTriangle,
+  SEVERITY_ICONS: {
+    ERROR: XCircle,
+    WARNING: AlertTriangle,
+    INFO: AlertCircle,
+  },
 } as const
 
 // 버튼 텍스트
@@ -165,6 +205,7 @@ export const LIST_MESSAGES = {
   SHOWING_RESULTS: (current: number, total: number) =>
     `${total}개 중 ${current}개 표시`,
 } as const
+
 export const NOTIFICATION_TYPE = {
   APPLICATION: 'application',
   APPROVAL: 'approval',
@@ -173,6 +214,39 @@ export const NOTIFICATION_TYPE = {
   STUDY_END: 'study_end',
   REMINDER: 'reminder',
 } as const
+
+export const NOTIFICATION_ICON_CONFIG = [
+  {
+    type: NOTIFICATION_TYPE.APPLICATION,
+    bgColor: 'bg-blue-100',
+    strokeColor: 'stroke-[#2563EB]',
+    icon: 'UserRoundPlus',
+  },
+  {
+    type: NOTIFICATION_TYPE.APPROVAL,
+    bgColor: 'bg-green-100',
+    strokeColor: 'stroke-[#16A34A]',
+    icon: 'Check',
+  },
+  {
+    type: NOTIFICATION_TYPE.REJECTION,
+    bgColor: 'bg-red-100',
+    strokeColor: 'stroke-[#DC2626]',
+    icon: 'X',
+  },
+  {
+    type: NOTIFICATION_TYPE.JOIN,
+    bgColor: 'bg-purple-100',
+    strokeColor: 'stroke-[#9333EA]',
+    icon: 'UsersRound',
+  },
+  {
+    type: NOTIFICATION_TYPE.STUDY_END,
+    bgColor: 'bg-orange-100',
+    strokeColor: 'stroke-[#EA580C]',
+    icon: 'CalendarCheck',
+  },
+]
 
 export const Z_INDEX = {
   HEADER: 100,
@@ -187,3 +261,33 @@ export const NAV_ITEMS = [
   { to: '/study-group', label: '스터디 그룹' },
   { to: '/recruitment', label: '구인 공고' },
 ]
+
+// 페이지 제목과 설명
+export const PAGE_TITLES = {
+  COURSES: 'IT 강의 목록',
+  STUDY_GROUP: '스터디 그룹',
+  RECRUITMENT: '구인 공고',
+} as const
+
+export const PAGE_DESCRIPTIONS = {
+  COURSES: '개발자를 위한 최고의 강의들을 만나보세요',
+  STUDY_GROUP: '함께 성장할 스터디원을 찾아보세요',
+  RECRUITMENT: '최신 개발자 채용 공고를 확인하세요',
+} as const
+
+// ARIA 레이블
+export const ARIA_LABELS = {
+  SEARCH_FILTER: '검색 및 필터',
+  COURSE_GRID: '강의 목록',
+  NAVIGATION: '네비게이션',
+} as const
+
+// 통계 텍스트 (CourseStats용)
+export const STATS_TEXT = {
+  DISPLAYED_COUNT: (count: number) => `${count}개`,
+  TOTAL_PREFIX: '표시 / 총',
+  TOTAL_COUNT: (count: number) => `${count}개`,
+  SEARCH_RESULT_TAG: '검색 결과',
+  FILTERED_PREFIX: '전체',
+  FILTERED_SUFFIX: '중 필터링됨',
+} as const
