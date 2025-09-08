@@ -1,3 +1,13 @@
+import {
+  AlertTriangle,
+  BookOpen,
+  Search,
+  Frown,
+  AlertCircle,
+  XCircle,
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+
 // 페이지네이션 설정
 export const PAGINATION = {
   MAX_VISIBLE_PAGES: 5, // 한 번에 보여줄 페이지 번호 개수
@@ -116,7 +126,7 @@ export const CARD = {
   TRANSITION: 'transition-all duration-200', // 애니메이션 지속시간
 } as const
 
-// 빈 상태 메시지
+// 빈 상태 메시지와 아이콘
 export const EMPTY_MESSAGES = {
   COURSES: '등록된 강의가 없습니다.',
   FILTERED_COURSES: '해당 조건의 강의가 없습니다.',
@@ -125,13 +135,43 @@ export const EMPTY_MESSAGES = {
   FALLBACK: '데이터가 없습니다.',
 } as const
 
-// 에러 메시지
+export const EMPTY_STATE_ICONS: Record<
+  keyof typeof EMPTY_MESSAGES,
+  LucideIcon
+> = {
+  COURSES: BookOpen,
+  FILTERED_COURSES: Search,
+  BOOKMARKS: BookOpen,
+  SEARCH_RESULTS: Search,
+  FALLBACK: AlertCircle,
+} as const
+
+// 에러 메시지와 아이콘
 export const ERROR_MESSAGES = {
   LOAD_COURSES: '강의 목록을 불러오는데 실패했습니다.',
   LOAD_COURSE_DETAIL: '강의 상세 정보를 불러오는데 실패했습니다.',
   NETWORK_ERROR: '네트워크 오류가 발생했습니다.',
   SERVER_ERROR: '서버 오류가 발생했습니다.',
   UNKNOWN: '알 수 없는 오류가 발생했습니다.',
+} as const
+
+export const ERROR_ICONS: Record<keyof typeof ERROR_MESSAGES, LucideIcon> = {
+  LOAD_COURSES: AlertTriangle,
+  LOAD_COURSE_DETAIL: AlertTriangle,
+  NETWORK_ERROR: XCircle,
+  SERVER_ERROR: AlertCircle,
+  UNKNOWN: AlertTriangle,
+} as const
+
+// 에러 관련 UI 텍스트 (아이콘으로 대체)
+export const ERROR_UI = {
+  DEFAULT_TITLE: '오류가 발생했습니다',
+  DEFAULT_ICON: AlertTriangle,
+  SEVERITY_ICONS: {
+    ERROR: XCircle,
+    WARNING: AlertTriangle,
+    INFO: AlertCircle,
+  },
 } as const
 
 // 버튼 텍스트
@@ -166,6 +206,7 @@ export const LIST_MESSAGES = {
   SHOWING_RESULTS: (current: number, total: number) =>
     `${total}개 중 ${current}개 표시`,
 } as const
+
 export const NOTIFICATION_TYPE = {
   APPLICATION: 'application',
   APPROVAL: 'approval',
@@ -174,6 +215,39 @@ export const NOTIFICATION_TYPE = {
   STUDY_END: 'study_end',
   REMINDER: 'reminder',
 } as const
+
+export const NOTIFICATION_ICON_CONFIG = [
+  {
+    type: NOTIFICATION_TYPE.APPLICATION,
+    bgColor: 'bg-blue-100',
+    strokeColor: 'stroke-[#2563EB]',
+    icon: 'UserRoundPlus',
+  },
+  {
+    type: NOTIFICATION_TYPE.APPROVAL,
+    bgColor: 'bg-green-100',
+    strokeColor: 'stroke-[#16A34A]',
+    icon: 'Check',
+  },
+  {
+    type: NOTIFICATION_TYPE.REJECTION,
+    bgColor: 'bg-red-100',
+    strokeColor: 'stroke-[#DC2626]',
+    icon: 'X',
+  },
+  {
+    type: NOTIFICATION_TYPE.JOIN,
+    bgColor: 'bg-purple-100',
+    strokeColor: 'stroke-[#9333EA]',
+    icon: 'UsersRound',
+  },
+  {
+    type: NOTIFICATION_TYPE.STUDY_END,
+    bgColor: 'bg-orange-100',
+    strokeColor: 'stroke-[#EA580C]',
+    icon: 'CalendarCheck',
+  },
+]
 
 export const Z_INDEX = {
   HEADER: 100,
@@ -200,12 +274,6 @@ export const PAGE_DESCRIPTIONS = {
   COURSES: '개발자를 위한 최고의 강의들을 만나보세요',
   STUDY_GROUP: '함께 성장할 스터디원을 찾아보세요',
   RECRUITMENT: '최신 개발자 채용 공고를 확인하세요',
-} as const
-
-// 에러 관련 UI 텍스트
-export const ERROR_UI = {
-  DEFAULT_TITLE: '오류가 발생했습니다',
-  DEFAULT_EMOJI: '⚠️',
 } as const
 
 // ARIA 레이블
