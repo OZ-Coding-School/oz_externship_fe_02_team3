@@ -12,6 +12,7 @@ import {
   UserRoundPlus as UserRoundPlusIcon,
   UsersRound as UsersRoundIcon,
   X as CloseIcon,
+  LogOut as LogOutIcon,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -232,21 +233,24 @@ export default function HeaderUserSection() {
             <p className="text-base text-gray-700">김스터디</p>
             {isUserMenuOpen && (
               <div
-                className={`absolute top-12 right-0 z-[${Z_INDEX.DROPDOWN}] w-48 rounded-lg border border-gray-200 bg-white py-2`}
+                className={`absolute top-12 right-0 z-[${Z_INDEX.DROPDOWN}] flex w-48 flex-col divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white py-2 shadow-lg`}
               >
                 <PageLink
                   pageLinkInnerText="마이페이지"
                   variant="ghost"
                   link="/profile"
-                  className="text-sm"
+                  className="text-sm text-gray-700"
                   fontWeight="normal"
+                  icon={UserRoundIcon}
                 />
                 <PageLink
                   pageLinkInnerText="로그아웃"
                   variant="ghost"
                   link="/logout"
-                  className="text-sm"
+                  iconClassName="rotate-180 stroke-"
+                  className="text-sm text-gray-700"
                   fontWeight="normal"
+                  icon={LogOutIcon}
                 />
               </div>
             )}
