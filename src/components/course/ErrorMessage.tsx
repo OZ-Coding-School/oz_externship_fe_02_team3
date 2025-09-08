@@ -1,5 +1,5 @@
-import Button from '../button/Button'
-import Icon from '@components/Icon'
+import Button from '../commons/button/Button'
+import Icon from '@src/components/commons/Icon'
 import { BUTTON_TEXT, ERROR_UI, ERROR_ICONS } from '@src/constants/ui'
 import type { LucideIcon } from 'lucide-react'
 

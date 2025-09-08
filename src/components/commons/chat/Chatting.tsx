@@ -31,8 +31,10 @@ export default function Chatting({ toggleChat }: ChatProps) {
 
   const getOnlineCount = () => {
     if (!selectedChatRoom) return 0
-    return selectedChatRoom.participants.filter((p) => p.status === 'online')
-      .length
+    const onlineCount = selectedChatRoom.participants.filter(
+      (p) => p.status === 'online'
+    )
+    return onlineCount.length
   }
 
   const renderListView = () => (

@@ -1,4 +1,4 @@
-import PageLink from '@components/page-link/PageLink'
+import PageLink from '@components/commons/page-link/PageLink'
 
 export default function AuthMenu() {
   return (

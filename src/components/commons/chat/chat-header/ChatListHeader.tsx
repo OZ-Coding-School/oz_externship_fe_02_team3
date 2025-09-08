@@ -1,4 +1,4 @@
-import Button from '@src/components/button/Button'
+import Button from '@src/components/commons/button/Button'
 import { X as CloseIcon } from 'lucide-react'
 
 interface ChatListHeaderProps {

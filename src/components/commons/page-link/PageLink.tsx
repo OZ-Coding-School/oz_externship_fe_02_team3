@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { pageLinkClass, type PageLinkClassProps } from './linkClass'
-import Icon from '@components/Icon'
+import Icon from '@src/components/commons/Icon'
 import type { LucideIcon } from 'lucide-react'
 import type { LinkHTMLAttributes } from 'react'
 import { cn } from '@utils/cn'

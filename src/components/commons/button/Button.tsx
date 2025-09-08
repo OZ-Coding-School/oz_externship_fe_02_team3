@@ -1,5 +1,5 @@
 import { buttonClass, type ButtonClassProps } from './buttonClass'
-import Icon from '@components/Icon'
+import Icon from '@src/components/commons/Icon'
 import type { LucideIcon } from 'lucide-react'
 import type { ButtonHTMLAttributes } from 'react'
 import { cn } from '@utils/cn'

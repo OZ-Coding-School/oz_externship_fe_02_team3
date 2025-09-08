@@ -1,4 +1,4 @@
-import Icon from '@components/Icon'
+import Icon from '@src/components/commons/Icon'
 import { EMPTY_STATE_ICONS } from '@src/constants/ui'
 import type { LucideIcon } from 'lucide-react'
 

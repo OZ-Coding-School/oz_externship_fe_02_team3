@@ -1,6 +1,6 @@
-import Button from '@src/components/button/Button'
+import Button from '@src/components/commons/button/Button'
 import { cn } from '@utils/cn'
-import Chat from '@src/components/chat/Chatting'
+import Chat from '@components/commons/chat/Chatting'
 import { MessageCircle as MessageIcon, X as CloseIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 

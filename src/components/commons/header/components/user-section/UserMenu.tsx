@@ -1,5 +1,5 @@
-import Icon from '@components/Icon'
-import PageLink from '@components/page-link/PageLink'
+import Icon from '@components/commons/Icon'
+import PageLink from '@components/commons/page-link/PageLink'
 import { Z_INDEX } from '@constants/ui'
 import { useOutsideClick } from '@src/hooks/useOutsideClick'
 import { cn } from '@utils/cn'

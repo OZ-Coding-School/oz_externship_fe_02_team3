@@ -1,8 +1,7 @@
-import { useState } from 'react'
-
 import UserMenu from './UserMenu'
 import AuthMenu from './AuthMenu'
-import NotificationButton from '../notification-section/NotificationButton'
+import NotificationButton from '@src/components/commons/header/components/notification-section/NotificationButton'
+import { useState } from 'react'
 
 export default function HeaderUserSection() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)

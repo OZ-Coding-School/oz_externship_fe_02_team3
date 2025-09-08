@@ -1,6 +1,6 @@
-import BackButton from '../common/BackButton'
+import BackButton from '@components/commons/BackButton'
 import { Plus as PlusIcon } from 'lucide-react'
-import PageLink from '@src/components/page-link/PageLink'
+import PageLink from '@components/commons/page-link/PageLink'
 
 export default function RecManageHeader() {
   return (

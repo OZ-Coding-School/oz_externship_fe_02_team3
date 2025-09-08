@@ -1,6 +1,6 @@
-import Icon from '@src/components/Icon'
+import Icon from '@components/commons/Icon'
 import { UserRound as UserRoundIcon } from 'lucide-react'
-import {cn} from '@utils/cn'
+import { cn } from '@utils/cn'
 
 interface AvatarProps {
   src?: string
@@ -27,15 +27,11 @@ export default function Avatar({
     <img
       src={src}
       alt={alt}
-      className={cn(
-        classes,
-        `rounded-${rounded}`,
-        'object-cover'
-      )}
+      className={cn(classes, `rounded-${rounded}`, 'object-cover')}
     />
   ) : (
     <div
-       className={cn(
+      className={cn(
         classes,
         'bg-primary-100 flex items-center justify-center text-gray-600',
         `rounded-${rounded}`
