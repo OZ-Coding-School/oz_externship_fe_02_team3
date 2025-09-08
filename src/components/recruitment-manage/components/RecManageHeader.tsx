@@ -1,4 +1,4 @@
-import BackButton from '../common/BackButton'
+import BackButton from '@components/commons/BackButton'
 import { Plus as PlusIcon } from 'lucide-react'
 import PageLink from '@components/commons/page-link/PageLink'
 
