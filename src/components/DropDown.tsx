@@ -56,7 +56,7 @@ export default function DropDown({
   }, [isOpen])
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative w-fit" ref={dropdownRef}>
       <div
         className={`relative flex ${className} items-center rounded-lg border border-gray-300 py-[9px] ${
           !disabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'

@@ -19,11 +19,11 @@ export default function ChatRoomHeader({
       <div className="flex gap-2">
         <Button
           icon={ArrowLeftIcon}
-          iconOnly
           variant="ghost"
-          iconSize="xs"
+          iconButtonSize="sm"
+          iconSize="sm"
           iconClassName="stroke-gray-600"
-          className="px-2 py-2"
+          className="hover:bg-transparent active:bg-transparent"
           onClick={onBack}
           ariaLabel="이전으로"
         />
@@ -39,10 +39,11 @@ export default function ChatRoomHeader({
       </div>
       <Button
         icon={CloseIcon}
-        iconOnly
         variant="ghost"
+        iconButtonSize="sm"
         iconSize="sm"
         iconClassName="stroke-gray-400"
+        className="hover:bg-transparent active:bg-transparent"
         onClick={onClose}
         ariaLabel="채팅창 닫기"
       />

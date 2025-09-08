@@ -20,10 +20,11 @@ export default function ChatListHeader({
       </div>
       <Button
         icon={CloseIcon}
-        iconOnly
         variant="ghost"
+        iconButtonSize="sm"
         iconSize="sm"
         iconClassName="stroke-gray-400"
+        className="hover:bg-transparent active:bg-transparent"
         onClick={onClose}
         ariaLabel="채팅창 닫기"
       />

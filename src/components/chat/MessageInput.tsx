@@ -20,20 +20,21 @@ export default function MessageInput({ onSend }: MessageInputProps) {
         <input
           type="text"
           placeholder="메시지를 입력하세요..."
-          className="w-full text-sm outline-none"
+          className="flex-1 text-sm outline-none"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
       </div>
       <div
-        className={`flex size-8 cursor-pointer items-center justify-center rounded-full`}
+        className={`flex size-8 cursor-pointer items-center justify-center rounded-full bg-gray-300`}
       >
         <Button
           icon={SendIcon}
-          iconOnly
           variant="ghost"
-          iconSize="sm"
+          iconButtonSize="lg"
+          iconSize="xs"
           iconClassName="stroke-white"
+          className="hover:bg-transparent active:bg-transparent"
           onClick={handleSend}
           ariaLabel="메세지 보내기"
         />
