@@ -19,7 +19,7 @@ export default function CourseGrid({ courses, onBookmark }: CourseGridProps) {
       <EmptyState
         title={EMPTY_MESSAGES.FILTERED_COURSES}
         description="다른 검색어나 필터를 시도해보세요."
-        iconEmoji="📚"
+        iconType="FILTERED_COURSES"
       />
     )
   }

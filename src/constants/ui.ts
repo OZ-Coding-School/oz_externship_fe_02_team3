@@ -2,7 +2,6 @@ import {
   AlertTriangle,
   BookOpen,
   Search,
-  Frown,
   AlertCircle,
   XCircle,
 } from 'lucide-react'

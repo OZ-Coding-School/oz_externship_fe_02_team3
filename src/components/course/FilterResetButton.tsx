@@ -1,5 +1,4 @@
 import { RotateCcw } from 'lucide-react'
-import { ActionButton } from './ActionButton'
 import { BUTTON_TEXT } from '@src/constants/ui'
 import { cn } from '@src/utils/cn'
 import Button from '../button/Button'

@@ -1,4 +1,3 @@
-import React from 'react'
 import SearchFilter from '@src/components/course/SearchFilter'
 import { CATEGORY_LIST, SORT_LABELS } from '@src/constants/courses'
 import {
@@ -67,6 +66,7 @@ export default function CoursesPage({ className }: CoursesPageProps) {
         error={error}
         onRetry={refetch}
         title={ERROR_MESSAGES.LOAD_COURSES}
+        iconType="LOAD_COURSES"
       />
     )
   }
@@ -88,7 +88,7 @@ export default function CoursesPage({ className }: CoursesPageProps) {
           <EmptyState
             title={EMPTY_MESSAGES.COURSES}
             description="새로운 강의가 곧 업데이트될 예정입니다."
-            iconEmoji="📚"
+            iconType="COURSES"
           />
         </div>
       </div>
@@ -166,7 +166,7 @@ export default function CoursesPage({ className }: CoursesPageProps) {
                   ? `'${searchQuery}' ${EMPTY_MESSAGES.SEARCH_RESULTS.replace('검색 결과가 없습니다.', '검색 결과가 없습니다. 다른 검색어를 시도해보세요.')}`
                   : '선택한 필터 조건에 맞는 강의가 없습니다. 필터를 조정해보세요.'
               }
-              iconEmoji="🔍"
+              iconType="SEARCH_RESULTS"
             />
           )}
         </section>

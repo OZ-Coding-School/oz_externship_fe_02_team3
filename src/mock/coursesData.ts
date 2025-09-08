@@ -1,5 +1,3 @@
-// src/mock/coursesData.ts
-
 export interface Course {
   id: number
   title: string
@@ -14,6 +12,28 @@ export interface Course {
   platform: string
   discountPercentage?: number
   isBestseller?: boolean
+
+  instructor?: string
+  rating?: number
+  provider?: string
+}
+
+export const normalizeCourse = (course: any): Course => {
+  return {
+    ...course,
+    instructor: course.instructor || course.author,
+    rating: course.rating || course.reviewRating,
+    provider: course.provider || course.platform,
+  }
+}
+
+export const denormalizeCourse = (course: Course) => {
+  return {
+    ...course,
+    author: course.author || course.instructor,
+    reviewRating: course.reviewRating || course.rating,
+    platform: course.platform || course.provider,
+  }
 }
 
 export const mockCoursesData: Course[] = [
@@ -31,6 +51,9 @@ export const mockCoursesData: Course[] = [
     platform: 'Udemy',
     discountPercentage: 28,
     isBestseller: true,
+    instructor: '김개발',
+    rating: 4.8,
+    provider: 'Udemy',
   },
   {
     id: 2,
@@ -44,6 +67,9 @@ export const mockCoursesData: Course[] = [
     category: '클라우드',
     platform: 'Udemy',
     discountPercentage: 28,
+    instructor: '최자바',
+    rating: 4.7,
+    provider: 'Udemy',
   },
   {
     id: 3,
@@ -58,6 +84,9 @@ export const mockCoursesData: Course[] = [
     platform: 'Udemy',
     discountPercentage: 28,
     isBestseller: true,
+    instructor: '박스크립트',
+    rating: 4.9,
+    provider: 'Udemy',
   },
   {
     id: 4,
@@ -71,6 +100,9 @@ export const mockCoursesData: Course[] = [
     category: 'React',
     platform: 'Udemy',
     discountPercentage: 28,
+    instructor: '이리액트',
+    rating: 4.6,
+    provider: 'Udemy',
   },
   {
     id: 5,
@@ -84,6 +116,9 @@ export const mockCoursesData: Course[] = [
     category: '데이터분석',
     platform: 'Udemy',
     discountPercentage: 28,
+    instructor: '정파이썬',
+    rating: 4.5,
+    provider: 'Udemy',
   },
   {
     id: 6,
@@ -99,6 +134,9 @@ export const mockCoursesData: Course[] = [
     platform: 'Udemy',
     discountPercentage: 28,
     isBestseller: true,
+    instructor: '홍노드',
+    rating: 4.7,
+    provider: 'Udemy',
   },
   {
     id: 7,
@@ -113,6 +151,9 @@ export const mockCoursesData: Course[] = [
     category: 'DevOps',
     platform: 'Udemy',
     discountPercentage: 28,
+    instructor: '김도커',
+    rating: 4.8,
+    provider: 'Udemy',
   },
   {
     id: 8,
@@ -126,6 +167,9 @@ export const mockCoursesData: Course[] = [
     category: '게임개발',
     platform: 'Udemy',
     discountPercentage: 28,
+    instructor: '신유니티',
+    rating: 4.6,
+    provider: 'Udemy',
   },
   {
     id: 9,
@@ -141,6 +185,62 @@ export const mockCoursesData: Course[] = [
     platform: 'Udemy',
     discountPercentage: 28,
     isBestseller: true,
+    instructor: '데이터사이언티스트',
+    rating: 4.9,
+    provider: 'Udemy',
+  },
+  {
+    id: 10,
+    title: 'Spring Boot 마스터클래스',
+    author: '장스프링',
+    description:
+      'Spring Boot를 활용한 엔터프라이즈급 애플리케이션 개발을 배웁니다.',
+    reviewRating: 4.7,
+    reviewCount: 1124,
+    originalPrice: 95000,
+    price: 68000,
+    category: '백엔드',
+    platform: 'Udemy',
+    discountPercentage: 28,
+    isBestseller: true,
+    instructor: '장스프링',
+    rating: 4.7,
+    provider: 'Udemy',
+  },
+  {
+    id: 11,
+    title: 'Flutter 모바일 앱 개발',
+    author: '모플러터',
+    description:
+      'Flutter로 iOS와 Android 앱을 동시에 개발하는 크로스플랫폼 기술을 마스터합니다.',
+    reviewRating: 4.5,
+    reviewCount: 892,
+    originalPrice: 85000,
+    price: 61000,
+    category: '모바일',
+    platform: 'Udemy',
+    discountPercentage: 28,
+    instructor: '모플러터',
+    rating: 4.5,
+    provider: 'Udemy',
+  },
+  {
+    id: 12,
+    title: 'TypeScript 완벽 가이드',
+    author: '타입스크립터',
+    description:
+      'TypeScript의 고급 타입 시스템부터 실전 프로젝트까지 완벽하게 다룹니다.',
+    reviewRating: 4.8,
+    reviewCount: 1567,
+    originalPrice: 78000,
+    price: 56000,
+    category: 'JavaScript',
+    platform: 'Udemy',
+    discountPercentage: 28,
+    isBestseller: true,
+    instructor: '타입스크립터',
+    rating: 4.8,
+    provider: 'Udemy',
   },
 ]
 
@@ -149,14 +249,12 @@ export const getRecommendedCourses = (
   courses: Course[],
   limit: number = 4
 ): Course[] => {
-  // 평점 4.7 이상이면서 리뷰 수가 많은 순으로 정렬
   return courses
     .filter((course) => course.reviewRating >= 4.7)
     .sort((a, b) => b.reviewCount - a.reviewCount)
     .slice(0, limit)
 }
 
-// 카테고리 목록
 export const categories = [
   '전체',
   '프론트엔드',
@@ -168,4 +266,5 @@ export const categories = [
   '데이터분석',
   '데이터사이언스',
   '게임개발',
+  '모바일',
 ]

@@ -1,12 +1,5 @@
-import type { Course } from '@src/mock/coursesData'
-import { mockCoursesData } from '@src/mock/coursesData'
-
-interface CoursesResponse {
-  data: Course[]
-  total: number
-  page: number
-  limit: number
-}
+import type { Course } from '../types/course'
+import { mockCoursesData } from '../types/course'
 
 interface FetchErrorData {
   message: string
@@ -36,29 +29,16 @@ export class FetchError extends Error implements FetchErrorData {
   }
 }
 
-const baseFetch = async <T>(url: string, options?: RequestInit): Promise<T> => {
-  try {
-    const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      ...options,
-    })
-
-    if (!response.ok) {
-      throw new FetchError(`HTTP Error: ${response.status}`, response.status)
-    }
-
-    return response.json()
-  } catch (error) {
-    if (error instanceof FetchError) {
-      throw error
-    }
-    throw new FetchError('네트워크 오류가 발생했습니다.')
-  }
+const normalizeMockData = (): Course[] => {
+  return mockCoursesData.map((course) => ({
+    ...course,
+    instructor: course.author,
+    rating: course.reviewRating,
+    provider: course.platform,
+  }))
 }
 
+// 강의 관련 API 함수들
 export const courseFetcher = {
   getAll: async (): Promise<Course[]> => {
     try {
@@ -67,7 +47,7 @@ export const courseFetcher = {
 
       // 현재는 mock 데이터 반환 (로딩 시뮬레이션)
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      return mockCoursesData
+      return normalizeMockData()
     } catch (error) {
       throw new FetchError(
         '강의 목록을 불러오는데 실패했습니다.',
@@ -77,13 +57,15 @@ export const courseFetcher = {
     }
   },
 
+  // 카테고리별 강의 조회
   getByCategory: async (category: string): Promise<Course[]> => {
     try {
       // TODO: 실제 API로 교체
       // return baseFetch<CoursesResponse>(`/api/courses?category=${category}`);
 
       await new Promise((resolve) => setTimeout(resolve, 800))
-      return mockCoursesData.filter((course) => course.category === category)
+      const normalizedData = normalizeMockData()
+      return normalizedData.filter((course) => course.category === category)
     } catch (error) {
       throw new FetchError(
         `카테고리 '${category}' 강의를 불러오는데 실패했습니다.`,
@@ -93,13 +75,15 @@ export const courseFetcher = {
     }
   },
 
+  // 검색
   search: async (query: string): Promise<Course[]> => {
     try {
       // TODO: 실제 API로 교체
       // return baseFetch<CoursesResponse>(`/api/courses/search?q=${query}`);
 
       await new Promise((resolve) => setTimeout(resolve, 600))
-      return mockCoursesData.filter(
+      const normalizedData = normalizeMockData()
+      return normalizedData.filter(
         (course) =>
           course.title.toLowerCase().includes(query.toLowerCase()) ||
           course.author.toLowerCase().includes(query.toLowerCase()) ||
@@ -114,13 +98,15 @@ export const courseFetcher = {
     }
   },
 
+  // 추천 강의 조회
   getRecommended: async (limit: number = 6): Promise<Course[]> => {
     try {
       // TODO: 실제 API로 교체
       // return baseFetch<CoursesResponse>(`/api/courses/recommended?limit=${limit}`);
 
       await new Promise((resolve) => setTimeout(resolve, 500))
-      return mockCoursesData
+      const normalizedData = normalizeMockData()
+      return normalizedData
         .filter((course) => course.reviewRating >= 4.7)
         .sort((a, b) => b.reviewCount - a.reviewCount)
         .slice(0, limit)
@@ -134,12 +120,10 @@ export const courseFetcher = {
   },
 }
 
-// 타입 가드 함수
 export const isFetchError = (error: unknown): error is FetchError => {
   return error instanceof FetchError
 }
 
-// 에러 처리 헬퍼 함수
 export const handleFetchError = (error: unknown): FetchErrorData => {
   if (isFetchError(error)) {
     return error.toJSON()
