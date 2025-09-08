@@ -57,7 +57,7 @@ export default function DropDown({
   }, [isOpen])
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative w-fit" ref={dropdownRef}>
       <div
         // ...
         className={cn(

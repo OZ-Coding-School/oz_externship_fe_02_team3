@@ -38,17 +38,17 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
       <div
         ref={buttonRef}
         className={cn(
-          'bg-primary-500 fixed right-6 bottom-6 z-50 flex size-16 cursor-pointer items-center justify-center rounded-full shadow-lg',
+          'bg-primary-500 fixed right-6 bottom-6 z-50 cursor-pointer rounded-full shadow-lg',
           className
         )}
       >
         <Button
           icon={isOpen ? CloseIcon : MessageIcon}
-          iconOnly
           variant="ghost"
+          iconClassName="stroke-white"
+          iconButtonSize="xl"
+          iconSize="lg"
           className="hover:bg-transparent active:bg-transparent"
-          iconSize={'lg'}
-          iconClassName={'stroke-white'}
           onClick={() => setIsOpen(!isOpen)}
           ariaLabel={`채팅창 ${isOpen ? '닫기' : '열기'}`}
         />

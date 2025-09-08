@@ -128,10 +128,12 @@ export default function HeaderUserSection() {
             {isNotificationOpen && (
               <div
                 ref={notificationRef}
+
                 className={cn(
                   'absolute top-12 right-0 max-h-[819.2px] overflow-hidden rounded-lg border border-gray-200 bg-white',
                   `z-[${Z_INDEX.DROPDOWN}]`
                 )}
+
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between px-4 pt-4 pb-[17px]">
@@ -241,6 +243,7 @@ export default function HeaderUserSection() {
                   'absolute top-12 right-0 flex w-48 flex-col divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white py-2 shadow-lg',
                   `z-[${Z_INDEX.DROPDOWN}]`
                 )}
+
               >
                 <PageLink
                   pageLinkInnerText="마이페이지"
@@ -249,6 +252,7 @@ export default function HeaderUserSection() {
                   className="text-sm text-gray-700"
                   fontWeight="normal"
                   icon={UserRoundIcon}
+
                 />
                 <PageLink
                   pageLinkInnerText="로그아웃"
@@ -258,6 +262,7 @@ export default function HeaderUserSection() {
                   className="text-sm text-gray-700"
                   fontWeight="normal"
                   icon={LogOutIcon}
+
                 />
               </div>
             )}
