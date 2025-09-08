@@ -1,10 +1,10 @@
-import RecDropDown from '@src/components/recruitment/common/RecDropDown'
 import {
   ChevronDown as ChevronDownIcon,
   Folder as FolderIcon,
 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Z_INDEX } from '@src/constants/ui'
+import RecDropDown from './RecDropDown'
 
 const SORT_OPTION = ['최신순', '조회수 높은 순', '북마크 많은 순']
 const STATUS_OPTION = ['전체 (4)', '모집중 (2)', '마감됨 (1)']

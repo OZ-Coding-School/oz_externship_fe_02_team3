@@ -1,4 +1,4 @@
-import type { Applicant } from '@src/components/recruitment/manage/ApplicantCard'
+import type { Applicant } from '@src/components/recruitment-manage/components/ApplicantCard'
 
 export const dummyApplicants: Applicant[] = [
   {

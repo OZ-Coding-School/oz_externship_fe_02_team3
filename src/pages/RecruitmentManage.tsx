@@ -1,7 +1,7 @@
-import RecManageFilter from '@src/components/recruitment/manage/RecManageFilter'
-import RecManageHeader from '@src/components/recruitment/manage/RecManageHeader'
-import RecManageList from '@src/components/recruitment/manage/RecManageList'
-import RecManageTotalCard from '@src/components/recruitment/manage/RecManageTotalCard'
+import RecManageFilter from '@src/components/recruitment-manage/components/RecManageFilter'
+import RecManageHeader from '@src/components/recruitment-manage/components/RecManageHeader'
+import RecManageList from '@src/components/recruitment-manage/components/RecManageList'
+import RecManageTotalCard from '@src/components/recruitment-manage/components/RecManageTotalCard'
 
 export default function RecruitmentManage() {
   return (
