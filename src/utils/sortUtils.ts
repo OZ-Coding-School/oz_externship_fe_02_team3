@@ -1,4 +1,4 @@
-import type { Course } from '../data/coursesData'
+import type { Course } from '@src/types/course'
 import { SORT_OPTIONS } from '../constants/courses'
 
 // 정렬 함수 타입 정의

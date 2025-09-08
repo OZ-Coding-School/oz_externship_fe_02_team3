@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react'
-import { PAGINATION } from '@src/constants/courses'
+import { LIST_SETTINGS } from '@src/constants/ui'
 import type { Course } from '@src/types/course'
 import type { UseRecommendedCoursesReturn } from '@src/types/hooks'
 
@@ -12,8 +12,17 @@ const getRecommendedCourses: GetRecommendedCoursesFunction = (
   limit = 4
 ) => {
   return courses
-    .filter((course) => course.rating >= 4.7)
-    .sort((a, b) => b.reviewCount - a.reviewCount)
+    .filter((course) => {
+      // rating 또는 reviewRating 중 하나라도 4.7 이상이면 추천
+      const rating = course.rating ?? course.reviewRating ?? 0
+      return rating >= 4.7
+    })
+    .sort((a, b) => {
+      // reviewCount로 정렬
+      const aReviewCount = a.reviewCount ?? 0
+      const bReviewCount = b.reviewCount ?? 0
+      return bReviewCount - aReviewCount
+    })
     .slice(0, limit)
 }
 
@@ -23,8 +32,7 @@ export const useRecommendedCourses = (
   const [currentIndex, setCurrentIndex] = useState<number>(0)
 
   const recommendedCourses = useMemo(
-    (): Course[] =>
-      getRecommendedCourses(courses, PAGINATION.RECOMMENDED_COUNT),
+    (): Course[] => getRecommendedCourses(courses, LIST_SETTINGS.PREVIEW_ITEMS),
     [courses]
   )
 
@@ -36,19 +44,20 @@ export const useRecommendedCourses = (
     (): Course[] =>
       recommendedCourses.slice(
         currentIndex,
-        currentIndex + PAGINATION.RECOMMENDED_VISIBLE
+        currentIndex + LIST_SETTINGS.COURSES_PER_ROW.DESKTOP
       ),
     [recommendedCourses, currentIndex]
   )
 
   const canGoLeft: boolean = currentIndex > 0
   const canGoRight: boolean =
-    currentIndex + PAGINATION.RECOMMENDED_VISIBLE < recommendedCourses.length
+    currentIndex + LIST_SETTINGS.COURSES_PER_ROW.DESKTOP <
+    recommendedCourses.length
 
   const goLeft = (): void => {
     if (canGoLeft) {
       setCurrentIndex((prev) =>
-        Math.max(0, prev - PAGINATION.RECOMMENDED_VISIBLE)
+        Math.max(0, prev - LIST_SETTINGS.COURSES_PER_ROW.DESKTOP)
       )
     }
   }
@@ -57,8 +66,8 @@ export const useRecommendedCourses = (
     if (canGoRight) {
       setCurrentIndex((prev) =>
         Math.min(
-          prev + PAGINATION.RECOMMENDED_VISIBLE,
-          recommendedCourses.length - PAGINATION.RECOMMENDED_VISIBLE
+          prev + LIST_SETTINGS.COURSES_PER_ROW.DESKTOP,
+          recommendedCourses.length - LIST_SETTINGS.COURSES_PER_ROW.DESKTOP
         )
       )
     }

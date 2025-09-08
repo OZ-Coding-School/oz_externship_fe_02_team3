@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { mockCoursesData } from '@src/mock/coursesData'
+import { mockCoursesData } from '@src/types/course'
 import type { Course } from '@src/types/course'
 import type { UseCoursesReturn } from '@src/types/hooks'
 import type { ApiError } from '@src/types/api'
@@ -14,22 +14,11 @@ export const useCourses = (): UseCoursesReturn => {
       setLoading(true)
       setError(null)
 
-      const data: Course[] = mockCoursesData.map((mockCourse) => ({
-        id: mockCourse.id,
-        provider: mockCourse.platform,
-        title: mockCourse.title,
-        instructor: mockCourse.author,
-        description: mockCourse.description,
-        rating: mockCourse.reviewRating,
-        reviewCount: mockCourse.reviewCount,
-        price: mockCourse.price,
-        originalPrice: mockCourse.originalPrice,
-        thumbnailUrl: mockCourse.image,
-        category: mockCourse.category,
-        tags: [],
-      }))
+      // 시뮬레이션을 위한 지연
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      setCourses(data)
+      // mockCoursesData가 이미 Course 타입과 호환되므로 직접 사용
+      setCourses(mockCoursesData)
     } catch (err: unknown) {
       const apiError = err as ApiError
       setError(apiError.message || '강의 목록을 불러오는데 실패했습니다.')

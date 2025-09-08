@@ -1,4 +1,3 @@
-import React from 'react'
 import { LOADING_MESSAGES } from '@src/constants/ui'
 
 interface LoadingSpinnerProps {

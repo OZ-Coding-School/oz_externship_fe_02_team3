@@ -1,4 +1,3 @@
-import React from 'react'
 import { SectionHeader } from './SectionHeader'
 import CourseCardWithBookmark from './CourseCardWithBookmark'
 import { CARD, LIST_SETTINGS } from '@src/constants/ui'
