@@ -1,5 +1,5 @@
-import LoggedInCourses from './LoggedInCourses'
-import AnonymousCourses from './AnonymousCourses'
+import LoggedInCourses from './LoggedIncourses'
+import AnonymousCourses from './AnonyMousCourses'
 
 interface AuthBasedCourseSectionProps {
   isAuthenticated: boolean
