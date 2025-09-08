@@ -181,6 +181,7 @@ export default function ApplicationModal({
             iconClassName="rotate-[90deg]"
             disabled={!isValid || isSubmitting}
             onClick={handleSubmit(onSubmit)}
+            iconSize="sm"
           />
         </div>
       </Modal.Footer>

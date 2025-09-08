@@ -1,36 +1,36 @@
+import { useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
-import Icon from './Icon'
-import { cn } from '@utils/cn'
+import Icon from '../Icon'
+import { cn } from '../../utils/cn'
 
-interface DropDownProps {
-  selected?: string
-  options?: string[]
-  onSelect?: (value: string) => void
+interface SelectableDropDownProps {
+  selected: string
+  options: string[]
+  onSelect: (value: string) => void
   leftIcon?: LucideIcon
   rightIcon?: LucideIcon
   leftIconClassName?: string
   rightIconClassName?: string
+  width?: string
   disabled?: boolean
   placeholder?: string
-  className?: string
+  className?: string // 추가된 속성
 }
 
-export default function DropDown({
+function SelectableDropDown({
   selected,
-  options = [],
+  options,
   onSelect,
   leftIcon,
   rightIcon,
   leftIconClassName = '',
   rightIconClassName = '',
-  className = '',
+  width = 'w-full',
   disabled = false,
   placeholder = '선택하세요',
-}: DropDownProps) {
+  className, // 추가된 props
+}: SelectableDropDownProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const displayText = selected || placeholder
 
   const handleClick = () => {
     if (disabled) return
@@ -38,32 +38,22 @@ export default function DropDown({
   }
 
   const handleSelect = (option: string) => {
-    onSelect?.(option)
+    onSelect(option)
     setIsOpen(false)
   }
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        isOpen &&
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false)
-      }
-    }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [isOpen])
+  const displayText = selected || placeholder
 
   return (
-    <div className="relative w-fit" ref={dropdownRef}>
+    <div className={cn('relative', className)}>
+      {' '}
+      {/* className 적용 */}
       <div
         className={cn(
-          'relative flex items-center rounded-lg border border-gray-300 py-[9px]',
-          !disabled && 'cursor-pointer',
-          disabled && 'cursor-not-allowed opacity-50',
-          className
+          'relative flex h-[38px] items-center rounded-lg border border-gray-300 bg-white transition-colors',
+          width,
+          !disabled && 'cursor-pointer hover:bg-gray-50',
+          disabled && 'cursor-not-allowed opacity-50'
         )}
         onClick={handleClick}
       >
@@ -72,7 +62,7 @@ export default function DropDown({
             <Icon
               icon={leftIcon}
               size="sm"
-              className={`stroke-gray-400 ${leftIconClassName}`}
+              className={cn('stroke-gray-400', leftIconClassName)}
             />
           </div>
         )}
@@ -102,15 +92,20 @@ export default function DropDown({
           </div>
         )}
       </div>
-
       {/* 드롭다운 옵션 리스트 */}
-      {isOpen && options.length > 0 && (
+      {isOpen && (
         <>
+          {/* 배경 오버레이 (클릭 시 닫기) */}
+          <div
+            className="fixed inset-0 z-10"
+            onClick={() => setIsOpen(false)}
+          />
+
           {/* 옵션 리스트 */}
           <div
             className={cn(
               'absolute top-full left-0 z-20 mt-1 rounded-lg border border-gray-200 bg-white shadow-lg',
-              className
+              width
             )}
           >
             {options.map((option) => (
@@ -118,7 +113,8 @@ export default function DropDown({
                 key={option}
                 onClick={() => handleSelect(option)}
                 className={cn(
-                  'w-full px-4 py-2 text-left text-sm transition-colors first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50',
+                  'w-full px-4 py-2 text-left text-sm transition-colors hover:bg-gray-50',
+                  'first:rounded-t-lg last:rounded-b-lg',
                   option === selected && 'bg-primary-50 text-primary-600'
                 )}
               >
@@ -131,3 +127,5 @@ export default function DropDown({
     </div>
   )
 }
+
+export default SelectableDropDown

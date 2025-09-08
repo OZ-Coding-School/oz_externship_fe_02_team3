@@ -9,7 +9,7 @@ import TestUIPage from './pages/test-page/TestUIPage'
 import RecruitmentManage from '@pages/RecruitmentManage'
 
 const routes = [
-  { index: true, element: <TestHub /> },
+  { path: ROUTES.HOME, element: <TestHub /> },
   { path: ROUTES.RECRUITMENT, element: <RecruitmentPase /> },
   { path: ROUTES.RECRUITMENT_MANAGE, element: <RecruitmentManage /> },
   { path: '/test/ApplicationModal', element: <TestApplicationModalPage /> },
@@ -20,12 +20,8 @@ export default function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        {routes.map((route, i) => (
-          <Route
-            key={route.path ?? `index-${i}`}
-            path={route.path}
-            element={route.element}
-          />
+        {routes.map((route) => (
+          <Route key={route.path} path={route.path} element={route.element} />
         ))}
       </Route>
     </Routes>
