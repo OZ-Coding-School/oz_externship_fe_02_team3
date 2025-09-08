@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import SearchFilter from '@src/components/course/SearchFilter'
+import AuthBasedCourseSection from '@src/components/course/AuthBasedCourseSection'
 import { CATEGORY_LIST, SORT_LABELS } from '@src/constants/courses'
 import {
   PAGE_TITLES,
@@ -12,12 +14,10 @@ import { cn } from '@src/utils/cn'
 import { useCourses } from '@src/hooks/course/useCourse'
 import { useCourseFilters } from '@src/hooks/course/useCourseFilters'
 import { usePagination } from '@src/hooks/course/usePagination'
-import { useRecommendedCourses } from '@src/hooks/course/useRecommendedCourses'
 import { useBookmark } from '@src/hooks/course/useBookmark'
 import LoadingSpinner from '@src/components/course/LoadingSpinner'
 import ErrorMessage from '@src/components/course/ErrorMessage'
 import CourseStats from '@src/components/course/CourseStats'
-import RecommendedSection from '@src/components/course/RecommendedSection'
 import CourseGrid from '@src/components/course/CourseGrid'
 import LoadMoreButton from '@src/components/course/LoadMoreButton'
 import { EmptyState } from '@src/components/course/EmptyState'
@@ -27,6 +27,9 @@ interface CoursesPageProps {
 }
 
 export default function CoursesPage({ className }: CoursesPageProps) {
+  // 임시 인증 상태 (추후 실제 인증 훅으로 대체)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
   const { courses, loading, error, refetch } = useCourses()
   const {
     filteredCourses,
@@ -44,13 +47,6 @@ export default function CoursesPage({ className }: CoursesPageProps) {
 
   const { displayedItems, hasMore, loadMore, currentCount } =
     usePagination(filteredCourses)
-  const {
-    visibleCourses: visibleRecommended,
-    canGoLeft,
-    canGoRight,
-    goLeft,
-    goRight,
-  } = useRecommendedCourses(courses)
 
   const { toggleBookmark } = useBookmark()
 
@@ -109,17 +105,18 @@ export default function CoursesPage({ className }: CoursesPageProps) {
       </header>
 
       <main className="mx-auto max-w-7xl px-6 py-8">
-        {/* 추천 강의 섹션 - 최소 6개 이상일 때만 표시 */}
-        {visibleRecommended.length >= LIST_SETTINGS.PREVIEW_ITEMS && (
-          <RecommendedSection
-            visibleCourses={visibleRecommended}
-            canGoLeft={canGoLeft}
-            canGoRight={canGoRight}
-            goLeft={goLeft}
-            goRight={goRight}
-            onBookmark={toggleBookmark}
-          />
-        )}
+        {/* 임시 토글 버튼 (개발용) */}
+        <div className="mb-6 flex justify-center">
+          <button
+            onClick={() => setIsAuthenticated((prev) => !prev)}
+            className="rounded-lg bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
+          >
+            {isAuthenticated ? '로그아웃 상태로 전환' : '로그인 상태로 전환'}
+          </button>
+        </div>
+
+        {/* 인증 상태에 따른 CTA 또는 추천 섹션 */}
+        <AuthBasedCourseSection isAuthenticated={isAuthenticated} />
 
         {/* 검색 및 필터 영역 */}
         <SearchFilter
