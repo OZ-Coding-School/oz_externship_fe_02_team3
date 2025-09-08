@@ -1,7 +1,7 @@
 import { ChevronDown as ChevronDownIcon, Star as StarIcon } from 'lucide-react'
-import Badge from '@components/Badge'
-import Button from '../button/Button'
-import Icon from '@components/Icon'
+import Badge from '@components/commons/Badge'
+import Button from '@components/commons/button/Button'
+import Icon from '@components/commons/Icon'
 
 interface CourseCardProps {
   cardTitle: string

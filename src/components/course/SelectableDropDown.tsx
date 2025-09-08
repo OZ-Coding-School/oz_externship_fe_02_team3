@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { LucideIcon } from 'lucide-react'
-import Icon from '../Icon'
+import Icon from '../commons/Icon'
 import { cn } from '../../utils/cn'
 
 interface SelectableDropDownProps {

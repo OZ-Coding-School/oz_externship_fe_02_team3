@@ -1,8 +1,8 @@
-import Badge from '@components/Badge'
-import Button from '@src/components/button/Button'
-import DropDown from '@components/DropDown'
-import PageLink from '@components/PageLink'
-import ChatFloatButton from '@src/components/chat/ChatFloatButton'
+import Badge from '@components/commons/Badge'
+import Button from '@components/commons/button/Button'
+import DropDown from '@components/commons/DropDown'
+import PageLink from '@components/commons/page-link/PageLink'
+import ChatFloatButton from '@components/commons/chat/ChatFloatButton'
 import {
   ChevronDown as ChevronDownIcon,
   FolderIcon,
@@ -60,17 +60,22 @@ export default function TestUIPage() {
         />
 
         {/* 페이지 링크 */}
-        <PageLink pageLinkInnerText="로그인 후 공고 작성" icon={LogInIcon} />
         <PageLink
+          link="/"
+          pageLinkInnerText="로그인 후 공고 작성"
+          icon={LogInIcon}
+        />
+        <PageLink
+          link="/"
           pageLinkInnerText="지원하기"
           icon={MousePointer2Icon}
           iconClassName="rotate-[90deg]"
         />
         <PageLink
+          link="/"
           pageLinkInnerText="회원가입하기"
           icon={UserRoundPlusIcon}
           variant="outline"
-          textColor="text-primary-600"
           fontWeight="medium"
         />
 

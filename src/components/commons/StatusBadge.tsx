@@ -1,4 +1,4 @@
-import Badge from '@src/components/Badge'
+import Badge from '@src/components/commons/Badge'
 
 export type Status = 'approved' | 'pending' | 'rejected'
 

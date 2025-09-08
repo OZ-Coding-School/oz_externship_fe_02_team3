@@ -1,7 +1,7 @@
 import { RotateCcw } from 'lucide-react'
 import { BUTTON_TEXT } from '@src/constants/ui'
 import { cn } from '@src/utils/cn'
-import Button from '../button/Button'
+import Button from '../commons/button/Button'
 
 interface FilterResetButtonProps {
   onReset: () => void

@@ -1,9 +1,9 @@
-import Badge from '@src/components/Badge'
+import Badge from '@components/commons/Badge'
 import Avatar from '../common/Avatar'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import InfoRow from './InfoRow'
-import { formatDate } from '@src/utils/date'
-import StatusBadge from '@src/components/StatusBadge'
+import { formatDate } from '@utils/date'
+import StatusBadge from '@components/commons/StatusBadge'
 import { useCallback, memo } from 'react'
 
 export type ApplicantStatus = 'pending' | 'approved' | 'rejected'

@@ -1,5 +1,5 @@
-import Icon from '@components/Icon'
-import PageLink from '@components/page-link/PageLink'
+import Icon from '@src/components/commons/Icon'
+import PageLink from '@src/components/commons/page-link/PageLink'
 import { Z_INDEX } from '@constants/ui'
 import notificationsData from '@mock/notificationsData'
 import { ROUTES } from '@src/constants/routes'

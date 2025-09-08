@@ -1,4 +1,4 @@
-import Modal from '@src/components/modal'
+import Modal from '@components/commons/modal'
 import ApplicantCard, { type Applicant } from './ApplicantCard'
 
 interface Props {
