@@ -8,7 +8,6 @@ import {
   LOADING_MESSAGES,
   ERROR_MESSAGES,
   EMPTY_MESSAGES,
-  LIST_SETTINGS,
 } from '@src/constants/ui'
 import { cn } from '@src/utils/cn'
 import { useCourses } from '@src/hooks/course/useCourse'
