@@ -1,4 +1,4 @@
-import JobPostCard from '@src/components/JobPostCard'
+import JobPostCard from '@components/commons/JobPostCard'
 import { useNavigate } from 'react-router-dom'
 import { jobPosts } from '@mock/jobPosts'
 

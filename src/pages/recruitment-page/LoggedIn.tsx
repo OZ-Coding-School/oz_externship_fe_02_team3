@@ -1,4 +1,4 @@
-import JobPostCard from '@components/JobPostCard'
+import JobPostCard from '@components/commons/JobPostCard'
 import { RecruitmentJobPosts } from '@mock/jobPosts'
 
 export default function LoggedIn() {

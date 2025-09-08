@@ -1,8 +1,8 @@
-import Badge from '@components/Badge'
-import Button from '@src/components/button/Button'
-import DropDown from '@components/DropDown'
-import PageLink from '@components/PageLink'
-import ChatFloatButton from '@src/components/chat/ChatFloatButton'
+import Badge from '@components/commons/Badge'
+import Button from '@components/commons/button/Button'
+import DropDown from '@components/commons/DropDown'
+import PageLink from '@components/commons/page-link/PageLink'
+import ChatFloatButton from '@components/commons/chat/ChatFloatButton'
 import {
   ChevronDown as ChevronDownIcon,
   FolderIcon,

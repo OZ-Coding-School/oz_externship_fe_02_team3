@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react'
-import Icon from '@src/components/Icon'
+import Icon from '@components/commons/Icon'
 
 interface RecDropDownProps {
   dropdownTitle: string
