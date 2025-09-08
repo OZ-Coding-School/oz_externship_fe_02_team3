@@ -1,6 +1,6 @@
-import Button from '@src/components/button/Button'
 import BackButton from '../common/BackButton'
 import { Plus as PlusIcon } from 'lucide-react'
+import PageLink from '@src/components/page-link/PageLink'
 
 export default function RecManageHeader() {
   return (
@@ -19,13 +19,13 @@ export default function RecManageHeader() {
       </div>
 
       {/* 공고관리 header right */}
-      <div>
-        <Button
-          buttonInnerText="새 공고 작성하기"
-          icon={PlusIcon}
-          variant="primary"
-        />
-      </div>
+      <PageLink
+        pageLinkInnerText="새 공고 작성하기"
+        icon={PlusIcon}
+        variant="filled"
+        size="lg"
+        link="/recruitment/create"
+      />
     </div>
   )
 }
