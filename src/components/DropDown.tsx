@@ -59,10 +59,10 @@ export default function DropDown({
   return (
     <div className="relative" ref={dropdownRef}>
       <div
-        // ...
         className={cn(
           'relative flex items-center rounded-lg border border-gray-300 py-[9px]',
-          !disabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50',
+          !disabled && 'cursor-pointer',
+          disabled && 'cursor-not-allowed opacity-50',
           className
         )}
         onClick={handleClick}
@@ -78,9 +78,12 @@ export default function DropDown({
         )}
 
         <p
-          className={`text-sm ${leftIcon ? 'pl-10' : 'pl-4'} ${
-            rightIcon ? 'pr-10' : 'pr-4'
-          } ${!selected ? 'text-gray-500' : ''}`}
+          className={cn(
+            'text-sm',
+            leftIcon ? 'pl-10' : 'pl-4',
+            rightIcon ? 'pr-10' : 'pr-4',
+            !selected && 'text-gray-500'
+          )}
         >
           {displayText}
         </p>
@@ -90,9 +93,11 @@ export default function DropDown({
             <Icon
               icon={rightIcon}
               size="sm"
-              className={`stroke-gray-400 transition-transform ${rightIconClassName} ${
-                isOpen ? 'rotate-180' : ''
-              }`}
+              className={cn(
+                'stroke-gray-400 transition-transform',
+                rightIconClassName,
+                isOpen && 'rotate-180'
+              )}
             />
           </div>
         )}
