@@ -12,6 +12,7 @@ import {
   X as CloseIcon,
 } from 'lucide-react'
 import { useState } from 'react'
+import { ROUTES } from '@src/constants/routes'
 
 export default function TestUIPage() {
   const [selectedCategory, setSelectedCategory] = useState('전체')
@@ -60,17 +61,22 @@ export default function TestUIPage() {
         />
 
         {/* 페이지 링크 */}
-        <PageLink pageLinkInnerText="로그인 후 공고 작성" icon={LogInIcon} />
         <PageLink
+          link="/"
+          pageLinkInnerText="로그인 후 공고 작성"
+          icon={LogInIcon}
+        />
+        <PageLink
+          link="/"
           pageLinkInnerText="지원하기"
           icon={MousePointer2Icon}
           iconClassName="rotate-[90deg]"
         />
         <PageLink
+          link="/"
           pageLinkInnerText="회원가입하기"
           icon={UserRoundPlusIcon}
           variant="outline"
-          textColor="text-primary-600"
           fontWeight="medium"
         />
 
