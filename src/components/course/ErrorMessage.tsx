@@ -1,4 +1,4 @@
-import { ActionButton } from './ActionButton'
+import Button from '../button/Button'
 import { BUTTON_TEXT, ERROR_UI } from '@src/constants/ui'
 
 interface ErrorMessageProps {
@@ -22,9 +22,12 @@ export default function ErrorMessage({
           <h2 className="mb-2 text-xl font-semibold text-gray-900">{title}</h2>
           <p className="mb-6 text-lg text-red-600">{error}</p>
           {onRetry && (
-            <ActionButton variant="primary" onClick={onRetry}>
-              {BUTTON_TEXT.RETRY}
-            </ActionButton>
+            <Button
+              variant="primary"
+              size="base"
+              buttonInnerText={BUTTON_TEXT.RETRY}
+              onClick={onRetry}
+            />
           )}
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { ActionButton } from './ActionButton'
+import Button from '../button/Button'
 import { cn } from '@src/utils/cn'
 import { BUTTON_TEXT } from '@src/constants/ui'
 
@@ -17,15 +17,14 @@ export default function LoadMoreButton({
 }: LoadMoreButtonProps) {
   return (
     <div className={cn('mt-12 flex justify-center', className)}>
-      <ActionButton
+      <Button
         variant="secondary"
-        size="medium"
+        size="base"
+        buttonInnerText={isLoading ? '로딩중...' : BUTTON_TEXT.LOAD_MORE}
         onClick={onClick}
-        disabled={isDisabled}
-        isLoading={isLoading}
-      >
-        {BUTTON_TEXT.LOAD_MORE}
-      </ActionButton>
+        disabled={isDisabled || isLoading}
+        className="min-w-[120px]"
+      />
     </div>
   )
 }
