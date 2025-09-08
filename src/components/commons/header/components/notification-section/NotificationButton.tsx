@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useOutsideClick } from '@src/hooks/useOutsideClick'
-import Icon from '@components/Icon'
+import Icon from '@components/commons/Icon'
 import chatData from '@mock/chatData'
 import { Bell as BellIcon } from 'lucide-react'
 import NotificationsDropdown from './NotificationsDropdown'

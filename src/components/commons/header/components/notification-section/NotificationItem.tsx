@@ -1,5 +1,5 @@
 import { cn } from '@utils/cn'
-import Icon from '@components/Icon'
+import Icon from '@components/commons/Icon'
 import {
   notificationIconClass,
   notificationIconStrokeClass,
