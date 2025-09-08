@@ -59,12 +59,9 @@ export default function DropDown({
   return (
     <div className="relative w-fit" ref={dropdownRef}>
       <div
-        className={cn(
-          'relative flex items-center rounded-lg border border-gray-300 py-[9px]',
-          !disabled && 'cursor-pointer',
-          disabled && 'cursor-not-allowed opacity-50',
-          className
-        )}
+        className={`relative flex ${className} items-center rounded-lg border border-gray-300 py-[9px] ${
+          !disabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+        }`}
         onClick={handleClick}
       >
         {leftIcon && (
