@@ -8,9 +8,9 @@ import {
 } from 'lucide-react'
 import Badge from './Badge'
 import Icon from './Icon'
-import type { JobPost } from '@mock/jobPosts'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@src/constants/routes'
+import type { JobPost } from '@src/types/jobPosts'
 
 interface JobPostCardProps {
   post: JobPost
@@ -51,9 +51,7 @@ export default function JobPostCard({
         <div className="flex w-full flex-col">
           {/* 제목과 조회수/댓글 + (옵션) 편집 버튼 */}
           <div className="flex w-full justify-between pb-3">
-            <p className="line-clamp-2 text-lg font-semibold text-gray-900">
-              {title}
-            </p>
+            <p className="line-clamp-2 text-lg font-semibold">{title}</p>
 
             <div className="ml-2 flex items-start gap-2">
               <div className="flex items-center gap-1">

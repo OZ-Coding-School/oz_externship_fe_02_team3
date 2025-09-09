@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import AuthBased from './AuthBased'
+import UserRecruitment from '@components/recruitment/user-recruitment/UserRecruitment'
+import RecruitmentList from '@components/recruitment/RecruitmentList'
+import RecruitmentHeader from '@components/recruitment/RecruitmentHeader'
 
 export default function RecruitmentPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -7,7 +9,7 @@ export default function RecruitmentPage() {
   const toggleAuth = () => setIsAuthenticated((prev) => !prev)
 
   return (
-    <div className="flex w-full flex-col items-center justify-center p-8">
+    <div className="flex w-full flex-col items-center justify-center gap-8">
       {/* 로그인, 로그아웃 확인용 임시 버튼 */}
       <button
         onClick={toggleAuth}
@@ -15,7 +17,9 @@ export default function RecruitmentPage() {
       >
         {isAuthenticated ? '로그아웃 상태로 전환' : '로그인 상태로 전환'}
       </button>
-      <AuthBased isAuthenticated={isAuthenticated} />
+      <RecruitmentHeader />
+      <UserRecruitment isAuthenticated={isAuthenticated} />
+      <RecruitmentList />
     </div>
   )
 }

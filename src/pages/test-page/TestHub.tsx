@@ -10,6 +10,7 @@ const pageItems: TestPage[] = [
   { to: ROUTES.RECRUITMENT, label: '공고 페이지' },
   { to: ROUTES.RECRUITMENT_MANAGE, label: '공고 관리 페이지' },
   { to: ROUTES.RECRUITMENT_CREATE, label: '공고 작성 페이지' },
+  { to: ROUTES.COURSES, label: '강의 페이지' },
 ]
 
 const testItems: TestPage[] = [
