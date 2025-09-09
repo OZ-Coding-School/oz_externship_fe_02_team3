@@ -12,6 +12,7 @@ import {
   X as CloseIcon,
 } from 'lucide-react'
 import { useState } from 'react'
+import Calendar from '@src/components/commons/calendar/Calendar'
 import Toast from '@src/components/commons/toast/Toast'
 
 export default function TestUIPage() {
@@ -29,6 +30,7 @@ export default function TestUIPage() {
     '클라우드',
   ]
   const sortOptions = ['인기순', '최신순', '가격낮은순', '평점높은순']
+  const [date, setDate] = useState<Date | null>(null)
   return (
     <>
       <div className="space-y-4 p-4">
@@ -126,6 +128,13 @@ export default function TestUIPage() {
         </Toast>
       )}
       <ChatFloatButton />
+      <Calendar
+        value={date}
+        onChange={setDate}
+        variant="outline"
+        size="md"
+        width={300}
+      />
     </>
   )
 }
