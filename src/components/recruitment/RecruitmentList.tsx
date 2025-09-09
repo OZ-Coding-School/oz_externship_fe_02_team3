@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Plus as PlusIcon } from 'lucide-react'
 import { useInitialJobPosts, useInfiniteJobPosts } from '@hooks/useJobPosts'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import JobPostCard from '@components/commons/JobPostCard'
@@ -37,7 +38,7 @@ export default function RecruitmentList() {
     threshold: 1,
   })
 
-  if (isInitialLoading) return <p>Loading...</p>
+  if (isInitialLoading) return <p className="text-gray-600">Loading...</p>
 
   // 데이터 통합
   const jobs: JobPost[] = (
@@ -66,18 +67,20 @@ export default function RecruitmentList() {
         ))}
       </ul>
 
-      {!infiniteMode ? (
-        <Button
-          buttonInnerText="더 많은 공고 보기"
-          variant="secondary"
-          className="mt-8"
-          onClick={() => setInfiniteMode(true)}
-        ></Button>
-      ) : (
-        <div ref={loadMoreRef} style={{ height: '1px' }} />
-      )}
+      <div className="flex h-30 items-center justify-center">
+        {!infiniteMode ? (
+          <Button
+            buttonInnerText="더 많은 공고 보기"
+            icon={PlusIcon}
+            variant="secondary"
+            onClick={() => setInfiniteMode(true)}
+          ></Button>
+        ) : (
+          <div ref={loadMoreRef} style={{ height: '1px' }} />
+        )}
 
-      {isFetchingNextPage && <p>더 많은 공고 목록 불러오는 중...</p>}
+        {isFetchingNextPage && <p className="text-gray-600">불러오는 중...</p>}
+      </div>
     </div>
   )
 }
