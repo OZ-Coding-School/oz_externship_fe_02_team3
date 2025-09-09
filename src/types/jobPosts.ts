@@ -9,3 +9,14 @@ export interface JobPost {
   tags: string[]
   image: string
 }
+
+export interface JobPostsResponse {
+  items: JobPost[]
+  hasNext: boolean
+  totalCount: number
+}
+
+export interface FetchJobPostsParams {
+  pageParam?: number
+  size?: number
+}
