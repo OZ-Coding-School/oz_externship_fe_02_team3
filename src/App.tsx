@@ -4,7 +4,7 @@ import MainLayout from '@layouts/MainLayout'
 import TestHub from '@src/pages/test-page/TestHub'
 import TestApplicationModalPage from './pages/test-page/TestModalPage'
 import { ROUTES } from './constants/routes'
-import RecruitmentPase from '@src/pages/recruitment-page/RecruitmentPage'
+import RecruitmentPase from '@pages/RecruitmentPage'
 import TestUIPage from './pages/test-page/TestUIPage'
 import RecruitmentManage from '@pages/RecruitmentManage'
 
