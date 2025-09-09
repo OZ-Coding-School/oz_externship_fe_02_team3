@@ -16,6 +16,11 @@ export const ANIMATIONS = {
     animate: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: 8 },
   },
+  slideRightDown: {
+    initial: { opacity: 0, x: 100, y: 100, scale: 0.9 },
+    animate: { opacity: 1, x: 0, y: 0, scale: 1 },
+    exit: { opacity: 0, x: 100, scale: 0.9 },
+  },
   //추가 하고 싶은 에니메이션은 밑에다 추가
 } as const
 
