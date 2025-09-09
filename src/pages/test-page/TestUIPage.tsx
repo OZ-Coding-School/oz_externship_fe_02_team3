@@ -114,11 +114,13 @@ export default function TestUIPage() {
           onClick={() => setOpenToast(true)}
         />
       </div>
+      {/* 토스트 알림 컴포넌트 태스트 */}
       {openToast && (
         <Toast
-          type="warning"
+          type="success"
           title="저장 완료"
           onClose={() => setOpenToast(false)}
+          showBar
         >
           변경사항이 성공적으로 저장되었습니다.
         </Toast>
