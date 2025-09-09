@@ -1,7 +1,8 @@
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import Icon from './Icon'
+import Icon from '../Icon'
 import { cn } from '@utils/cn'
+import DropDownOptionList from './DropDownOptionList'
 
 interface DropDownProps {
   selected?: string
@@ -37,10 +38,6 @@ export default function DropDown({
     setIsOpen(!isOpen)
   }
 
-  const handleSelect = (option: string) => {
-    onSelect?.(option)
-    setIsOpen(false)
-  }
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -102,28 +99,35 @@ export default function DropDown({
 
       {/* 드롭다운 옵션 리스트 */}
       {isOpen && options.length > 0 && (
-        <>
-          {/* 옵션 리스트 */}
-          <div
-            className={cn(
-              'absolute top-full left-0 z-20 mt-1 rounded-lg border border-gray-200 bg-white shadow-lg',
-              className
-            )}
-          >
-            {options.map((option) => (
-              <button
-                key={option}
-                onClick={() => handleSelect(option)}
-                className={cn(
-                  'w-full px-4 py-2 text-left text-sm transition-colors first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50',
-                  option === selected && 'bg-primary-50 text-primary-600'
-                )}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        </>
+        <DropDownOptionList
+          className={className}
+          options={options}
+          onSelect={onSelect}
+          selected={selected}
+          setIsOpen={setIsOpen}
+        />
+        // <>
+        //   {/* 옵션 리스트 */}
+        //   <div
+        //     className={cn(
+        //       'absolute top-full left-0 z-20 mt-1 rounded-lg border border-gray-200 bg-white shadow-lg',
+        //       className
+        //     )}
+        //   >
+        //     {options.map((option) => (
+        //       <button
+        //         key={option}
+        //         onClick={() => handleSelect(option)}
+        //         className={cn(
+        //           'w-full px-4 py-2 text-left text-sm transition-colors first:rounded-t-lg last:rounded-b-lg hover:bg-gray-50',
+        //           option === selected && 'bg-primary-50 text-primary-600'
+        //         )}
+        //       >
+        //         {option}
+        //       </button>
+        //     ))}
+        //   </div>
+        // </>
       )}
     </div>
   )
