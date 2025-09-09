@@ -12,6 +12,7 @@ import {
   X as CloseIcon,
 } from 'lucide-react'
 import { useState } from 'react'
+import Calendar from '@src/components/commons/calendar/Calendar'
 
 export default function TestUIPage() {
   const [selectedCategory, setSelectedCategory] = useState('전체')
@@ -27,6 +28,7 @@ export default function TestUIPage() {
     '클라우드',
   ]
   const sortOptions = ['인기순', '최신순', '가격낮은순', '평점높은순']
+  const [date, setDate] = useState<Date | null>(null)
   return (
     <>
       <div className="space-y-4 p-4">
@@ -106,6 +108,13 @@ export default function TestUIPage() {
         <Badge badgeTitle="거절됨" sideClass="bg-danger-100 text-danger-800" />
       </div>
       <ChatFloatButton />
+      <Calendar
+        value={date}
+        onChange={setDate}
+        variant="outline"
+        size="md"
+        width={300}
+      />
     </>
   )
 }
