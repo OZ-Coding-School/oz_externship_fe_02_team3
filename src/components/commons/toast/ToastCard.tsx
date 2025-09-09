@@ -9,6 +9,13 @@ import type { ReactNode } from 'react'
 import Icon from '../Icon'
 import { X } from 'lucide-react'
 import ToastProgress from './ToastProgress'
+import { motion } from 'framer-motion'
+import {
+  ANIMATIONS,
+  applySpeed,
+  type AnimationKey,
+  type Speed,
+} from '@src/constants/animations'
 
 interface ToastCardProps {
   type: ToastType
@@ -20,6 +27,8 @@ interface ToastCardProps {
   pauseOnHover?: boolean
   onAutoClose?: () => void
   className?: string
+  animation?: AnimationKey
+  speed?: Speed
 }
 
 export default function ToastCard({
@@ -32,11 +41,19 @@ export default function ToastCard({
   pauseOnHover = true,
   onAutoClose,
   className,
+  animation = 'slideRightDown',
+  speed = 'normal',
 }: ToastCardProps) {
   const leadingIcon = TOAST_ICONS[type]
 
   return (
-    <div className={cn('flex h-100 w-full flex-col', className)}>
+    <motion.div
+      variants={applySpeed(ANIMATIONS[animation], speed)}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className={cn('flex h-100 w-full flex-col', className)}
+    >
       <div
         className={cn(
           'group/toast pointer-events-auto relative overflow-hidden rounded-xl border',
@@ -103,6 +120,6 @@ export default function ToastCard({
           />
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }
