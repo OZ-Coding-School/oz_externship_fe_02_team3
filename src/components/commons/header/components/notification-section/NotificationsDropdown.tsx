@@ -9,15 +9,16 @@ import NotificationItem from './NotificationItem'
 interface NotificationsDropdownProps {
   setIsNotificationOpen: (isNotificationOpen: boolean) => void
   /** 부모에서 useOutsideClick에 연결된 패널 ref를 그대로 전달 */
-  notifPanelRef: RefObject<HTMLDivElement | null>
+  notificationsDropdownRef: RefObject<HTMLDivElement | null>
   onUnreadCountChange: (count: number) => void
 }
 
 export default function NotificationsDropdown({
   setIsNotificationOpen,
-  notifPanelRef,
+  notificationsDropdownRef,
   onUnreadCountChange,
 }: NotificationsDropdownProps) {
+  // const [notifications, setNotifications] = useState<NotificationItemType[]>([])
   const [notifications, setNotifications] =
     useState<NotificationItemType[]>(notificationsData)
 
@@ -58,7 +59,7 @@ export default function NotificationsDropdown({
 
   return (
     <div
-      ref={notifPanelRef}
+      ref={notificationsDropdownRef}
       className={cn(
         'absolute top-12 right-0 max-h-[819.2px] overflow-hidden rounded-lg border border-gray-200 bg-white',
         `z-[${Z_INDEX.DROPDOWN}]`
@@ -69,12 +70,13 @@ export default function NotificationsDropdown({
         <h3 className="flex items-center justify-start text-lg font-semibold text-gray-900">
           알림
         </h3>
-        <div
+        <button
+          type="button"
           onClick={handleMarkAllAsRead}
           className="text-primary-600 flex items-center justify-center text-center text-sm"
         >
           모두 읽음
-        </div>
+        </button>
       </div>
 
       <NotificationTabs
@@ -84,13 +86,19 @@ export default function NotificationsDropdown({
       />
 
       <div className="flex max-h-80 flex-col overflow-y-auto" role="tabpanel">
-        {filteredNotifications.map((notification) => (
-          <NotificationItem
-            key={notification.id}
-            {...notification}
-            setIsNotificationOpen={setIsNotificationOpen}
-          />
-        ))}
+        {filteredNotifications.length !== 0 ? (
+          filteredNotifications.map((notification) => (
+            <NotificationItem
+              key={notification.id}
+              {...notification}
+              setIsNotificationOpen={setIsNotificationOpen}
+            />
+          ))
+        ) : (
+          <div className="flex h-32 items-center justify-center text-sm text-gray-500">
+            표시할 알림이 없습니다.
+          </div>
+        )}
       </div>
       <div className="flex h-[45px] bg-gray-50" />
     </div>

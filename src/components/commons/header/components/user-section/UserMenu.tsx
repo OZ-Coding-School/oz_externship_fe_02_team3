@@ -22,7 +22,7 @@ export default function UserMenu({
   userName,
 }: UserMenuProps) {
   const userMenuButtonRef = useRef<HTMLDivElement>(null)
-  const userMenufPanelRef = useRef<HTMLDivElement>(null)
+  const userMenuPanelRef = useRef<HTMLDivElement>(null)
   const handleAvatarToggle = () => {
     // 알림드롭다운 ui 가 열려있다면 알림드롭다운 닫기
     if (isNotificationOpen) {
@@ -32,7 +32,7 @@ export default function UserMenu({
     setIsUserMenuOpen(!isUserMenuOpen)
   }
 
-  useOutsideClick(isUserMenuOpen, [userMenuButtonRef, userMenufPanelRef], () =>
+  useOutsideClick(isUserMenuOpen, [userMenuButtonRef, userMenuPanelRef], () =>
     setIsUserMenuOpen(false)
   )
 
@@ -49,7 +49,7 @@ export default function UserMenu({
       <p className="text-base text-gray-700">{userName}</p>
       {isUserMenuOpen && (
         <div
-          ref={userMenufPanelRef}
+          ref={userMenuPanelRef}
           className={cn(
             'absolute top-12 right-0 flex w-48 flex-col divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white py-2 shadow-lg',
             `z-[${Z_INDEX.DROPDOWN}]`
@@ -67,7 +67,7 @@ export default function UserMenu({
             pageLinkInnerText="로그아웃"
             variant="ghost"
             link="/logout"
-            iconClassName="rotate-180 stroke-"
+            iconClassName="rotate-180"
             className="text-sm text-gray-700"
             fontWeight="normal"
             icon={LogOutIcon}

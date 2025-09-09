@@ -28,20 +28,24 @@ export default function NotificationTabs({
   }
 
   return (
-    <div className="flex">
-      <div
+    <div className="flex w-full max-w-md min-w-[320px]" role="tablist">
+      <button
         role="tab"
         onClick={() => handleTabClick('all')}
-        className={tabClass({
-          active: notificationFilter === 'all',
-        })}
+        className={cn(
+          'flex-1',
+          tabClass({
+            active: notificationFilter === 'all',
+          })
+        )}
       >
         전체보기 ({notifications.length})
-      </div>
-      <div
+      </button>
+      <button
         role="tab"
         onClick={() => handleTabClick('unread')}
         className={cn(
+          'flex-1',
           tabClass({
             active: notificationFilter === 'unread',
           }),
@@ -49,11 +53,12 @@ export default function NotificationTabs({
         )}
       >
         읽지 않음 ({unreadCount})
-      </div>
-      <div
+      </button>
+      <button
         role="tab"
         onClick={() => handleTabClick('read')}
         className={cn(
+          'flex-1',
           tabClass({
             active: notificationFilter === 'read',
           }),
@@ -61,7 +66,7 @@ export default function NotificationTabs({
         )}
       >
         읽음 ({readCount})
-      </div>
+      </button>
     </div>
   )
 }

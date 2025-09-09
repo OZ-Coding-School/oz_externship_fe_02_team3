@@ -17,6 +17,7 @@ export default function AuthMenu() {
         size="base"
         fontWeight="medium"
         link="/signup"
+        className="text-base"
       />
     </>
   )

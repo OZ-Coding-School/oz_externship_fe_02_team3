@@ -23,7 +23,7 @@ export default function NotificationButton({
     return total + (chat.unreadCount || 0)
   }, 0)
   const [unreadCount, setUnreadCount] = useState(initialUnreadCount)
-  const notifPanelRef = useRef<HTMLDivElement>(null)
+  const notificationsDropdownRef = useRef<HTMLDivElement>(null)
 
   const handleNotificationToggle = () => {
     // 마이페이지 ui가 열려있다면 마이페이지 ui 닫기
@@ -35,9 +35,9 @@ export default function NotificationButton({
   }
 
   useOutsideClick(
-    isNotificationOpen,
-    [notificationButtonRef, notifPanelRef],
-    () => setIsNotificationOpen(false)
+    isNotificationOpen, // 드롭다운이 열려있는지
+    [notificationButtonRef, notificationsDropdownRef], // 안쪽으로 취급할 영역들
+    () => setIsNotificationOpen(false) // 바깥 클릭시 실행할 함수
   )
 
   return (
@@ -54,7 +54,7 @@ export default function NotificationButton({
       )}
       {isNotificationOpen && (
         <NotificationsDropdown
-          notifPanelRef={notifPanelRef}
+          notificationsDropdownRef={notificationsDropdownRef}
           setIsNotificationOpen={setIsNotificationOpen}
           onUnreadCountChange={setUnreadCount}
         />
