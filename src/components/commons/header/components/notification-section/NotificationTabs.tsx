@@ -19,9 +19,13 @@ export default function NotificationTabs({
     (notification) => notification.isRead
   ).length
   const isUnreadTabDisabled = unreadCount === 0
+  const isReadTabDisabled = unreadCount === 0
   const handleTabClick = (filter: 'all' | 'unread' | 'read') => {
     // 읽지않음 탭이 비활성화된 경우 클릭 무시
-    if (filter === 'unread' && isUnreadTabDisabled) {
+    if (
+      (filter === 'unread' && isUnreadTabDisabled) ||
+      (filter === 'read' && isReadTabDisabled)
+    ) {
       return
     }
     setNotificationFilter(filter)
@@ -47,7 +51,7 @@ export default function NotificationTabs({
         className={cn(
           'flex-1',
           tabClass({
-            active: notificationFilter === 'unread',
+            active: notificationFilter === 'unread' && !isUnreadTabDisabled,
           }),
           isUnreadTabDisabled && 'cursor-not-allowed text-gray-400 opacity-50'
         )}
@@ -60,9 +64,9 @@ export default function NotificationTabs({
         className={cn(
           'flex-1',
           tabClass({
-            active: notificationFilter === 'read',
+            active: notificationFilter === 'read' && !isReadTabDisabled,
           }),
-          isUnreadTabDisabled && 'cursor-not-allowed text-gray-400 opacity-50'
+          isReadTabDisabled && 'cursor-not-allowed text-gray-400 opacity-50'
         )}
       >
         읽음 ({readCount})

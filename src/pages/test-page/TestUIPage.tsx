@@ -1,6 +1,6 @@
 import Badge from '@components/commons/Badge'
 import Button from '@components/commons/button/Button'
-import DropDown from '@components/commons/DropDown'
+import DropDown from '@src/components/commons/dropdown/DropDown'
 import PageLink from '@components/commons/page-link/PageLink'
 import ChatFloatButton from '@components/commons/chat/ChatFloatButton'
 import {

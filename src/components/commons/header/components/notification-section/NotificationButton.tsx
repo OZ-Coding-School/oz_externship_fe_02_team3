@@ -18,7 +18,7 @@ export default function NotificationButton({
   isUserMenuOpen,
   setIsUserMenuOpen,
 }: NotificationButtonProps) {
-  const notificationButtonRef = useRef<HTMLButtonElement>(null)
+  const notificationButtonRef = useRef<HTMLDivElement>(null)
   const initialUnreadCount = chatData.reduce((total, chat) => {
     return total + (chat.unreadCount || 0)
   }, 0)
@@ -41,7 +41,7 @@ export default function NotificationButton({
   )
 
   return (
-    <button
+    <div
       ref={notificationButtonRef}
       className="relative flex size-10 cursor-pointer items-center justify-center rounded-full hover:bg-gray-100"
       onClick={handleNotificationToggle}
@@ -59,6 +59,6 @@ export default function NotificationButton({
           onUnreadCountChange={setUnreadCount}
         />
       )}
-    </button>
+    </div>
   )
 }
