@@ -5,7 +5,10 @@ import type { VariantProps } from 'class-variance-authority'
 import { buttonVariants } from './data-trigger-button.style'
 import { format, isSameDay } from 'date-fns'
 import { ko } from 'date-fns/locale'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import {
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+} from 'lucide-react'
 import { offset, shift } from '@floating-ui/dom'
 import './Calendar.style.css'
 import { Z_INDEX } from '@constants/ui'
@@ -70,7 +73,7 @@ export default function Calendar({
             disabled={prevMonthButtonDisabled}
             className="justify-self-start rounded p-1 hover:bg-gray-100 disabled:opacity-40"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4" />
           </button>
 
           <div className="flex items-center gap-3 justify-self-center">
@@ -92,7 +95,7 @@ export default function Calendar({
             disabled={nextMonthButtonDisabled}
             className="justify-self-end rounded p-1 hover:bg-gray-100 disabled:opacity-40"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRightIcon className="h-4 w-4" />
           </button>
         </div>
       )}
