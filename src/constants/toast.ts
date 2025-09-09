@@ -49,3 +49,9 @@ export const TOAST_CLOSE_BTN: Record<ToastType, string> = {
   error: 'text-danger-500 hover:bg-danger-600  hover:text-danger-100',
   warning: 'text-primary-500 hover:bg-primary-600 hover:text-primary-100 ',
 }
+
+export const TOAST_DURATION_BY_TYPE: Record<ToastType, number> = {
+  success: TOAST.SUCCESS_DURATION,
+  error: TOAST.ERROR_DURATION,
+  warning: TOAST.WARNING_DURATION,
+}
