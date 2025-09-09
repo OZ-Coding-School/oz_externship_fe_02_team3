@@ -1,4 +1,4 @@
-import { useCallback, useRef, type ReactNode } from 'react'
+import { useCallback, useRef, useState, type ReactNode } from 'react'
 import { PORTAL_TARGET_ID } from '@src/constants/portal'
 import Portal from '../portal/Portal'
 import {
@@ -7,6 +7,7 @@ import {
   type ToastType,
 } from '@src/constants/toast'
 import ToastCard from './ToastCard'
+import { AnimatePresence } from 'framer-motion'
 
 interface ToastProps {
   type: ToastType
@@ -29,11 +30,13 @@ export default function Toast({
     durationMs ?? TOAST_DURATION_BY_TYPE[type] ?? TOAST_DEFAULTS.durationMs
   const closedRef = useRef(false)
 
-  const handleCloseOnce = useCallback(() => {
+  const [visible, setVisible] = useState(true)
+
+  const requestClose = useCallback(() => {
     if (closedRef.current) return
     closedRef.current = true
-    onClose?.()
-  }, [onClose])
+    setVisible(false)
+  }, [])
 
   return (
     <Portal targetId={PORTAL_TARGET_ID.TOAST}>
@@ -42,16 +45,26 @@ export default function Toast({
         aria-live="polite"
         className="group pointer-events-none fixed top-4 right-4 z-[1200] flex w-[min(92vw,380px)] flex-col gap-2"
       >
-        <ToastCard
-          type={type}
-          title={title}
-          onClose={handleCloseOnce}
-          showBar={showBar}
-          durationMs={total}
-          onAutoClose={handleCloseOnce}
+        <AnimatePresence
+          mode="popLayout"
+          onExitComplete={() => {
+            // exite 에니메이션 끝날떄까지 onClose 안함
+            onClose?.()
+          }}
         >
-          {children}
-        </ToastCard>
+          {visible && (
+            <ToastCard
+              type={type}
+              title={title}
+              onClose={requestClose}
+              showBar={showBar}
+              durationMs={total}
+              onAutoClose={requestClose}
+            >
+              {children}
+            </ToastCard>
+          )}
+        </AnimatePresence>
       </div>
     </Portal>
   )
