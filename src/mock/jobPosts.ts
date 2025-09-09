@@ -1,14 +1,4 @@
-export interface JobPost {
-  id: number
-  title: string
-  viewCount: number
-  commentCount: number
-  memberLimit: number
-  deadline: string
-  courses: string[]
-  tags: string[]
-  image: string
-}
+import type { JobPost } from '@src/types/jobPosts'
 
 // 스터디 공고 더미데이터
 export const jobPosts: JobPost[] = [
