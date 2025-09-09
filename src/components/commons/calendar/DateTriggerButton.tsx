@@ -7,8 +7,8 @@ import { cn } from '@src/utils/cn'
 export interface DateTriggerButtonProps
   extends VariantProps<typeof buttonVariants> {
   value?: string
-  placeholder?: string
   onClick?: () => void
+  placeholder?: string
   disabled?: boolean
   className?: string
   width?: number
@@ -18,7 +18,6 @@ const DateTriggerButton = forwardRef<HTMLButtonElement, DateTriggerButtonProps>(
   (
     {
       value,
-      placeholder = '-/-/-',
       onClick,
       disabled,
       className,
@@ -26,6 +25,7 @@ const DateTriggerButton = forwardRef<HTMLButtonElement, DateTriggerButtonProps>(
       variant,
       size,
       fullWidth,
+      placeholder = '-/-/-',
     },
     ref
   ) => {
@@ -36,7 +36,7 @@ const DateTriggerButton = forwardRef<HTMLButtonElement, DateTriggerButtonProps>(
         onClick={onClick}
         disabled={disabled}
         className={cn(buttonVariants({ variant, size, fullWidth }), className)}
-        style={{ width: width }}
+        style={{ width }}
       >
         <span className={labelVariants({ hasValue: !!value })}>
           {value || placeholder}
@@ -47,6 +47,5 @@ const DateTriggerButton = forwardRef<HTMLButtonElement, DateTriggerButtonProps>(
   }
 )
 
-// customInput을 사용하기 때문에 forwardRef를 사용하여 감싸줘야하기에 const를 사용.
 DateTriggerButton.displayName = 'DateTriggerButton'
 export default DateTriggerButton
