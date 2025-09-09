@@ -60,19 +60,21 @@ export default function NotificationItem({
       onClick={linkToRecruitmentManage}
     >
       {getNotificationIcon(notification.type)}
-      <div className="flex flex-col gap-1">
-        <p className="line-clamp-2 min-w-72 text-left text-sm text-gray-900">
-          {notification.message}
-        </p>
-        <p className="flex items-center text-xs text-gray-500">
-          {notification.date}
-        </p>
-      </div>
-      {notification.isUnread && (
-        <div className="flex pt-2">
-          <div className="bg-primary-500 size-2 rounded-full" />
+      <div className="flex min-w-72 gap-1">
+        <div className="flex flex-col gap-1">
+          <p className="line-clamp-2 text-left text-sm text-gray-900">
+            {notification.message}
+          </p>
+          <p className="flex items-center text-xs text-gray-500">
+            {notification.date}
+          </p>
         </div>
-      )}
+        {notification.isUnread && (
+          <div className="flex pt-2">
+            <div className="bg-primary-500 size-2 rounded-full" />
+          </div>
+        )}
+      </div>
     </div>
   )
 }
