@@ -10,6 +10,7 @@ import {
   MousePointer2 as MousePointer2Icon,
   UserRoundPlus as UserRoundPlusIcon,
   X as CloseIcon,
+  Bookmark as BookmarkIcon,
 } from 'lucide-react'
 import { useState } from 'react'
 import Calendar from '@src/components/commons/calendar/Calendar'
@@ -104,6 +105,24 @@ export default function TestUIPage() {
           size="base"
           variant="outline"
           disabled
+        />
+
+        <Button
+          icon={BookmarkIcon}
+          variant="outline"
+          iconButtonSize="lg"
+          ariaLabel="북마크"
+          iconClassName="stroke-gray-600"
+          className="rounded-lg bg-white"
+        />
+
+        <Button
+          icon={BookmarkIcon}
+          variant="ghost"
+          iconButtonSize="md"
+          ariaLabel="북마크"
+          iconClassName="stroke-gray-600"
+          className="bg-white/90"
         />
 
         {/* 뱃지 */}
