@@ -7,11 +7,13 @@ import { ROUTES } from './constants/routes'
 import RecruitmentPase from '@src/pages/recruitment-page/RecruitmentPage'
 import TestUIPage from './pages/test-page/TestUIPage'
 import RecruitmentManage from '@pages/RecruitmentManage'
+import RecruitmentCreate from './pages/RecruitmentCreate'
 
 const routes = [
   { path: ROUTES.HOME, element: <TestHub /> },
   { path: ROUTES.RECRUITMENT, element: <RecruitmentPase /> },
   { path: ROUTES.RECRUITMENT_MANAGE, element: <RecruitmentManage /> },
+  { path: ROUTES.RECRUITMENT_CREATE, element: <RecruitmentCreate /> },
   { path: '/test/ApplicationModal', element: <TestApplicationModalPage /> },
   { path: '/test/UI', element: <TestUIPage /> },
 ]
