@@ -1,13 +1,10 @@
 import { useCallback, useRef, useState, type ReactNode } from 'react'
 import { PORTAL_TARGET_ID } from '@src/constants/portal'
 import Portal from '../portal/Portal'
-import {
-  TOAST_DEFAULTS,
-  TOAST_DURATION_BY_TYPE,
-  type ToastType,
-} from '@src/constants/toast'
+import { TOAST_DEFAULTS, TOAST_DURATION_BY_TYPE } from '@src/constants/toast'
 import ToastCard from './ToastCard'
 import { AnimatePresence } from 'framer-motion'
+import type { ToastType } from '@src/types/toast'
 
 interface ToastProps {
   type: ToastType

@@ -2,7 +2,6 @@ import {
   TOAST_CLOSE_BTN,
   TOAST_COLORS,
   TOAST_ICONS,
-  type ToastType,
 } from '@src/constants/toast'
 import { cn } from '@src/utils/cn'
 import type { ReactNode } from 'react'
@@ -16,6 +15,7 @@ import {
   type AnimationKey,
   type Speed,
 } from '@src/constants/animations'
+import type { ToastType } from '@src/types/toast'
 
 interface ToastCardProps {
   type: ToastType
