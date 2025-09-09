@@ -8,7 +8,6 @@ import {
   LOADING_MESSAGES,
   ERROR_MESSAGES,
   EMPTY_MESSAGES,
-  LIST_SETTINGS,
 } from '@src/constants/ui'
 import { cn } from '@src/utils/cn'
 import { useCourses } from '@src/hooks/course/useCourse'
@@ -50,12 +49,10 @@ export default function CoursesPage({ className }: CoursesPageProps) {
 
   const { toggleBookmark } = useBookmark()
 
-  // 로딩 상태
   if (loading) {
     return <LoadingSpinner message={LOADING_MESSAGES.COURSES} />
   }
 
-  // 에러 상태
   if (error) {
     return (
       <ErrorMessage
@@ -67,7 +64,6 @@ export default function CoursesPage({ className }: CoursesPageProps) {
     )
   }
 
-  // 강의가 없는 경우
   if (courses.length === 0) {
     return (
       <div className={cn('min-h-screen bg-gray-50', className)}>
@@ -94,7 +90,6 @@ export default function CoursesPage({ className }: CoursesPageProps) {
   // 메인 렌더링
   return (
     <div className={cn('min-h-screen bg-gray-50', className)}>
-      {/* 페이지 헤더 */}
       <header className="border-b border-gray-200 bg-white px-6 py-6">
         <div className="mx-auto max-w-7xl">
           <h1 className="mb-2 text-2xl font-bold text-gray-900">
@@ -115,10 +110,8 @@ export default function CoursesPage({ className }: CoursesPageProps) {
           </button>
         </div>
 
-        {/* 인증 상태에 따른 CTA 또는 추천 섹션 */}
         <UserCourseSection isAuthenticated={isAuthenticated} />
 
-        {/* 검색 및 필터 영역 */}
         <SearchFilter
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -134,7 +127,6 @@ export default function CoursesPage({ className }: CoursesPageProps) {
 
         {/* 강의 목록 섹션 */}
         <section>
-          {/* 통계 정보 */}
           <CourseStats
             displayedCount={currentCount}
             totalCount={totalCount}
@@ -142,7 +134,6 @@ export default function CoursesPage({ className }: CoursesPageProps) {
             searchQuery={searchQuery}
           />
 
-          {/* 강의 그리드 또는 빈 상태 */}
           {displayedItems.length > 0 ? (
             <>
               <CourseGrid
@@ -150,7 +141,6 @@ export default function CoursesPage({ className }: CoursesPageProps) {
                 onBookmark={toggleBookmark}
               />
 
-              {/* 더 보기 버튼 */}
               {hasMore && (
                 <LoadMoreButton onClick={loadMore} className="mt-8" />
               )}
