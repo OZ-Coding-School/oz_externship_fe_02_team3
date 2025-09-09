@@ -8,9 +8,9 @@ import {
 } from 'lucide-react'
 import Badge from './Badge'
 import Icon from './Icon'
-import type { JobPost } from '@mock/jobPosts'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '@src/constants/routes'
+import type { JobPost } from '@src/types/jobPosts'
 
 interface JobPostCardProps {
   post: JobPost
