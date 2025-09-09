@@ -8,6 +8,14 @@
 /* 폰트(base 레이어로 직접 삽입) */
 @import './styles/fonts.css' layer(base);
 
+/* 전역 색상 설정 */
+@layer base {
+  body {
+    @apply text-gray-800;
+    @apply bg-gray-50;
+  }
+}
+
 /* RecruitmentManage 공통 css */
 @layer components {
   .rec-manage-section {
