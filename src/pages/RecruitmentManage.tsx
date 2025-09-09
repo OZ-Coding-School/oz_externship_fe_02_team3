@@ -5,7 +5,7 @@ import RecManageTotalCard from '@src/components/recruitment-manage/components/Re
 
 export default function RecruitmentManage() {
   return (
-    <div className="min-h-dvh w-full bg-[#F9FAFB]">
+    <div className="min-h-dvh w-full">
       <div className="mx-auto h-auto max-w-[1440px] px-20">
         {/* 내부 시작 */}
         <div className="max-w-7xl p-8">
