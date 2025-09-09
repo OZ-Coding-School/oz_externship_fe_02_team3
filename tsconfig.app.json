@@ -32,7 +32,7 @@
       "@assets/*": ["src/assets/*"],
       "@api/*": ["src/api/*"],
       "@store/*": ["src/store/*"],
-      "@type/*": ["src/type/*"],
+      "@types/*": ["src/types/*"],
       "@utils/*": ["src/utils/*"],
       "@mock/*": ["src/mock/*"],
       "@constants/*": ["src/constants/*"],
