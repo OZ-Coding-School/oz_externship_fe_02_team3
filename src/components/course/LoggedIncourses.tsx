@@ -1,12 +1,10 @@
-// src/components/course/LoggedInCourses.tsx
 import CourseCardWithBookmark from './CourseCardWithBookmark'
 import { mockCoursesData } from '@src/types/course'
 import type { Course } from '@src/types/course'
 
 export default function LoggedInCourses() {
-  const userName = '김개발' // 임시
+  const userName = '김개발'
 
-  // 맞춤 추천 강의 (평점 4.8 이상, 상위 3개)
   const recommendedCourses: Course[] = mockCoursesData
     .filter((course) => (course.rating ?? course.reviewRating) >= 4.8)
     .sort((a, b) => (b.rating ?? b.reviewRating) - (a.rating ?? a.reviewRating))
@@ -25,18 +23,19 @@ export default function LoggedInCourses() {
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {recommendedCourses.map((course) => (
-          <CourseCardWithBookmark
-            key={course.id}
-            cardTitle={course.title}
-            author={course.instructor ?? course.author}
-            cardDescription={course.description}
-            reviewRating={course.rating ?? course.reviewRating}
-            reviewCount={course.reviewCount}
-            originalPrice={course.originalPrice}
-            price={course.price}
-            courseId={course.id}
-            onBookmarkClick={() => {}} // 북마크 기능 추후 구현
-          />
+          <div key={course.id} className="rounded-lg bg-white p-4 shadow-sm">
+            <CourseCardWithBookmark
+              cardTitle={course.title}
+              author={course.instructor ?? course.author}
+              cardDescription={course.description}
+              reviewRating={course.rating ?? course.reviewRating}
+              reviewCount={course.reviewCount}
+              originalPrice={course.originalPrice}
+              price={course.price}
+              courseId={course.id}
+              onBookmarkClick={() => {}}
+            />
+          </div>
         ))}
       </div>
     </div>

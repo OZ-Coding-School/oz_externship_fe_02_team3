@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import SearchFilter from '@src/components/course/SearchFilter'
-import AuthBasedCourseSection from '@src/components/course/AuthBasedCourseSection'
+import UserCourseSection from '@src/components/course/UserCourseSection'
 import { CATEGORY_LIST, SORT_LABELS } from '@src/constants/courses'
 import {
   PAGE_TITLES,
@@ -8,6 +8,7 @@ import {
   LOADING_MESSAGES,
   ERROR_MESSAGES,
   EMPTY_MESSAGES,
+  LIST_SETTINGS,
 } from '@src/constants/ui'
 import { cn } from '@src/utils/cn'
 import { useCourses } from '@src/hooks/course/useCourse'
@@ -115,7 +116,7 @@ export default function CoursesPage({ className }: CoursesPageProps) {
         </div>
 
         {/* 인증 상태에 따른 CTA 또는 추천 섹션 */}
-        <AuthBasedCourseSection isAuthenticated={isAuthenticated} />
+        <UserCourseSection isAuthenticated={isAuthenticated} />
 
         {/* 검색 및 필터 영역 */}
         <SearchFilter
