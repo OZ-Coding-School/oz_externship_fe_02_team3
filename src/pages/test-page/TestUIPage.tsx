@@ -12,10 +12,12 @@ import {
   X as CloseIcon,
 } from 'lucide-react'
 import { useState } from 'react'
+import Toast from '@src/components/commons/toast/Toast'
 
 export default function TestUIPage() {
   const [selectedCategory, setSelectedCategory] = useState('전체')
   const [selectedSort, setSelectedSort] = useState('인기순')
+  const [openToast, setOpenToast] = useState(false)
 
   // 임시 데이터 (나중에 상수로 분리)
   const categories = [
@@ -105,6 +107,22 @@ export default function TestUIPage() {
         {/* 뱃지 */}
         <Badge badgeTitle="거절됨" sideClass="bg-danger-100 text-danger-800" />
       </div>
+      <div className="flex gap-2">
+        <Button
+          buttonInnerText="토스트 띄우기"
+          size="base"
+          onClick={() => setOpenToast(true)}
+        />
+      </div>
+      {openToast && (
+        <Toast
+          type="warning"
+          title="저장 완료"
+          onClose={() => setOpenToast(false)}
+        >
+          변경사항이 성공적으로 저장되었습니다.
+        </Toast>
+      )}
       <ChatFloatButton />
     </>
   )
