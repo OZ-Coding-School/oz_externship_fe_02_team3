@@ -35,9 +35,7 @@ export default function NotificationsDropdown({
       }))
     )
     // 현재 '읽지않음' 탭이 선택되어 있다면 '전체보기'로 전환
-    if (notificationFilter === 'unread') {
-      setNotificationFilter('all')
-    }
+    setNotificationFilter('all')
   }
 
   const filteredNotifications = useMemo(() => {
