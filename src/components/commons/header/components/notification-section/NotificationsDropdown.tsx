@@ -83,7 +83,10 @@ export default function NotificationsDropdown({
         notifications={notifications}
       />
 
-      <div className="flex max-h-80 flex-col overflow-y-auto" role="tabpanel">
+      <div
+        className="scrollbar-hide flex max-h-80 flex-col overflow-y-auto"
+        role="tabpanel"
+      >
         {filteredNotifications.length !== 0 ? (
           filteredNotifications.map((notification) => (
             <NotificationItem
