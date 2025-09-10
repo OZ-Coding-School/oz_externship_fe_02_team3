@@ -19,3 +19,5 @@ export interface ToastItem extends Required<Pick<ToastOptions, 'id' | 'type'>> {
   pauseOnHover?: boolean
   showBar?: boolean
 }
+
+export const makeToastId = () => crypto.randomUUID() //토스트 개별 고유 아이디 생성
