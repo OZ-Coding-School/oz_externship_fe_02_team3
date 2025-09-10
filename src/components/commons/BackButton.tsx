@@ -2,13 +2,13 @@ import { ArrowLeft as ArrowLeftIcon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 export default function BackButton() {
-  const navigate = useNavigate()
+  const NAVIAGETE = useNavigate()
 
   const handleBack = () => {
     if (window.history.length > 1) {
-      navigate(-1)
+      NAVIAGETE(-1)
     } else {
-      navigate('/recruitment')
+      NAVIAGETE('/recruitment')
     }
   }
 
