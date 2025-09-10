@@ -29,6 +29,7 @@ interface ToastCardProps {
   className?: string
   animation?: AnimationKey
   speed?: Speed
+  id?: string
 }
 
 export default function ToastCard({
@@ -43,21 +44,23 @@ export default function ToastCard({
   className,
   animation = 'slideRightDown',
   speed = 'normal',
+  id,
 }: ToastCardProps) {
-  const leadingIcon = TOAST_ICONS[type]
+  const leadingIcon = TOAST_ICONS[type] // 각 토스트 type 별 아이콘 ( 참조 : constants/toast.ts)
 
   return (
     <motion.div
+      layout="position"
       variants={applySpeed(ANIMATIONS[animation], speed)}
       initial="initial"
       animate="animate"
       exit="exit"
-      className={cn('flex h-100 w-full flex-col', className)}
+      className={cn('flex w-full flex-col', className)}
     >
       <div
         className={cn(
           'group/toast pointer-events-auto relative overflow-hidden rounded-xl border',
-          TOAST_COLORS[type].box
+          TOAST_COLORS[type].box // 각 토스트 type 별 색상 ( 참조 : constants/toast.ts)
         )}
       >
         <div className="flex w-full items-start gap-3 px-4 py-3">
@@ -109,10 +112,8 @@ export default function ToastCard({
         {/* 토스트 알람 시간 에니메이션 */}
         {showBar && (
           <ToastProgress
-            trackClass={cn(
-              'absolute inset-x-0 bottom-0 h-1',
-              TOAST_COLORS[type].bar
-            )}
+            id={id}
+            trackClass={TOAST_COLORS[type].bar}
             fillClass={TOAST_COLORS[type].text}
             durationMs={durationMs}
             pauseOnHover={pauseOnHover}
