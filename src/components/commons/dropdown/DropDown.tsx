@@ -10,7 +10,7 @@ interface DropDownOption {
 
 interface DropDownProps {
   selected?: string
-  options: DropDownOption[]
+  options: DropDownOption[] | string[]
   onSelect?: (value: string) => void
   leftIcon?: LucideIcon
   leftIconClassName?: string

@@ -8,7 +8,7 @@ interface DropDownOption {
 
 interface DropDownOptionsProps {
   className?: string
-  options: DropDownOption[]
+  options: DropDownOption[] | string[]
   onSelect?: (value: string) => void
   selected?: string
   setIsOpen: (isOpen: boolean) => void
@@ -30,7 +30,7 @@ export default function DropDownOptionList({
       {options.map((option, i) => (
         <DropDownOptionItem
           key={i}
-          option={option.name}
+          option={typeof option === 'string' ? option : option.name}
           selected={selected}
           onSelect={onSelect}
           setIsOpen={setIsOpen}
