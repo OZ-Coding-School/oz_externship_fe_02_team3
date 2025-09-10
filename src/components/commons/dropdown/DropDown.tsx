@@ -9,7 +9,6 @@ interface DropDownProps {
   options?: string[]
   onSelect?: (value: string) => void
   leftIcon?: LucideIcon
-  rightIcon?: LucideIcon
   leftIconClassName?: string
   rightIconClassName?: string
   disabled?: boolean
@@ -22,7 +21,6 @@ export default function DropDown({
   options = [],
   onSelect,
   leftIcon,
-  rightIcon,
   leftIconClassName = '',
   rightIconClassName = '',
   className = '',

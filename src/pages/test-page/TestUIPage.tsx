@@ -41,7 +41,6 @@ export default function TestUIPage() {
           options={categories}
           onSelect={setSelectedCategory}
           leftIcon={FolderIcon}
-          rightIcon={ChevronDownIcon}
           placeholder="카테고리 선택"
         />
         {/* 정렬 드롭다운 */}
@@ -49,7 +48,6 @@ export default function TestUIPage() {
           selected={selectedSort}
           options={sortOptions}
           onSelect={setSelectedSort}
-          rightIcon={ChevronDownIcon}
           placeholder="정렬 선택"
           className="w-fit"
         />
@@ -59,7 +57,6 @@ export default function TestUIPage() {
           selected="비활성화됨"
           options={[]}
           disabled
-          rightIcon={ChevronDownIcon}
           className="w-fit"
         />
 
