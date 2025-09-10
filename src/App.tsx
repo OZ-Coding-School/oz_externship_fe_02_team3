@@ -9,6 +9,7 @@ import TestUIPage from './pages/test-page/TestUIPage'
 import RecruitmentManage from '@pages/RecruitmentManage'
 import RecruitmentCreate from './pages/RecruitmentCreate'
 import CoursesPage from './pages/CoursesPage'
+import { ToastPorvider } from './components/commons/toast'
 
 const routes = [
   { path: ROUTES.HOME, element: <TestHub /> },
@@ -22,12 +23,14 @@ const routes = [
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<MainLayout />}>
-        {routes.map((route) => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))}
-      </Route>
-    </Routes>
+    <ToastPorvider max={5}>
+      <Routes>
+        <Route element={<MainLayout />}>
+          {routes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+        </Route>
+      </Routes>
+    </ToastPorvider>
   )
 }
