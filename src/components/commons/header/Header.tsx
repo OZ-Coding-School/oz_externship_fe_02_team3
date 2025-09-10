@@ -9,7 +9,7 @@ export default function Header() {
     <header
       className={cn(
         'sticky top-0 flex h-16 w-full items-center justify-center border-b border-gray-200 bg-white px-20',
-        `z-[${Z_INDEX.HEADER}]`
+        `${Z_INDEX.HEADER}`
       )}
     >
       <div className="flex h-full w-full max-w-7xl justify-between px-8">

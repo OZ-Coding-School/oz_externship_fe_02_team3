@@ -52,7 +52,7 @@ export default function UserMenu({
           ref={userMenuPanelRef}
           className={cn(
             'absolute top-12 right-0 flex w-48 flex-col divide-y divide-gray-100 rounded-lg border border-gray-200 bg-white py-2 shadow-lg',
-            `z-[${Z_INDEX.DROPDOWN}]`
+            `${Z_INDEX.DROPDOWN}`
           )}
         >
           <PageLink
