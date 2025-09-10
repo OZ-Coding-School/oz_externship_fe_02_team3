@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
-import { mockCoursesData } from '@src/types/course'
-import type { Course } from '@src/types/course'
+import { useState, useEffect, useCallback } from 'react'
+import { mockCoursesData, type Course } from '@src/types/course'
 import type { UseCoursesReturn } from '@src/types/hooks'
 import type { ApiError } from '@src/types/api'
 
@@ -9,7 +8,7 @@ export const useCourses = (): UseCoursesReturn => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
-  const loadCourses = async (): Promise<void> => {
+  const loadCourses = useCallback(async (): Promise<void> => {
     try {
       setLoading(true)
       setError(null)
@@ -25,11 +24,11 @@ export const useCourses = (): UseCoursesReturn => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     loadCourses()
-  }, [])
+  }, [loadCourses])
 
   return {
     courses,

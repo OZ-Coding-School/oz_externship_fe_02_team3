@@ -1,8 +1,13 @@
 import { useCallback, useMemo } from 'react'
 import { useSearchParams } from 'react-router'
 
-export function useQueryParams<T extends Record<string, any>>() {
+type QueryParamValue = string | number | boolean | undefined | null
+
+type QueryParams = Record<string, QueryParamValue>
+
+export function useQueryParams<T extends QueryParams = QueryParams>() {
   const [sp, setSp] = useSearchParams()
+
   const get = useMemo(() => {
     const obj: Record<string, string> = {}
     sp.forEach((v, k) => (obj[k] = v))
@@ -20,5 +25,6 @@ export function useQueryParams<T extends Record<string, any>>() {
     },
     [sp, setSp]
   )
+
   return { get, set }
 }
