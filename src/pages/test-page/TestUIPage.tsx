@@ -126,7 +126,7 @@ export default function TestUIPage() {
         />
 
         {/* 뱃지 */}
-        <Badge badgeTitle="거절됨" sideClass="bg-danger-100 text-danger-800" />
+        <Badge badgeTitle="거절됨" className="bg-danger-100 text-danger-800" />
       </div>
       <div className="flex gap-2">
         <Button

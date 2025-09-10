@@ -88,7 +88,7 @@ export default memo(function ApplicantCard({ data, onClick }: Props) {
         <InfoRow
           label="스터디 경험"
           direction="row"
-          badge={<Badge badgeTitle={expTitle} sideClass={badgeClass} />}
+          badge={<Badge badgeTitle={expTitle} className={badgeClass} />}
         />
       </div>
     </article>
