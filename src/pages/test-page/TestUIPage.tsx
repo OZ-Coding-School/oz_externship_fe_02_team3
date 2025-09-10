@@ -4,7 +4,6 @@ import DropDown from '@src/components/commons/dropdown/DropDown'
 import PageLink from '@components/commons/page-link/PageLink'
 import ChatFloatButton from '@components/commons/chat/ChatFloatButton'
 import {
-  ChevronDown as ChevronDownIcon,
   FolderIcon,
   LogIn as LogInIcon,
   MousePointer2 as MousePointer2Icon,
