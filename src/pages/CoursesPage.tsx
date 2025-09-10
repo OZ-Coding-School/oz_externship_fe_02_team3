@@ -14,12 +14,12 @@ import { useCourses } from '@src/hooks/course/useCourse'
 import { useCourseFilters } from '@src/hooks/course/useCourseFilters'
 import { usePagination } from '@src/hooks/course/usePagination'
 import { useBookmark } from '@src/hooks/course/useBookmark'
-import LoadingSpinner from '@src/components/course/LoadingSpinner'
+import LoadingSpinner from '@src/components/commons/LoadingSpinner'
 import ErrorMessage from '@src/components/course/ErrorMessage'
 import CourseStats from '@src/components/course/CourseStats'
 import CourseGrid from '@src/components/course/CourseGrid'
 import LoadMoreButton from '@src/components/course/LoadMoreButton'
-import { EmptyState } from '@src/components/course/EmptyState'
+import { EmptyState } from '@src/components/commons/EmptyState'
 
 interface CoursesPageProps {
   className?: string
@@ -81,6 +81,8 @@ export default function CoursesPage({ className }: CoursesPageProps) {
             title={EMPTY_MESSAGES.COURSES}
             description="새로운 강의가 곧 업데이트될 예정입니다."
             iconType="COURSES"
+            iconClassName="stroke-primary-500 w-8 h-8"
+            iconContainerClassName="bg-primary-50 rounded-full w-20 h-20 flex items-center justify-center"
           />
         </div>
       </div>
@@ -154,6 +156,8 @@ export default function CoursesPage({ className }: CoursesPageProps) {
                   : '선택한 필터 조건에 맞는 강의가 없습니다. 필터를 조정해보세요.'
               }
               iconType="SEARCH_RESULTS"
+              iconClassName="stroke-gray-400 w-8 h-8"
+              iconContainerClassName="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center"
             />
           )}
         </section>
