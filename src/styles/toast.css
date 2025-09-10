@@ -1,15 +1,24 @@
 /* 토스트 알림 시간 에니메이션  */
-@keyframes toastShrink {
+@keyframes toast-progress-fill {
   from {
-    width: 100%;
+    transform: translateX(0);
   }
   to {
-    width: 0%;
+    transform: translateX(-100%);
   }
 }
 .toast-progress {
-  animation-name: toastShrink;
+  position: relative;
+  overflow: hidden;
+}
+
+.toast-progress__fill {
+  width: 100%;
+  height: 100%;
+  transform: translateX(0);
+  background-color: currentColor;
+  animation-name: toast-progress-fill;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
-  background-color: currentColor;
+  animation-duration: var(--toast-duration, 3000ms);
 }
