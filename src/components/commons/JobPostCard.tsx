@@ -119,7 +119,7 @@ export default function JobPostCard({
               <Badge
                 badgeTitle={tag}
                 key={tagIndex}
-                sideClass="bg-primary-100 text-primary-800"
+                className="bg-primary-100 text-primary-800"
               />
             ))}
           </div>
