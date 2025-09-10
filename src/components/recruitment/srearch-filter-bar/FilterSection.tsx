@@ -1,5 +1,4 @@
 import DropDown from '@src/components/commons/dropdown/DropDown'
-import { ChevronDown as ChevronDownIcon } from 'lucide-react'
 import { useState } from 'react'
 
 export default function FilterSection() {
@@ -19,7 +18,6 @@ export default function FilterSection() {
           selected={selectedCategory}
           options={categoryOptions}
           onSelect={setSelectedCategory}
-          rightIcon={ChevronDownIcon}
           placeholder="카테고리 선택"
           className="w-full"
         />
@@ -30,7 +28,6 @@ export default function FilterSection() {
           selected={selectedTag}
           options={tagOptions}
           onSelect={setSelectedTag}
-          rightIcon={ChevronDownIcon}
           placeholder="카테고리 선택"
           className="w-full"
         />
@@ -41,7 +38,6 @@ export default function FilterSection() {
           selected={selectedSort}
           options={sortingOptions}
           onSelect={setSelectedSort}
-          rightIcon={ChevronDownIcon}
           placeholder="카테고리 선택"
           className="w-full"
         />
