@@ -22,7 +22,7 @@ export default memo(function ToastProgress({
   // CSS 변수(--toast-duration)에 애니메이션 시간을 주입
   // useMemo : durationMs 변경시에만 객체 새로 생성
   const style = useMemo(
-    () => ({ ['--toast-duration' as any]: `${durationMs}ms` }),
+    () => ({ ['--toast-duration' as string]: `${durationMs}ms` }),
     [durationMs]
   )
 
