@@ -4,7 +4,6 @@ import DropDown from '@src/components/commons/dropdown/DropDown'
 import PageLink from '@components/commons/page-link/PageLink'
 import ChatFloatButton from '@components/commons/chat/ChatFloatButton'
 import {
-  ChevronDown as ChevronDownIcon,
   FolderIcon,
   LogIn as LogInIcon,
   MousePointer2 as MousePointer2Icon,
@@ -41,16 +40,13 @@ export default function TestUIPage() {
           options={categories}
           onSelect={setSelectedCategory}
           leftIcon={FolderIcon}
-          rightIcon={ChevronDownIcon}
           placeholder="카테고리 선택"
-          className="w-fit"
         />
         {/* 정렬 드롭다운 */}
         <DropDown
           selected={selectedSort}
           options={sortOptions}
           onSelect={setSelectedSort}
-          rightIcon={ChevronDownIcon}
           placeholder="정렬 선택"
           className="w-fit"
         />
@@ -60,7 +56,6 @@ export default function TestUIPage() {
           selected="비활성화됨"
           options={[]}
           disabled
-          rightIcon={ChevronDownIcon}
           className="w-fit"
         />
 

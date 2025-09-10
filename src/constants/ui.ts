@@ -4,8 +4,8 @@ import {
   Search,
   AlertCircle,
   XCircle,
+  type LucideIcon,
 } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
 
 // 페이지네이션 설정
 export const PAGINATION = {

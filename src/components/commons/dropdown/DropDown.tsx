@@ -1,4 +1,4 @@
-import type { LucideIcon } from 'lucide-react'
+import { ChevronDownIcon, type LucideIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import Icon from '../Icon'
 import { cn } from '@utils/cn'
@@ -9,7 +9,6 @@ interface DropDownProps {
   options?: string[]
   onSelect?: (value: string) => void
   leftIcon?: LucideIcon
-  rightIcon?: LucideIcon
   leftIconClassName?: string
   rightIconClassName?: string
   disabled?: boolean
@@ -22,7 +21,6 @@ export default function DropDown({
   options = [],
   onSelect,
   leftIcon,
-  rightIcon,
   leftIconClassName = '',
   rightIconClassName = '',
   className = '',
@@ -54,11 +52,16 @@ export default function DropDown({
   }, [isOpen])
 
   return (
-    <div className="relative w-fit" ref={dropdownRef}>
+    <div className={`relative`} ref={dropdownRef}>
       <div
-        className={`relative flex ${className} items-center rounded-lg border border-gray-300 py-[9px] ${
-          !disabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
-        }`}
+        className={cn(
+          'relative flex items-center rounded-lg border border-gray-300 py-[9px]',
+          className,
+          {
+            'cursor-pointer': !disabled,
+            'cursor-not-allowed opacity-50': disabled,
+          }
+        )}
         onClick={handleClick}
       >
         {leftIcon && (
@@ -72,29 +75,26 @@ export default function DropDown({
         )}
 
         <p
-          className={cn(
-            'text-sm',
-            leftIcon ? 'pl-10' : 'pl-4',
-            rightIcon ? 'pr-10' : 'pr-4',
-            !selected && 'text-gray-500'
-          )}
+          className={cn('pr-4 text-sm', {
+            'pl-10': leftIcon,
+            'pl-4': !leftIcon,
+            'text-gray-500': !selected,
+          })}
         >
           {displayText}
         </p>
 
-        {rightIcon && (
-          <div className="absolute top-1/2 right-3 -translate-y-1/2">
-            <Icon
-              icon={rightIcon}
-              size="sm"
-              className={cn(
-                'stroke-gray-400 transition-transform',
-                rightIconClassName,
-                isOpen && 'rotate-180'
-              )}
-            />
-          </div>
-        )}
+        <div className="absolute top-1/2 right-3 -translate-y-1/2">
+          <Icon
+            icon={ChevronDownIcon}
+            size="sm"
+            className={cn(
+              'stroke-gray-400 transition-transform',
+              rightIconClassName,
+              isOpen && 'rotate-180'
+            )}
+          />
+        </div>
       </div>
 
       {/* 드롭다운 옵션 리스트 */}
