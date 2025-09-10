@@ -1,6 +1,8 @@
 import JobPostCard from '@components/commons/JobPostCard'
 import { useNavigate } from 'react-router-dom'
 import { jobPosts } from '@mock/jobPosts'
+import { EmptyState } from '@src/components/commons/EmptyState'
+import { EMPTY_MESSAGES } from '@src/constants/ui'
 
 type CardProps = Parameters<typeof JobPostCard>[0]
 
@@ -29,6 +31,14 @@ export default function RecManageList() {
             <JobPostCard {...item} />
           </li>
         ))}
+        {/* 데이터가 없을 때의 상태 */}
+        <EmptyState
+          title={EMPTY_MESSAGES.NoData}
+          description="새로운 공고가 등록되면 이곳에 표시됩니다."
+          iconType="NoData"
+          iconClassName="stroke-primary-500 w-8 h-8"
+          iconContainerClassName="bg-primary-50 rounded-full w-20 h-20 flex items-center justify-center"
+        />
       </ul>
     </section>
   )
