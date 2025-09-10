@@ -1,14 +1,14 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useDropzone, type Accept, type FileRejection } from 'react-dropzone'
 
 export type Uploaded = File & { preview?: string }
 
-export interface useUploaderOptions {
+export interface UseUploaderOptions {
   accept?: Accept
-  maxFiles?: number
+  maxFiles?: number // 합계 제한
   maxSize?: number
   multiple?: boolean
-  createPreview?: boolean // 아직 생성되지 않은 경우 미리보기가 안보이도록 세팅
+  createPreview?: boolean // 이미지 미리보기 URL 생성 여부
   disabled?: boolean
   onError?: (msg: string) => void
 }
@@ -21,55 +21,66 @@ export default function useUploader({
   createPreview = false,
   disabled,
   onError,
-}: useUploaderOptions) {
+}: UseUploaderOptions) {
   const [files, setFiles] = useState<Uploaded[]>([])
+
+  // 최신 files 참조용 ref
+  const filesRef = useRef<Uploaded[]>([])
+  useEffect(() => {
+    filesRef.current = files
+  }, [files])
 
   const onDrop = useCallback(
     (accepted: File[], rejections: FileRejection[]) => {
-      // 기존 값도 포함해서 체크
+      // 용량/형식 오류 안내
       if (rejections.length) {
         const err = rejections[0]?.errors?.[0]
-        const msg =
-          err?.code === 'file-too-large'
-            ? `파일 용량 초과 (최대 ${(maxSize / 1024 / 1024).toFixed(0)}MB)`
-            : err?.code === 'too-many-files'
-              ? `최대 ${maxFiles}개까지 업로드 가능`
-              : '허용되지 않는 형식입니다.'
-        onError?.(msg)
+        if (err?.code === 'file-too-large') {
+          onError?.(
+            `파일 용량 초과 (최대 ${(maxSize / 1024 / 1024).toFixed(0)}MB)`
+          )
+        } else if (err?.message) {
+          onError?.(err.message)
+        }
       }
       if (!accepted.length) return
 
-      // 1) 중복 제거 (이름+크기 기준)
-      const deduped = accepted.filter(
-        (file) =>
-          !files.some((e) => e.name === file.name && e.size === file.size)
-      )
+      const current = filesRef.current
 
-      // 2) 총 개수 제한
-      const remain = Math.max(0, maxFiles - files.length)
-      const sliced = multiple ? deduped.slice(0, remain) : deduped.slice(0, 1)
+      const remain = Math.max(0, maxFiles - current.length)
+      const allowed = multiple
+        ? accepted.slice(0, remain)
+        : accepted.slice(0, 1)
+      const overflow = accepted.length - allowed.length
 
-      if (!sliced.length) {
+      if (!allowed.length) {
         onError?.(`최대 ${maxFiles}개까지 업로드 가능`)
         return
       }
+      if (overflow > 0) {
+        onError?.(
+          `최대 ${maxFiles}개까지 업로드 가능 (추가 ${overflow}개는 제외됨)`
+        )
+      }
 
-      const withPreview: Uploaded[] = sliced.map((f) =>
+      // preview 부착
+      const withPreview: Uploaded[] = allowed.map((f) =>
         Object.assign(f, {
           preview: createPreview ? URL.createObjectURL(f) : undefined,
         })
       )
-      const next = multiple ? [...files, ...withPreview] : [withPreview[0]]
-      setFiles(next)
+
+      setFiles((prev) =>
+        multiple ? [...prev, ...withPreview] : [withPreview[0]]
+      )
     },
-    [files, maxFiles, maxSize, multiple, createPreview, onError]
+    [maxFiles, maxSize, multiple, createPreview, onError]
   )
 
-  // 라이브러리에서 필요한 부분만 꺼내 쓰기
+  // Dropzone 설정 (maxFiles는 주지 않음: 합계 제한은 우리가 관리)
   const dz = useDropzone({
     onDrop,
     accept,
-    maxFiles,
     maxSize,
     multiple,
     disabled,
@@ -83,13 +94,35 @@ export default function useUploader({
         ? 'active'
         : 'idle'
 
+  // 삭제 시 preview URL 정리
   const removeAt = (i: number) =>
-    setFiles((prev) => prev.filter((_, idx) => idx !== i))
+    setFiles((prev) => {
+      const target = prev[i]
+      if (target?.preview) URL.revokeObjectURL(target.preview)
+      return prev.filter((_, idx) => idx !== i)
+    })
+
+  // 전체 초기화
+  const reset = () =>
+    setFiles((prev) => {
+      prev.forEach((f) => f.preview && URL.revokeObjectURL(f.preview))
+      return []
+    })
+
+  // 언마운트 시 preview URL 정리
+  useEffect(() => {
+    return () => {
+      filesRef.current.forEach(
+        (f) => f.preview && URL.revokeObjectURL(f.preview)
+      )
+    }
+  }, [])
 
   return {
     files,
     setFiles,
     removeAt,
+    reset,
     state,
     getRootProps: dz.getRootProps,
     getInputProps: dz.getInputProps,
