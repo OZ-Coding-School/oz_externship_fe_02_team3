@@ -35,7 +35,10 @@ interface ToastProviderProps {
 export const ToastContext = createContext<ToastCtx | null>(null)
 
 export function ToastPorvider({ children, max = 5 }: ToastProviderProps) {
-  type ToastState = { visible: ToastItem[]; queue: ToastItem[] } //바로 보여지는 토스트알림 5개, 큐에 저정되어 나중에 보여줄 대기열
+  interface ToastState {
+    visible: ToastItem[]
+    queue: ToastItem[]
+  } //바로 보여지는 토스트알림 5개, 큐에 저정되어 나중에 보여줄 대기열
   const [state, setState] = useState<ToastState>({ visible: [], queue: [] })
 
   const removeToast = useCallback((id: string) => {
