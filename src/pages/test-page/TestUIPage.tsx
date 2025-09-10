@@ -43,7 +43,6 @@ export default function TestUIPage() {
           leftIcon={FolderIcon}
           rightIcon={ChevronDownIcon}
           placeholder="카테고리 선택"
-          className="w-fit"
         />
         {/* 정렬 드롭다운 */}
         <DropDown
