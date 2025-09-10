@@ -1,8 +1,9 @@
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@utils/cn'
-// Icon 컴포넌트 정의
+type SvgComponent = React.FC<React.SVGProps<SVGSVGElement>>
+
 interface IconProps {
-  icon: LucideIcon
+  icon: LucideIcon | SvgComponent
   className?: string
   fill?: boolean
   strokeWidth?: number

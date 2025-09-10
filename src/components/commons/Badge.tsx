@@ -4,7 +4,7 @@ interface BadgeProps {
   sideClass?: string
 }
 
-function Badge({ badgeTitle, sideClass = '' }: BadgeProps) {
+function Badge({ badgeTitle, sideClass }: BadgeProps) {
   return (
     <p
       className={cn(
