@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState, type RefObject } from 'react'
-import notificationsData from '@mock/notificationsData'
+import { fetchNotifications } from '@api/fetchNotifications'
 import { Z_INDEX } from '@constants/ui'
 import { cn } from '@utils/cn'
 import NotificationTabs from './NotificationTabs'
 import type { NotificationItem as NotificationItemType } from '@src/types/notification'
 import NotificationItem from './NotificationItem'
+import { useNotifications } from '@src/hooks/useNotifications'
 
 interface NotificationsDropdownProps {
   setIsNotificationOpen: (isNotificationOpen: boolean) => void
@@ -19,31 +20,50 @@ export default function NotificationsDropdown({
   onUnreadCountChange,
 }: NotificationsDropdownProps) {
   // const [notifications, setNotifications] = useState<NotificationItemType[]>([])
-  const [notifications, setNotifications] =
-    useState<NotificationItemType[]>(notificationsData)
+  // const [notifications, setNotifications] = useState<NotificationItemType[]>([])
+  // const [loading, setLoading] = useState(false)
+  // const [error, setError] = useState<string | null>(null)
+  // const [notificationFilter, setNotificationFilter] = useState<
+  //   'all' | 'unread' | 'read'
+  // >('all')
 
+  const { notifications, loading, error, loadNotifications, markAllAsRead } =
+    useNotifications()
   const [notificationFilter, setNotificationFilter] = useState<
     'all' | 'unread' | 'read'
   >('all')
 
+  // const handleMarkAllAsRead = () => {
+  //   setNotifications((prev) =>
+  //     prev.map((notification) => ({
+  //       ...notification,
+  //       isRead: true,
+  //       isUnread: false,
+  //     }))
+  //   )
+  //   // 현재 '읽지않음' 탭이 선택되어 있다면 '전체보기'로 전환
+  //   setNotificationFilter('all')
+  // }
+
+  // const handleMarkAllAsRead = () => {  // async 제거
+  //   setNotifications((prev) =>
+  //     prev.map((notification) => ({
+  //       ...notification,
+  //       is_read: true,
+  //     }))
+  //   )
+  //   setNotificationFilter('all')
+  // }
   const handleMarkAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notification) => ({
-        ...notification,
-        isRead: true,
-        isUnread: false,
-      }))
-    )
-    // 현재 '읽지않음' 탭이 선택되어 있다면 '전체보기'로 전환
+    markAllAsRead()
     setNotificationFilter('all')
   }
-
   const filteredNotifications = useMemo(() => {
     switch (notificationFilter) {
       case 'unread':
-        return notifications.filter((notification) => notification.isUnread)
+        return notifications.filter((notification) => !notification.is_read)
       case 'read':
-        return notifications.filter((notification) => notification.isRead)
+        return notifications.filter((notification) => notification.is_read)
       default:
         return notifications
     }
@@ -51,9 +71,17 @@ export default function NotificationsDropdown({
 
   // 읽지 않은 알림 개수를 부모에게 전달
   useEffect(() => {
-    const unreadCount = notifications.filter((n) => n.isUnread).length
+    const unreadCount = notifications.filter((noti) => !noti.is_read).length
     onUnreadCountChange(unreadCount)
   }, [notifications, onUnreadCountChange])
+
+  useEffect(() => {
+    loadNotifications({
+      status: notificationFilter === 'all' ? 'all' : notificationFilter,
+      limit: 50,
+      offset: 0,
+    })
+  }, [notificationFilter, loadNotifications])
 
   return (
     <div
@@ -87,10 +115,18 @@ export default function NotificationsDropdown({
         className="scrollbar-hide flex max-h-80 flex-col overflow-y-auto"
         role="tabpanel"
       >
-        {filteredNotifications.length !== 0 ? (
+        {loading ? (
+          <div className="flex h-32 items-center justify-center text-sm text-gray-500">
+            로딩 중...
+          </div>
+        ) : error ? (
+          <div className="flex h-32 items-center justify-center text-sm text-red-500">
+            {error}
+          </div>
+        ) : filteredNotifications.length !== 0 ? (
           filteredNotifications.map((notification) => (
             <NotificationItem
-              key={notification.id}
+              key={notification.notification_id} // 변경됨: id → notification_id
               {...notification}
               setIsNotificationOpen={setIsNotificationOpen}
             />

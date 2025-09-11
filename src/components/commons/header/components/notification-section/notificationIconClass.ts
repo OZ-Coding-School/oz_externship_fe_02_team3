@@ -5,16 +5,16 @@ export const notificationIconClass = cva(
   {
     variants: {
       type: {
-        application: 'bg-blue-100',
-        approval: 'bg-green-100',
-        rejection: 'bg-red-100',
-        join: 'bg-purple-100',
-        study_end: 'bg-orange-100',
-        reminder: 'bg-gray-100',
+        ADD_APPLICATION: 'bg-blue-100',
+        APPROVE_APPLICATION: 'bg-green-100',
+        REJECT_APPLICATION: 'bg-red-100',
+        NEW_MEMBER_JOIN: 'bg-purple-100',
+        STUDY_END: 'bg-orange-100',
+        REMINDER: 'bg-gray-100',
       },
     },
     defaultVariants: {
-      type: 'reminder',
+      type: 'REMINDER',
     },
   }
 )
@@ -22,23 +22,21 @@ export const notificationIconClass = cva(
 export const notificationIconStrokeClass = cva('', {
   variants: {
     type: {
-      application: 'stroke-[#2563EB]',
-      approval: 'stroke-[#16A34A]',
-      rejection: 'stroke-[#DC2626]',
-      join: 'stroke-[#9333EA]',
-      study_end: 'stroke-[#EA580C]',
-      reminder: 'stroke-gray-400',
+      ADD_APPLICATION: 'stroke-[#2563EB]',
+      APPROVE_APPLICATION: 'stroke-[#16A34A]',
+      REJECT_APPLICATION: 'stroke-[#DC2626]',
+      NEW_MEMBER_JOIN: 'stroke-[#9333EA]',
+      STUDY_END: 'stroke-[#EA580C]',
+      REMINDER: 'stroke-gray-400',
     },
   },
   defaultVariants: {
-    type: 'reminder',
+    type: 'REMINDER',
   },
 })
-
 export type NotificationIconClassProps = VariantProps<
   typeof notificationIconClass
 >
-
 export const tabClass = cva(
   'flex w-2/3 items-center justify-center pt-3 pb-3.5 text-sm border-b-2 transition-colors cursor-pointer',
   {

@@ -210,35 +210,35 @@ export const LIST_MESSAGES = {
 } as const
 
 export const NOTIFICATION_TYPE = {
-  APPLICATION: 'application',
-  APPROVAL: 'approval',
-  REJECTION: 'rejection',
-  JOIN: 'join',
-  STUDY_END: 'study_end',
-  REMINDER: 'reminder',
+  ADD_APPLICATION: 'ADD_APPLICATION',
+  APPROVE_APPLICATION: 'APPROVE_APPLICATION',
+  REJECT_APPLICATION: 'REJECT_APPLICATION',
+  NEW_MEMBER_JOIN: 'NEW_MEMBER_JOIN',
+  STUDY_END: 'STUDY_END',
+  REMINDER: 'REMINDER',
 } as const
 
 export const NOTIFICATION_ICON_CONFIG = [
   {
-    type: NOTIFICATION_TYPE.APPLICATION,
+    type: NOTIFICATION_TYPE.ADD_APPLICATION,
     bgColor: 'bg-blue-100',
     strokeColor: 'stroke-[#2563EB]',
     icon: 'UserRoundPlus',
   },
   {
-    type: NOTIFICATION_TYPE.APPROVAL,
+    type: NOTIFICATION_TYPE.APPROVE_APPLICATION,
     bgColor: 'bg-green-100',
     strokeColor: 'stroke-[#16A34A]',
     icon: 'Check',
   },
   {
-    type: NOTIFICATION_TYPE.REJECTION,
+    type: NOTIFICATION_TYPE.REJECT_APPLICATION,
     bgColor: 'bg-red-100',
     strokeColor: 'stroke-[#DC2626]',
     icon: 'X',
   },
   {
-    type: NOTIFICATION_TYPE.JOIN,
+    type: NOTIFICATION_TYPE.NEW_MEMBER_JOIN,
     bgColor: 'bg-purple-100',
     strokeColor: 'stroke-[#9333EA]',
     icon: 'UsersRound',
