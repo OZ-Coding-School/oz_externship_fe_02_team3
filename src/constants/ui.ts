@@ -218,39 +218,6 @@ export const NOTIFICATION_TYPE = {
   REMINDER: 'REMINDER',
 } as const
 
-export const NOTIFICATION_ICON_CONFIG = [
-  {
-    type: NOTIFICATION_TYPE.ADD_APPLICATION,
-    bgColor: 'bg-blue-100',
-    strokeColor: 'stroke-[#2563EB]',
-    icon: 'UserRoundPlus',
-  },
-  {
-    type: NOTIFICATION_TYPE.APPROVE_APPLICATION,
-    bgColor: 'bg-green-100',
-    strokeColor: 'stroke-[#16A34A]',
-    icon: 'Check',
-  },
-  {
-    type: NOTIFICATION_TYPE.REJECT_APPLICATION,
-    bgColor: 'bg-red-100',
-    strokeColor: 'stroke-[#DC2626]',
-    icon: 'X',
-  },
-  {
-    type: NOTIFICATION_TYPE.NEW_MEMBER_JOIN,
-    bgColor: 'bg-purple-100',
-    strokeColor: 'stroke-[#9333EA]',
-    icon: 'UsersRound',
-  },
-  {
-    type: NOTIFICATION_TYPE.STUDY_END,
-    bgColor: 'bg-orange-100',
-    strokeColor: 'stroke-[#EA580C]',
-    icon: 'CalendarCheck',
-  },
-]
-
 export const Z_INDEX = {
   HEADER: 'z-10',
   DROPDOWN: 'z-20',

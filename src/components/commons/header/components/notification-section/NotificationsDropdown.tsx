@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState, type RefObject } from 'react'
 import { Z_INDEX } from '@constants/ui'
 import { cn } from '@utils/cn'
 import NotificationTabs from './NotificationTabs'
-import type { NotificationItem as NotificationItemType } from '@src/types/notification'
 import NotificationItem from './NotificationItem'
 import { useNotifications } from '@src/hooks/useNotifications'
+import NotificationsSkeleton from './NotificationsSkeleton'
 
 interface NotificationsDropdownProps {
   setIsNotificationOpen: (isNotificationOpen: boolean) => void
@@ -20,16 +20,19 @@ export default function NotificationsDropdown({
   const [notificationFilter, setNotificationFilter] = useState<
     'all' | 'unread' | 'read'
   >('all')
-
+  const [markAllError, setMarkAllError] = useState<string | null>(null)
   const { notifications, loading, error, loadNotifications, markAllAsRead } =
     useNotifications()
 
   const handleMarkAllAsRead = async () => {
+    setMarkAllError(null)
     try {
       await markAllAsRead()
       setNotificationFilter('all')
-    } catch (error) {
-      console.error('모두 읽음 처리 실패:', error)
+      setMarkAllError(null)
+    } catch (err) {
+      const error = err as Error
+      setMarkAllError(error.message || '모두 읽음 처리에 실패했어요.')
     }
   }
 
@@ -74,10 +77,11 @@ export default function NotificationsDropdown({
         </h3>
         <button
           type="button"
+          disabled={loading}
           onClick={handleMarkAllAsRead}
           className="text-primary-600 flex items-center justify-center text-center text-sm"
         >
-          모두 읽음
+          {loading ? '처리 중…' : '모두 읽음'}
         </button>
       </div>
 
@@ -86,36 +90,24 @@ export default function NotificationsDropdown({
         notificationFilter={notificationFilter}
         notifications={notifications}
       />
+      {markAllError && (
+        <div role="alert" className="px-4 py-2 text-sm text-red-600">
+          {markAllError}
+          <button
+            onClick={handleMarkAllAsRead} // 재시도 연결
+            className="ml-2 underline"
+          >
+            다시 시도
+          </button>
+        </div>
+      )}
 
       <div
         className="scrollbar-hide flex max-h-80 flex-col overflow-y-auto"
         role="tabpanel"
       >
         {loading ? (
-          <>
-            {[1, 2, 3].map((index) => (
-              <div
-                key={index}
-                className="flex animate-pulse items-start gap-3 border-b border-gray-200 px-4 pt-[17px] pb-4"
-              >
-                {/* 아이콘 자리 */}
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200" />
-
-                {/* 콘텐츠 자리 */}
-                <div className="flex min-w-72 gap-1">
-                  <div className="flex flex-1 flex-col gap-1">
-                    <div className="h-4 w-full rounded bg-gray-200" />
-                    <div className="h-4 w-3/4 rounded bg-gray-200" />
-                    <div className="mt-1 h-3 w-16 rounded bg-gray-200" />
-                  </div>
-                  {/* 읽지 않음 표시 자리 */}
-                  <div className="flex pt-2">
-                    <div className="size-2 rounded-full bg-gray-200" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </>
+          <NotificationsSkeleton />
         ) : error ? (
           <div className="flex items-center justify-center text-sm text-red-500">
             {error}
