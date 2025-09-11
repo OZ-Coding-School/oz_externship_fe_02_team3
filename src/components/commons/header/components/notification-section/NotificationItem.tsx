@@ -4,7 +4,6 @@ import {
   notificationIconClass,
   notificationIconStrokeClass,
 } from './notificationIconClass'
-import { ROUTES } from '@src/constants/routes'
 import { useNavigate } from 'react-router-dom'
 import {
   Bell as BellIcon,
@@ -38,23 +37,37 @@ const getNotificationIcon = (type: NotificationItemType['type']) => {
   )
 }
 const formatDate = (dateString: string) => {
-  const date = new Date(dateString)
+  const serverDate = new Date(dateString)
   const now = new Date()
-  const diffInDays = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-  )
 
-  if (diffInDays === 0) {
-    return '오늘'
-  } else if (diffInDays === 1) {
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  )
+  const startOfYesterday = new Date(startOfToday)
+  startOfYesterday.setDate(startOfYesterday.getDate() - 1)
+
+  const diffMs = now.getTime() - serverDate.getTime() // 밀리초 차이
+  const hours = Math.floor(diffMs / (60 * 60 * 1000))
+  const minutes = Math.floor(diffMs / 60000)
+
+  if (serverDate >= startOfYesterday && serverDate < startOfToday) {
     return '어제'
+  } else if (minutes < 1) {
+    return '방금 전'
+  } else if (minutes < 60) {
+    return `${minutes}분 전`
+  } else if (hours < 24) {
+    return `${hours}시간 전`
   } else {
-    return date.toLocaleDateString('ko-KR', {
+    return serverDate.toLocaleDateString('ko-KR', {
       month: 'long',
       day: 'numeric',
     })
   }
 }
+
 interface NotificationItemProps extends NotificationItemType {
   setIsNotificationOpen: (isOpen: boolean) => void
 }

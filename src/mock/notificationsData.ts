@@ -9,7 +9,7 @@ const notificationsData: NotificationItem[] = [
     type: 'ADD_APPLICATION',
     is_read: false,
     back_url_link: '/recruitment/manage',
-    created_at: '2024-12-01T10:00:00Z',
+    created_at: '2025-09-11T06:00:00Z',
   },
   {
     notification_id: 2,
@@ -18,7 +18,7 @@ const notificationsData: NotificationItem[] = [
     type: 'APPROVE_APPLICATION',
     is_read: false,
     back_url_link: '/applications/uuid-2',
-    created_at: '2024-12-01T09:30:00Z',
+    created_at: '2025-09-11T09:30:00Z',
   },
   {
     notification_id: 3,
@@ -27,7 +27,7 @@ const notificationsData: NotificationItem[] = [
     type: 'NEW_MEMBER_JOIN',
     is_read: true,
     back_url_link: '/studies/uuid-3',
-    created_at: '2024-12-01T08:45:00Z',
+    created_at: '2025-09-10T08:45:00Z',
   },
   {
     notification_id: 4,
