@@ -44,13 +44,6 @@ const mockReviews: Review[] = [
     comment: '실무에 바로 적용할 수 있는 내용들이 많아서 좋았습니다.',
     date: '2024-01-10',
   },
-  {
-    id: 3,
-    author: '이백엔드',
-    rating: 5,
-    comment: '강사님의 설명이 매우 명확하고 이해하기 쉬워요. 추천합니다!',
-    date: '2024-01-08',
-  },
 ]
 
 function CourseCard({
