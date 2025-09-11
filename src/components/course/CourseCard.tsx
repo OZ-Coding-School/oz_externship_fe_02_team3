@@ -24,7 +24,7 @@ interface CourseCardProps {
   reviewCount: number
   originalPrice: number
   price: number
-  reviews?: Review[] // 리뷰 데이터 추가
+  reviews?: Review[]
 }
 
 // 모크 리뷰 데이터
@@ -45,6 +45,72 @@ const mockReviews: Review[] = [
     date: '2024-01-10',
   },
 ]
+
+// 별점 렌더링 컴포넌트
+interface StarRatingProps {
+  rating: number
+  className?: string
+}
+
+function StarRating({ rating, className = '' }: StarRatingProps) {
+  const renderStars = () => {
+    return Array.from({ length: 5 }, (_, i) => (
+      <Icon
+        key={i}
+        icon={StarIcon}
+        className={
+          i < Math.floor(rating)
+            ? 'stroke-primary-400 fill-primary-400'
+            : 'stroke-primary-400'
+        }
+        size="sm"
+        fill={i < Math.floor(rating)}
+      />
+    ))
+  }
+
+  return <div className={`flex items-center ${className}`}>{renderStars()}</div>
+}
+
+// 리뷰 섹션 컴포넌트
+interface ReviewSectionProps {
+  reviews: Review[]
+  isExpanded: boolean
+}
+
+function ReviewSection({ reviews, isExpanded }: ReviewSectionProps) {
+  return (
+    <div
+      className={`overflow-hidden transition-all duration-300 ease-in-out ${
+        isExpanded ? 'mt-4 max-h-96 opacity-100' : 'max-h-0 opacity-0'
+      }`}
+    >
+      <div className="border-t border-gray-200 pt-4">
+        <h4 className="mb-3 text-sm font-semibold text-gray-900">
+          최근 리뷰 ({reviews.length}개)
+        </h4>
+        <div className="max-h-64 space-y-3 overflow-y-auto">
+          {reviews.map((review) => (
+            <div key={review.id} className="rounded-lg bg-gray-50 p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-gray-900">
+                    {review.author}
+                  </span>
+                  <StarRating rating={review.rating} />
+                </div>
+                <span className="text-xs text-gray-500">{review.date}</span>
+              </div>
+              <p className="text-sm leading-relaxed text-gray-700">
+                {review.comment}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function CourseCard({
   cardTitle,
@@ -67,28 +133,8 @@ function CourseCard({
     setIsReviewExpanded(!isReviewExpanded)
   }
 
-  const renderStars = (rating: number) => {
-    return [...Array(5)].map((_, i) => (
-      <Icon
-        key={i}
-        icon={StarIcon}
-        className={
-          i < Math.floor(rating)
-            ? 'stroke-primary-400 fill-primary-400'
-            : 'stroke-primary-400'
-        }
-        size="sm"
-        fill={i < Math.floor(rating)}
-      />
-    ))
-  }
-
   return (
-    <div
-      className={`flex w-full max-w-sm flex-col overflow-hidden rounded-xl border border-solid border-gray-200 transition-all duration-300 ${
-        isReviewExpanded ? 'h-auto' : 'h-auto min-h-[500px]'
-      }`}
-    >
+    <div className="flex w-full max-w-sm flex-col overflow-hidden rounded-xl border border-solid border-gray-200 transition-all duration-300">
       {/* 강의 썸네일 */}
       <div className="relative flex aspect-video flex-col bg-gray-100">
         <div className="h-full w-full bg-cover bg-center bg-no-repeat" />
@@ -120,9 +166,7 @@ function CourseCard({
 
         {/* 평점 */}
         <div className="flex items-center pb-3">
-          <div className="flex items-center pr-2">
-            {renderStars(reviewRating)}
-          </div>
+          <StarRating rating={reviewRating} className="pr-2" />
           <p className="text-sm font-medium text-gray-700">{reviewRating}</p>
           <p className="text-sm text-gray-500">({reviewCount}개 리뷰)</p>
         </div>
@@ -157,36 +201,8 @@ function CourseCard({
           <Button buttonInnerText="강의보러가기" />
         </div>
 
-        {/* 리뷰 섹션 - 확장 가능 */}
-        <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            isReviewExpanded ? 'mt-4 max-h-96 opacity-100' : 'max-h-0 opacity-0'
-          }`}
-        >
-          <div className="border-t border-gray-200 pt-4">
-            <h4 className="mb-3 text-sm font-semibold text-gray-900">
-              최근 리뷰 ({reviews.length}개)
-            </h4>
-            <div className="max-h-64 space-y-3 overflow-y-auto">
-              {reviews.map((review) => (
-                <div key={review.id} className="rounded-lg bg-gray-50 p-3">
-                  <div className="mb-2 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-900">
-                        {review.author}
-                      </span>
-                      <div className="flex">{renderStars(review.rating)}</div>
-                    </div>
-                    <span className="text-xs text-gray-500">{review.date}</span>
-                  </div>
-                  <p className="text-sm leading-relaxed text-gray-700">
-                    {review.comment}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+        {/* 리뷰 섹션 */}
+        <ReviewSection reviews={reviews} isExpanded={isReviewExpanded} />
       </div>
     </div>
   )
