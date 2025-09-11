@@ -13,7 +13,7 @@ import {
 import { useState } from 'react'
 import Calendar from '@src/components/commons/calendar/Calendar'
 import { useToast } from '@src/components/commons/toast'
-import TagCheckbox from '@src/components/commons/form/TagCheckbox'
+import TagCheckbox from '@src/components/commons/tag/TagCheckbox'
 
 export default function TestUIPage() {
   const [selectedCategory, setSelectedCategory] = useState('전체')
