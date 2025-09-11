@@ -8,18 +8,16 @@ const queryClient = new QueryClient()
 
 // MSW 초기화 (개발 환경에서만)
 async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {
+  // .env 파일 없이도 바로 사용 가능!
+  if (!import.meta.env.DEV) {
     return
   }
 
   const { worker } = await import('./mock/browser.ts')
-
-  // Start the worker
   return worker.start({
     onUnhandledRequest: 'bypass',
   })
 }
-
 enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>

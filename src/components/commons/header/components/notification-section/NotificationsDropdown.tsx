@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState, type RefObject } from 'react'
-import { fetchNotifications } from '@api/fetchNotifications'
 import { Z_INDEX } from '@constants/ui'
 import { cn } from '@utils/cn'
 import NotificationTabs from './NotificationTabs'
@@ -19,45 +18,23 @@ export default function NotificationsDropdown({
   notificationsDropdownRef,
   onUnreadCountChange,
 }: NotificationsDropdownProps) {
-  // const [notifications, setNotifications] = useState<NotificationItemType[]>([])
-  // const [notifications, setNotifications] = useState<NotificationItemType[]>([])
-  // const [loading, setLoading] = useState(false)
-  // const [error, setError] = useState<string | null>(null)
-  // const [notificationFilter, setNotificationFilter] = useState<
-  //   'all' | 'unread' | 'read'
-  // >('all')
-
-  const { notifications, loading, error, loadNotifications, markAllAsRead } =
-    useNotifications()
   const [notificationFilter, setNotificationFilter] = useState<
     'all' | 'unread' | 'read'
   >('all')
 
-  // const handleMarkAllAsRead = () => {
-  //   setNotifications((prev) =>
-  //     prev.map((notification) => ({
-  //       ...notification,
-  //       isRead: true,
-  //       isUnread: false,
-  //     }))
-  //   )
-  //   // 현재 '읽지않음' 탭이 선택되어 있다면 '전체보기'로 전환
-  //   setNotificationFilter('all')
-  // }
+  const { notifications, loading, error, loadNotifications, markAllAsRead } =
+    useNotifications()
 
-  // const handleMarkAllAsRead = () => {  // async 제거
-  //   setNotifications((prev) =>
-  //     prev.map((notification) => ({
-  //       ...notification,
-  //       is_read: true,
-  //     }))
-  //   )
-  //   setNotificationFilter('all')
-  // }
-  const handleMarkAllAsRead = () => {
-    markAllAsRead()
-    setNotificationFilter('all')
+  const handleMarkAllAsRead = async () => {
+    try {
+      await markAllAsRead()
+      setNotificationFilter('all')
+    } catch (error) {
+      // 에러는 useNotifications에서 처리되므로 여기서는 추가 처리 불필요
+      console.error('모두 읽음 처리 실패:', error)
+    }
   }
+
   const filteredNotifications = useMemo(() => {
     switch (notificationFilter) {
       case 'unread':
@@ -75,13 +52,14 @@ export default function NotificationsDropdown({
     onUnreadCountChange(unreadCount)
   }, [notifications, onUnreadCountChange])
 
+  // 초기 로딩시에만 전체 알림을 가져옴
   useEffect(() => {
     loadNotifications({
-      status: notificationFilter === 'all' ? 'all' : notificationFilter,
+      status: 'all', // 항상 전체 데이터 가져오기
       limit: 50,
       offset: 0,
     })
-  }, [notificationFilter, loadNotifications])
+  }, [loadNotifications])
 
   return (
     <div
@@ -116,17 +94,38 @@ export default function NotificationsDropdown({
         role="tabpanel"
       >
         {loading ? (
-          <div className="flex h-32 items-center justify-center text-sm text-gray-500">
-            로딩 중...
-          </div>
+          <>
+            {[1, 2, 3].map((index) => (
+              <div
+                key={index}
+                className="flex animate-pulse items-start gap-3 border-b border-gray-200 px-4 pt-[17px] pb-4"
+              >
+                {/* 아이콘 자리 */}
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200" />
+
+                {/* 콘텐츠 자리 */}
+                <div className="flex min-w-72 gap-1">
+                  <div className="flex flex-1 flex-col gap-1">
+                    <div className="h-4 w-full rounded bg-gray-200" />
+                    <div className="h-4 w-3/4 rounded bg-gray-200" />
+                    <div className="mt-1 h-3 w-16 rounded bg-gray-200" />
+                  </div>
+                  {/* 읽지 않음 표시 자리 */}
+                  <div className="flex pt-2">
+                    <div className="size-2 rounded-full bg-gray-200" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
         ) : error ? (
-          <div className="flex h-32 items-center justify-center text-sm text-red-500">
+          <div className="flex items-center justify-center text-sm text-red-500">
             {error}
           </div>
         ) : filteredNotifications.length !== 0 ? (
           filteredNotifications.map((notification) => (
             <NotificationItem
-              key={notification.notification_id} // 변경됨: id → notification_id
+              key={notification.notification_id}
               {...notification}
               setIsNotificationOpen={setIsNotificationOpen}
             />
