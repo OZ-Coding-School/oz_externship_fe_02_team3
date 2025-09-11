@@ -252,11 +252,11 @@ export const NOTIFICATION_ICON_CONFIG = [
 ]
 
 export const Z_INDEX = {
-  HEADER: 100,
-  DROPDOWN: 200,
-  MODAL: 1000,
-  POPUP: 1100,
-  TOAST: 1200,
+  HEADER: 'z-10',
+  DROPDOWN: 'z-20',
+  MODAL: 'z-30',
+  POPUP: 'z-40',
+  TOAST: 'z-50',
 } as const
 
 export const NAV_ITEMS = [
