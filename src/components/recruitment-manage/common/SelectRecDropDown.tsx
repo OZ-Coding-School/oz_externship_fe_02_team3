@@ -41,7 +41,7 @@ export default function SelectRecDropDown({ variant }: Props) {
       {open && (
         <ul
           role="listbox"
-          className={`z-[${Z_INDEX.DROPDOWN}] absolute right-0 left-0 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow`}
+          className={`${Z_INDEX.DROPDOWN} absolute right-0 left-0 mt-1 max-h-60 w-full overflow-auto rounded-lg border border-gray-200 bg-white shadow`}
         >
           {options.map((option) => (
             <li
