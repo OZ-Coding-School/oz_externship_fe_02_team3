@@ -5,6 +5,8 @@ import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import JobPostCard from '@components/commons/JobPostCard'
 import Button from '@components/commons/button/Button'
 import type { JobPost } from '@src/types/jobPosts'
+import { EmptyState } from '../commons/EmptyState'
+import { EMPTY_MESSAGES } from '@src/constants/ui'
 
 export default function RecruitmentList() {
   const [infiniteMode, setInfiniteMode] = useState(false)
@@ -65,6 +67,14 @@ export default function RecruitmentList() {
             <JobPostCard post={job} />
           </li>
         ))}
+        {/* 데이터가 없을 때의 상태 */}
+        <EmptyState
+          title={EMPTY_MESSAGES.NoData}
+          description="새로운 공고가 등록되면 이곳에 표시됩니다."
+          iconType="NoData"
+          iconClassName="stroke-primary-500 w-8 h-8"
+          iconContainerClassName="bg-primary-50 rounded-full w-20 h-20 flex items-center justify-center"
+        />
       </ul>
 
       <div className="flex h-30 items-center justify-center">

@@ -60,7 +60,7 @@ export default function NotificationsDropdown({
       ref={notificationsDropdownRef}
       className={cn(
         'absolute top-12 right-0 max-h-[819.2px] overflow-hidden rounded-lg border border-gray-200 bg-white',
-        `z-[${Z_INDEX.DROPDOWN}]`
+        `${Z_INDEX.DROPDOWN}`
       )}
       onClick={(e) => e.stopPropagation()}
     >

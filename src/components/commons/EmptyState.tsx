@@ -8,6 +8,7 @@ interface EmptyStateProps {
   iconType?: keyof typeof EMPTY_STATE_ICONS
   customIcon?: LucideIcon
   iconClassName?: string
+  iconContainerClassName?: string
 }
 
 export function EmptyState({
@@ -16,21 +17,22 @@ export function EmptyState({
   iconType = 'SEARCH_RESULTS',
   customIcon,
   iconClassName = 'stroke-gray-400',
+  iconContainerClassName,
 }: EmptyStateProps) {
   const IconComponent = customIcon || EMPTY_STATE_ICONS[iconType]
 
   return (
     <div className="flex items-center justify-center py-20">
-      <div className="text-center">
-        <div className="mb-6 flex justify-center">
+      <div className="flex flex-col items-center justify-center text-center">
+        <div className={`mb-6 flex justify-center ${iconContainerClassName}`}>
           <Icon
             icon={IconComponent}
             size="lg"
             className={`h-16 w-16 ${iconClassName}`}
           />
         </div>
-        <h3 className="text-lg font-medium text-gray-500">{title}</h3>
-        <p className="mt-2 text-sm text-gray-400">{description}</p>
+        <h4 className="pb-2 text-xl font-semibold text-gray-900">{title}</h4>
+        <p className="text-base text-gray-500">{description}</p>
       </div>
     </div>
   )

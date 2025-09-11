@@ -55,7 +55,7 @@ export default function Calendar({
       popperModifiers={[offset(8), shift({ padding: 8 })]}
       shouldCloseOnSelect
       calendarClassName="inline-block rounded-xl bg-white p-3 shadow-xl ring-1 ring-black/5 border-0"
-      popperClassName={`z-[${Z_INDEX.DROPDOWN}]`}
+      popperClassName={`${Z_INDEX.DROPDOWN}`}
       showPopperArrow={false}
       locale={ko}
       formatWeekDay={(n) => n.slice(0, 1)}

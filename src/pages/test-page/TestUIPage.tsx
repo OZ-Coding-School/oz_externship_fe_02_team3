@@ -4,7 +4,6 @@ import DropDown from '@src/components/commons/dropdown/DropDown'
 import PageLink from '@components/commons/page-link/PageLink'
 import ChatFloatButton from '@components/commons/chat/ChatFloatButton'
 import {
-  ChevronDown as ChevronDownIcon,
   FolderIcon,
   LogIn as LogInIcon,
   MousePointer2 as MousePointer2Icon,
@@ -14,23 +13,69 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import Calendar from '@src/components/commons/calendar/Calendar'
-import Toast from '@src/components/commons/toast/Toast'
+import { useToast } from '@src/components/commons/toast'
 
 export default function TestUIPage() {
   const [selectedCategory, setSelectedCategory] = useState('전체')
   const [selectedSort, setSelectedSort] = useState('인기순')
-  const [openToast, setOpenToast] = useState(false)
+  const toast = useToast()
 
   // 임시 데이터 (나중에 상수로 분리)
   const categories = [
-    '전체',
-    '프론트엔드',
-    'JavaScript',
-    'React',
-    '백엔드',
-    '클라우드',
+    { id: 1, name: '전체' },
+    { id: 2, name: '프론트엔드' },
+    { id: 3, name: 'JavaScript' },
+    { id: 4, name: 'React' },
+    { id: 5, name: '백엔드' },
+    { id: 6, name: '클라우드' },
+    { id: 7, name: 'Node.js' },
+    { id: 8, name: 'TypeScript' },
+    { id: 9, name: 'Python' },
+    { id: 10, name: 'Django' },
+    { id: 11, name: 'Spring' },
+    { id: 12, name: 'Vue.js' },
+    { id: 13, name: 'Angular' },
+    { id: 14, name: 'Svelte' },
+    { id: 15, name: 'Next.js' },
+    { id: 16, name: 'Nuxt.js' },
+    { id: 17, name: 'Express' },
+    { id: 18, name: 'NestJS' },
+    { id: 19, name: 'GraphQL' },
+    { id: 20, name: 'Redux' },
+    { id: 21, name: 'MobX' },
+    { id: 22, name: 'Recoil' },
+    { id: 23, name: 'Jest' },
+    { id: 24, name: 'Cypress' },
+    { id: 25, name: 'Storybook' },
+    { id: 26, name: 'Webpack' },
+    { id: 27, name: 'Vite' },
+    { id: 28, name: 'Babel' },
+    { id: 29, name: 'ESLint' },
+    { id: 30, name: 'Prettier' },
+    { id: 31, name: 'Git' },
+    { id: 32, name: 'GitHub Actions' },
+    { id: 33, name: 'CI/CD' },
+    { id: 34, name: 'AWS' },
+    { id: 35, name: 'GCP' },
+    { id: 36, name: 'Azure' },
+    { id: 37, name: 'Firebase' },
+    { id: 38, name: 'Docker' },
+    { id: 39, name: 'Kubernetes' },
+    { id: 40, name: 'Linux' },
+    { id: 41, name: 'Figma' },
+    { id: 42, name: 'UI/UX' },
+    { id: 43, name: '모바일' },
+    { id: 44, name: 'iOS' },
+    { id: 45, name: 'Android' },
+    { id: 46, name: 'Flutter' },
+    { id: 47, name: 'React Native' },
   ]
-  const sortOptions = ['인기순', '최신순', '가격낮은순', '평점높은순']
+  const sortOptions = [
+    { id: 1, name: '인기순' },
+    { id: 2, name: '최신순' },
+    { id: 3, name: '가격낮은순' },
+    { id: 4, name: '평점높은순' },
+  ]
   const [date, setDate] = useState<Date | null>(null)
   return (
     <>
@@ -41,18 +86,14 @@ export default function TestUIPage() {
           options={categories}
           onSelect={setSelectedCategory}
           leftIcon={FolderIcon}
-          rightIcon={ChevronDownIcon}
           placeholder="카테고리 선택"
-          className="w-fit"
         />
         {/* 정렬 드롭다운 */}
         <DropDown
           selected={selectedSort}
           options={sortOptions}
           onSelect={setSelectedSort}
-          rightIcon={ChevronDownIcon}
           placeholder="정렬 선택"
-          className="w-fit"
         />
 
         {/* 비활성화된 드롭다운 */}
@@ -60,7 +101,6 @@ export default function TestUIPage() {
           selected="비활성화됨"
           options={[]}
           disabled
-          rightIcon={ChevronDownIcon}
           className="w-fit"
         />
 
@@ -126,26 +166,44 @@ export default function TestUIPage() {
         />
 
         {/* 뱃지 */}
-        <Badge badgeTitle="거절됨" sideClass="bg-danger-100 text-danger-800" />
+        <Badge badgeTitle="거절됨" className="bg-danger-100 text-danger-800" />
       </div>
       <div className="flex gap-2">
+        {/* 토스트 알림 컴포넌트 태스트 */}
+
         <Button
-          buttonInnerText="토스트 띄우기"
-          size="base"
-          onClick={() => setOpenToast(true)}
+          buttonInnerText="성공 토스트"
+          onClick={() =>
+            toast.success({
+              title: '성공적으로 저잘되었습니다.',
+              content: '변경사항이 성공적으로 적용되었습니다.',
+              showBar: true,
+            })
+          }
+        />
+        <Button
+          buttonInnerText="에러 토스트"
+          onClick={() =>
+            toast.error({
+              title: '주의가 필요합니다.',
+              content: '일부 정보가 누락되었습니다. 확인 후 다시 시도해주세요.',
+              showBar: true,
+            })
+          }
+        />
+        <Button
+          buttonInnerText="경고 토스트"
+          onClick={() =>
+            toast.warning({
+              title: '오류가 발생했습니다.',
+              content: '네트워크 연결을 확인하고 다시 시도해주세요.',
+
+              showBar: true,
+            })
+          }
         />
       </div>
-      {/* 토스트 알림 컴포넌트 태스트 */}
-      {openToast && (
-        <Toast
-          type="success"
-          title="저장 완료"
-          onClose={() => setOpenToast(false)}
-          showBar
-        >
-          변경사항이 성공적으로 저장되었습니다.
-        </Toast>
-      )}
+
       <ChatFloatButton />
       <Calendar
         value={date}

@@ -1,4 +1,4 @@
-import { EmptyState } from './EmptyState'
+import { EmptyState } from '../commons/EmptyState'
 import CourseCardWithBookmark from './CourseCardWithBookmark'
 import {
   EMPTY_MESSAGES,
@@ -20,6 +20,8 @@ export default function CourseGrid({ courses, onBookmark }: CourseGridProps) {
         title={EMPTY_MESSAGES.FILTERED_COURSES}
         description="다른 검색어나 필터를 시도해보세요."
         iconType="FILTERED_COURSES"
+        iconClassName="stroke-gray-400 w-8 h-8"
+        iconContainerClassName="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center"
       />
     )
   }

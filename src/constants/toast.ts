@@ -5,8 +5,7 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { TOAST } from './ui'
-
-export type ToastType = 'success' | 'error' | 'warning'
+import type { ToastType } from '@src/types/toast'
 
 export const TOAST_DEFAULTS = {
   durationMs: TOAST.DEFAULT_DURATION, // ul.ts 공통상수

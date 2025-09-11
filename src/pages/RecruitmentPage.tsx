@@ -2,6 +2,7 @@ import { useState } from 'react'
 import UserRecruitment from '@components/recruitment/user-recruitment/UserRecruitment'
 import RecruitmentList from '@components/recruitment/RecruitmentList'
 import RecruitmentHeader from '@components/recruitment/RecruitmentHeader'
+import SearchFilterBar from '@src/components/recruitment/srearch-filter-bar/SearchFilterBar'
 
 export default function RecruitmentPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -19,6 +20,7 @@ export default function RecruitmentPage() {
       </button>
       <RecruitmentHeader />
       <UserRecruitment isAuthenticated={isAuthenticated} />
+      <SearchFilterBar />
       <RecruitmentList />
     </div>
   )
