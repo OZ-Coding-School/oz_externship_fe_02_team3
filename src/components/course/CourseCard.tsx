@@ -140,11 +140,11 @@ function CourseCard({
         <div className="h-full w-full bg-cover bg-center bg-no-repeat" />
         <div className="absolute top-3 right-2 left-2 flex justify-between">
           <div className="flex flex-col items-start gap-4">
-            <Badge badgeTitle="Udemy" sideClass="bg-primary-500 text-white" />
+            <Badge badgeTitle="Udemy" className="bg-primary-500 text-white" />
             {isDiscounted && (
               <Badge
                 badgeTitle={`${discountPercentage}% 할인`}
-                sideClass="bg-danger-500 text-white"
+                className="bg-danger-500 text-white"
               />
             )}
           </div>
@@ -154,7 +154,7 @@ function CourseCard({
       {/* 강의 정보 */}
       <div className="flex flex-grow flex-col p-5">
         <div className="pb-3">
-          <Badge badgeTitle="클라우드" sideClass="bg-gray-100 text-gray-700" />
+          <Badge badgeTitle="클라우드" className="bg-gray-100 text-gray-700" />
           <p className="line-clamp-2 pt-2 pb-1 text-lg leading-7 font-semibold text-gray-900">
             {cardTitle}
           </p>

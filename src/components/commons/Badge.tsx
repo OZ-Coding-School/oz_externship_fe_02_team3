@@ -1,19 +1,22 @@
 import { cn } from '@utils/cn'
+import type { ReactNode } from 'react'
 interface BadgeProps {
+  children?: ReactNode
   badgeTitle: string
-  sideClass?: string
+  className?: string
 }
 
-function Badge({ badgeTitle, sideClass = '' }: BadgeProps) {
+function Badge({ children, badgeTitle, className }: BadgeProps) {
+  const content = children ?? badgeTitle
   return (
-    <p
+    <span
       className={cn(
         'flex w-fit items-center justify-center rounded px-2 py-1 text-xs',
-        sideClass
+        className
       )}
     >
-      {badgeTitle}
-    </p>
+      {content}
+    </span>
   )
 }
 

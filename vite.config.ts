@@ -14,11 +14,11 @@ export default defineConfig({
         new URL('./src/components', import.meta.url)
       ),
       '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
-      '@hooks': fileURLToPath(new URL('./src/hook', import.meta.url)),
+      '@hooks': fileURLToPath(new URL('./src/hooks', import.meta.url)),
       '@assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
       '@api': fileURLToPath(new URL('./src/api', import.meta.url)),
       '@store': fileURLToPath(new URL('./src/store', import.meta.url)),
-      '@type': fileURLToPath(new URL('./src/type', import.meta.url)),
+      '@types': fileURLToPath(new URL('./src/types', import.meta.url)),
       '@utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
       '@mock': fileURLToPath(new URL('./src/mock', import.meta.url)),
       '@constants': fileURLToPath(new URL('./src/constants', import.meta.url)),

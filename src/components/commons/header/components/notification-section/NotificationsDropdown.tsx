@@ -60,7 +60,7 @@ export default function NotificationsDropdown({
       ref={notificationsDropdownRef}
       className={cn(
         'absolute top-12 right-0 max-h-[819.2px] overflow-hidden rounded-lg border border-gray-200 bg-white',
-        `z-[${Z_INDEX.DROPDOWN}]`
+        `${Z_INDEX.DROPDOWN}`
       )}
       onClick={(e) => e.stopPropagation()}
     >
@@ -83,7 +83,10 @@ export default function NotificationsDropdown({
         notifications={notifications}
       />
 
-      <div className="flex max-h-80 flex-col overflow-y-auto" role="tabpanel">
+      <div
+        className="scrollbar-hide flex max-h-80 flex-col overflow-y-auto"
+        role="tabpanel"
+      >
         {filteredNotifications.length !== 0 ? (
           filteredNotifications.map((notification) => (
             <NotificationItem

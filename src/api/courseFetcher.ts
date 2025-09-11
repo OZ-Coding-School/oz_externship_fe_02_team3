@@ -1,5 +1,4 @@
-import type { Course } from '../types/course'
-import { mockCoursesData } from '../types/course'
+import { mockCoursesData, type Course } from '../types/course'
 
 interface FetchErrorData {
   message: string
@@ -49,6 +48,9 @@ export const courseFetcher = {
       await new Promise((resolve) => setTimeout(resolve, 1000))
       return normalizeMockData()
     } catch (error) {
+      // 린트오류 통과를 위한 임시 콘솔
+      console.log(error)
+
       throw new FetchError(
         '강의 목록을 불러오는데 실패했습니다.',
         500,
@@ -67,6 +69,7 @@ export const courseFetcher = {
       const normalizedData = normalizeMockData()
       return normalizedData.filter((course) => course.category === category)
     } catch (error) {
+      console.log(error)
       throw new FetchError(
         `카테고리 '${category}' 강의를 불러오는데 실패했습니다.`,
         500,
@@ -90,6 +93,7 @@ export const courseFetcher = {
           course.description.toLowerCase().includes(query.toLowerCase())
       )
     } catch (error) {
+      console.log(error)
       throw new FetchError(
         `'${query}' 검색에 실패했습니다.`,
         500,
@@ -111,6 +115,7 @@ export const courseFetcher = {
         .sort((a, b) => b.reviewCount - a.reviewCount)
         .slice(0, limit)
     } catch (error) {
+      console.log(error)
       throw new FetchError(
         '추천 강의를 불러오는데 실패했습니다.',
         500,

@@ -54,7 +54,7 @@ export default function Chatting({ toggleChat }: ChatProps) {
           onClose={toggleChat}
         />
         <ParticipantsList participants={selectedChatRoom.participants} />
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1">
           <MessageList messages={selectedChatRoom.messages} />
         </div>
         <MessageInput onSend={sendMessage} />

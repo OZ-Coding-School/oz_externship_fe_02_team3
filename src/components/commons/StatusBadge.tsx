@@ -10,5 +10,5 @@ const STATUS_MAP: Record<Status, { text: string; cls: string }> = {
 
 export default function StatusBadge({ status }: { status: Status }) {
   const parsedStatus = STATUS_MAP[status]
-  return <Badge badgeTitle={parsedStatus.text} sideClass={parsedStatus.cls} />
+  return <Badge badgeTitle={parsedStatus.text} className={parsedStatus.cls} />
 }

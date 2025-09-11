@@ -3,12 +3,13 @@ import Icon from '@src/components/commons/Icon'
 import type { LucideIcon } from 'lucide-react'
 import type { ButtonHTMLAttributes } from 'react'
 import { cn } from '@utils/cn'
+type SvgComponent = React.FC<React.SVGProps<SVGSVGElement>>
 
 interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     ButtonClassProps {
   buttonInnerText?: string
-  icon?: LucideIcon
+  icon?: LucideIcon | SvgComponent
   iconClassName?: string
   iconSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   ariaLabel?: string

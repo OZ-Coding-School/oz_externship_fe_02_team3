@@ -4,15 +4,18 @@ import MainLayout from '@layouts/MainLayout'
 import TestHub from '@src/pages/test-page/TestHub'
 import TestApplicationModalPage from './pages/test-page/TestModalPage'
 import { ROUTES } from './constants/routes'
-import RecruitmentPase from '@src/pages/recruitment-page/RecruitmentPage'
+import RecruitmentPase from '@pages/RecruitmentPage'
 import TestUIPage from './pages/test-page/TestUIPage'
 import RecruitmentManage from '@pages/RecruitmentManage'
+import RecruitmentCreate from './pages/RecruitmentCreate'
 import CoursesPage from './pages/CoursesPage'
+import { ToastPorvider } from './components/commons/toast'
 
 const routes = [
   { path: ROUTES.HOME, element: <TestHub /> },
   { path: ROUTES.RECRUITMENT, element: <RecruitmentPase /> },
   { path: ROUTES.RECRUITMENT_MANAGE, element: <RecruitmentManage /> },
+  { path: ROUTES.RECRUITMENT_CREATE, element: <RecruitmentCreate /> },
   { path: '/test/ApplicationModal', element: <TestApplicationModalPage /> },
   { path: '/test/UI', element: <TestUIPage /> },
   { path: ROUTES.COURSES, element: <CoursesPage /> },
@@ -20,12 +23,14 @@ const routes = [
 
 export default function App() {
   return (
-    <Routes>
-      <Route element={<MainLayout />}>
-        {routes.map((route) => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))}
-      </Route>
-    </Routes>
+    <ToastPorvider max={5}>
+      <Routes>
+        <Route element={<MainLayout />}>
+          {routes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+        </Route>
+      </Routes>
+    </ToastPorvider>
   )
 }

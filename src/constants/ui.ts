@@ -4,6 +4,7 @@ import {
   Search,
   AlertCircle,
   XCircle,
+  Inbox as NoDataIcon,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -131,6 +132,7 @@ export const EMPTY_MESSAGES = {
   FILTERED_COURSES: '해당 조건의 강의가 없습니다.',
   BOOKMARKS: '북마크한 강의가 없습니다.',
   SEARCH_RESULTS: '검색 결과가 없습니다.',
+  NoData: '공고가 없습니다',
   FALLBACK: '데이터가 없습니다.',
 } as const
 
@@ -142,6 +144,7 @@ export const EMPTY_STATE_ICONS: Record<
   FILTERED_COURSES: Search,
   BOOKMARKS: BookOpen,
   SEARCH_RESULTS: Search,
+  NoData: NoDataIcon,
   FALLBACK: AlertCircle,
 } as const
 
@@ -249,11 +252,11 @@ export const NOTIFICATION_ICON_CONFIG = [
 ]
 
 export const Z_INDEX = {
-  HEADER: 100,
-  DROPDOWN: 200,
-  MODAL: 1000,
-  POPUP: 1100,
-  TOAST: 1200,
+  HEADER: 'z-10',
+  DROPDOWN: 'z-20',
+  MODAL: 'z-30',
+  POPUP: 'z-40',
+  TOAST: 'z-50',
 } as const
 
 export const NAV_ITEMS = [
