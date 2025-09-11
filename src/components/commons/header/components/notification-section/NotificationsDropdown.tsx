@@ -8,7 +8,6 @@ import { useNotifications } from '@src/hooks/useNotifications'
 
 interface NotificationsDropdownProps {
   setIsNotificationOpen: (isNotificationOpen: boolean) => void
-  /** 부모에서 useOutsideClick에 연결된 패널 ref를 그대로 전달 */
   notificationsDropdownRef: RefObject<HTMLDivElement | null>
   onUnreadCountChange: (count: number) => void
 }
