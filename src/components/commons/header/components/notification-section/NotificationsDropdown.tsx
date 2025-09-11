@@ -29,7 +29,6 @@ export default function NotificationsDropdown({
       await markAllAsRead()
       setNotificationFilter('all')
     } catch (error) {
-      // 에러는 useNotifications에서 처리되므로 여기서는 추가 처리 불필요
       console.error('모두 읽음 처리 실패:', error)
     }
   }
