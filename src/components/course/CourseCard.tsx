@@ -2,19 +2,13 @@ import { useState } from 'react'
 import {
   ChevronDown as ChevronDownIcon,
   ChevronUp as ChevronUpIcon,
-  Star as StarIcon,
 } from 'lucide-react'
 import Badge from '@components/commons/Badge'
 import Button from '@components/commons/button/Button'
 import Icon from '@components/commons/Icon'
-
-interface Review {
-  id: number
-  author: string
-  rating: number
-  comment: string
-  date: string
-}
+import StarRating from './StarRating'
+import ReviewSection from './ReviewSection'
+import { mockReviews, type Review } from '@src/mock/reviewData'
 
 interface CourseCardProps {
   cardTitle: string
@@ -27,92 +21,7 @@ interface CourseCardProps {
   reviews?: Review[]
 }
 
-// 모크 리뷰 데이터
-const mockReviews: Review[] = [
-  {
-    id: 1,
-    author: '김개발자',
-    rating: 5,
-    comment:
-      '정말 유익한 강의였습니다. AWS의 기초부터 고급까지 잘 설명되어 있어요.',
-    date: '2024-01-15',
-  },
-  {
-    id: 2,
-    author: '박클라우드',
-    rating: 4,
-    comment: '실무에 바로 적용할 수 있는 내용들이 많아서 좋았습니다.',
-    date: '2024-01-10',
-  },
-]
-
-// 별점 렌더링 컴포넌트
-interface StarRatingProps {
-  rating: number
-  className?: string
-}
-
-function StarRating({ rating, className = '' }: StarRatingProps) {
-  const renderStars = () => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Icon
-        key={i}
-        icon={StarIcon}
-        className={
-          i < Math.floor(rating)
-            ? 'stroke-primary-400 fill-primary-400'
-            : 'stroke-primary-400'
-        }
-        size="sm"
-        fill={i < Math.floor(rating)}
-      />
-    ))
-  }
-
-  return <div className={`flex items-center ${className}`}>{renderStars()}</div>
-}
-
-// 리뷰 섹션 컴포넌트
-interface ReviewSectionProps {
-  reviews: Review[]
-  isExpanded: boolean
-}
-
-function ReviewSection({ reviews, isExpanded }: ReviewSectionProps) {
-  return (
-    <div
-      className={`overflow-hidden transition-all duration-300 ease-in-out ${
-        isExpanded ? 'mt-4 max-h-96 opacity-100' : 'max-h-0 opacity-0'
-      }`}
-    >
-      <div className="border-t border-gray-200 pt-4">
-        <h4 className="mb-3 text-sm font-semibold text-gray-900">
-          최근 리뷰 ({reviews.length}개)
-        </h4>
-        <div className="max-h-64 space-y-3 overflow-y-auto">
-          {reviews.map((review) => (
-            <div key={review.id} className="rounded-lg bg-gray-50 p-3">
-              <div className="mb-2 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-gray-900">
-                    {review.author}
-                  </span>
-                  <StarRating rating={review.rating} />
-                </div>
-                <span className="text-xs text-gray-500">{review.date}</span>
-              </div>
-              <p className="text-sm leading-relaxed text-gray-700">
-                {review.comment}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function CourseCard({
+export default function CourseCard({
   cardTitle,
   author,
   cardDescription,
@@ -207,5 +116,3 @@ function CourseCard({
     </div>
   )
 }
-
-export default CourseCard
