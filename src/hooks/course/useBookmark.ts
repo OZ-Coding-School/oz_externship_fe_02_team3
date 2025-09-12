@@ -7,8 +7,6 @@ export const useBookmark = (): UseBookmarkReturn => {
   const toggleBookmark = useCallback(
     (courseId: number, isBookmarked: boolean): void => {
       // TODO: API 호출 로직
-      console.log(`Course ${courseId} bookmark status: ${isBookmarked}`)
-
       setBookmarkedIds((prev) => {
         const newSet = new Set(prev)
         if (isBookmarked) {

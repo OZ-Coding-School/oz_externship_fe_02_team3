@@ -18,16 +18,39 @@ export interface Course {
   provider?: string
 }
 
-export const normalizeCourse = (course: any): Course => {
+// 정규화되지 않은 강의 데이터 타입 (외부 API에서 받을 수 있는 형태)
+export interface RawCourseData {
+  id: number
+  title: string
+  author?: string
+  instructor?: string
+  description: string
+  reviewRating?: number
+  rating?: number
+  reviewCount: number
+  originalPrice: number
+  price: number
+  image?: string
+  category: string
+  platform?: string
+  provider?: string
+  discountPercentage?: number
+  isBestseller?: boolean
+}
+
+export const normalizeCourse = (course: RawCourseData): Course => {
   return {
     ...course,
-    instructor: course.instructor || course.author,
-    rating: course.rating || course.reviewRating,
-    provider: course.provider || course.platform,
+    author: course.author || course.instructor || '',
+    instructor: course.instructor || course.author || '',
+    reviewRating: course.reviewRating || course.rating || 0,
+    rating: course.rating || course.reviewRating || 0,
+    platform: course.platform || course.provider || '',
+    provider: course.provider || course.platform || '',
   }
 }
 
-export const denormalizeCourse = (course: Course) => {
+export const denormalizeCourse = (course: Course): RawCourseData => {
   return {
     ...course,
     author: course.author || course.instructor,
@@ -267,4 +290,7 @@ export const categories = [
   '데이터사이언스',
   '게임개발',
   '모바일',
-]
+] as const
+
+// 카테고리 타입 추출
+export type CategoryType = (typeof categories)[number]
