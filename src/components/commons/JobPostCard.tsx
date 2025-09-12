@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import Badge from './Badge'
 import Icon from './Icon'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@src/constants/routes'
 import type { JobPost } from '@src/types/jobPosts'
 
@@ -25,6 +25,8 @@ export default function JobPostCard({
   onClickApply,
   editTo,
 }: JobPostCardProps) {
+  const NAVIGATE = useNavigate()
+
   if (!post) return null
 
   const {
@@ -69,17 +71,21 @@ export default function JobPostCard({
                   className="stroke-gray-500"
                 />
                 <p className="text-sm text-gray-500">{commentCount}</p>
+                {editTo && (
+                  <button
+                    type="button"
+                    aria-label="스터디 공고 수정"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      NAVIGATE(editTo)
+                    }}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+                  >
+                    <PencilIcon size={16} className="stroke-gray-500" />
+                  </button>
+                )}
               </div>
-
-              {editTo && (
-                <Link
-                  to={editTo}
-                  className="inline-flex h-7 w-7 items-center justify-center rounded-full hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <PencilIcon size={16} className="stroke-gray-500" />
-                </Link>
-              )}
             </div>
           </div>
 
