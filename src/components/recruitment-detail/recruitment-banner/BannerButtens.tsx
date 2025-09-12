@@ -12,6 +12,7 @@ export function BannerButtens({ onBookmark, onClick }: BannerButtensProps) {
       <Button
         icon={BookmarkIcon}
         variant="outline"
+        aria-label="북마크"
         className="rounded-md"
         onClick={onBookmark}
       />
@@ -19,6 +20,7 @@ export function BannerButtens({ onBookmark, onClick }: BannerButtensProps) {
         icon={SendIcon}
         iconSize="sm"
         buttonInnerText="지원하기"
+        aria-label="지원하기"
         className="w-[130px] text-base font-normal"
         onClick={onClick}
       />
