@@ -6,6 +6,7 @@ import {
   XCircle,
   Inbox as NoDataIcon,
   type LucideIcon,
+  Tag,
 } from 'lucide-react'
 
 // 페이지네이션 설정
@@ -134,6 +135,7 @@ export const EMPTY_MESSAGES = {
   SEARCH_RESULTS: '검색 결과가 없습니다.',
   NoData: '공고가 없습니다',
   FALLBACK: '데이터가 없습니다.',
+  TAG: '선택된 태그가 없습니다.',
 } as const
 
 export const EMPTY_STATE_ICONS: Record<
@@ -146,6 +148,7 @@ export const EMPTY_STATE_ICONS: Record<
   SEARCH_RESULTS: Search,
   NoData: NoDataIcon,
   FALLBACK: AlertCircle,
+  TAG: Tag,
 } as const
 
 // 에러 메시지와 아이콘

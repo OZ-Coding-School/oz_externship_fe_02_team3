@@ -1,6 +1,7 @@
 import { FileUploadBox } from '@src/components/recruitment-create/FileUploadBox'
 import { ImageUploadBox } from '@src/components/recruitment-create/ImageUploadBox'
 import StudyIntroMarkdown from '@src/components/recruitment-create/StudyIntroMarkdown'
+import TagBox from '@src/components/recruitment-create/tag-ui/TagBox'
 import { useState } from 'react'
 
 export default function RecruitmentCreate() {
@@ -13,6 +14,9 @@ export default function RecruitmentCreate() {
       </div>
       <div className="mt-20">
         <FileUploadBox />
+      </div>
+      <div className="mt-20">
+        <TagBox />
       </div>
     </div>
   )
