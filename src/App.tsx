@@ -10,10 +10,12 @@ import RecruitmentManage from '@pages/RecruitmentManage'
 import RecruitmentCreate from './pages/RecruitmentCreate'
 import CoursesPage from './pages/CoursesPage'
 import { ToastPorvider } from './components/commons/toast'
+import RecruitmentDetailPage from './pages/RecruitmentDetailPage'
 
 const routes = [
   { path: ROUTES.HOME, element: <TestHub /> },
   { path: ROUTES.RECRUITMENT, element: <RecruitmentPase /> },
+  { path: ROUTES.RECRUITMENT_DETAIL, element: <RecruitmentDetailPage /> },
   { path: ROUTES.RECRUITMENT_MANAGE, element: <RecruitmentManage /> },
   { path: ROUTES.RECRUITMENT_CREATE, element: <RecruitmentCreate /> },
   { path: '/test/ApplicationModal', element: <TestApplicationModalPage /> },
