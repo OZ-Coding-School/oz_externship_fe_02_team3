@@ -81,12 +81,10 @@ export default function NotificationItem({
   const navigate = useNavigate()
   const readNotificationMutation = useReadNotification()
 
-  // const { readNotification } = useNotifications()
   const handleNotificationClick = () => {
     if (notification.is_read || readNotificationMutation.isPending) {
       setIsNotificationOpen(false)
-      // 선택적: 페이지 이동 로직 추가
-      // if (notification.link) navigate(notification.link)
+      if (notification.redirect_url) navigate(notification.redirect_url)
       return
     }
 
