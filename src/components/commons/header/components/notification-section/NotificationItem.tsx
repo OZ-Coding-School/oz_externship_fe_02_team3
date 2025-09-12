@@ -22,6 +22,7 @@ const iconMap = {
   REMINDER: BellIcon,
 }
 import type { NotificationItem as NotificationItemType } from '@src/types/notification'
+import { useReadNotification } from '@src/hooks/useNotifications'
 
 const getNotificationIcon = (type: NotificationItemType['type']) => {
   const IconComponent = iconMap[type] || BellIcon
@@ -76,12 +77,28 @@ export default function NotificationItem({
   setIsNotificationOpen,
   ...notification
 }: NotificationItemProps) {
+  const { notification_id } = notification
   const navigate = useNavigate()
+  const readNotificationMutation = useReadNotification()
+
   const handleNotificationClick = () => {
-    if (notification.back_url_link) {
-      navigate(notification.back_url_link)
+    if (notification.is_read || readNotificationMutation.isPending) {
+      setIsNotificationOpen(false)
+      if (notification.redirect_url) navigate(notification.redirect_url)
+      return
     }
-    setIsNotificationOpen(false)
+
+    readNotificationMutation.mutate(notification_id, {
+      onError: (error) => {
+        console.error('읽음 처리 실패:', error)
+      },
+      onSuccess: () => {
+        console.log('읽음 처리 성공!')
+        setIsNotificationOpen(false)
+      },
+    })
+
+    // setIsNotificationOpen(false)
   }
   return (
     <div
@@ -89,7 +106,7 @@ export default function NotificationItem({
         'flex cursor-pointer items-start gap-3 border-b border-gray-200 px-4 pt-[17px] pb-4 transition-colors hover:bg-gray-50',
         !notification.is_read ? 'bg-primary-50' : 'bg-white'
       )}
-      onClick={handleNotificationClick}
+      onClick={() => handleNotificationClick()}
     >
       {getNotificationIcon(notification.type)}
       <div className="flex min-w-72 gap-1">

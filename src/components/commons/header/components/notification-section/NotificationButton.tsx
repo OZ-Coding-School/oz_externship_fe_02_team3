@@ -1,9 +1,9 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useOutsideClick } from '@src/hooks/useOutsideClick'
 import Icon from '@components/commons/Icon'
-import chatData from '@mock/chatData'
 import { Bell as BellIcon } from 'lucide-react'
 import NotificationsDropdown from './NotificationsDropdown'
+import { useUnreadCountQuery } from '@hooks/useNotifications'
 
 interface NotificationButtonProps {
   isNotificationOpen: boolean
@@ -18,12 +18,10 @@ export default function NotificationButton({
   isUserMenuOpen,
   setIsUserMenuOpen,
 }: NotificationButtonProps) {
-  const notificationButtonRef = useRef<HTMLDivElement>(null)
-  const initialUnreadCount = chatData.reduce((total, chat) => {
-    return total + (chat.unreadCount || 0)
-  }, 0)
-  const [unreadCount, setUnreadCount] = useState(initialUnreadCount)
+  const { unreadCount } = useUnreadCountQuery()
+
   const notificationsDropdownRef = useRef<HTMLDivElement>(null)
+  const notificationButtonRef = useRef<HTMLDivElement>(null)
 
   const handleNotificationToggle = () => {
     // 마이페이지 ui가 열려있다면 마이페이지 ui 닫기
@@ -56,7 +54,6 @@ export default function NotificationButton({
         <NotificationsDropdown
           notificationsDropdownRef={notificationsDropdownRef}
           setIsNotificationOpen={setIsNotificationOpen}
-          onUnreadCountChange={setUnreadCount}
         />
       )}
     </div>

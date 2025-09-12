@@ -1,7 +1,14 @@
 // src/mocks/handlers.ts
 import { http, HttpResponse } from 'msw'
 import notificationsData from './notificationsData'
-import type { NotificationResponse } from '@src/types/notification'
+import type {
+  NotificationItem,
+  NotificationResponse,
+} from '@src/types/notification'
+
+// 변경 가능한 알림 데이터 선언
+
+let mutableNotificationsData: NotificationItem[] = [...notificationsData]
 
 // JWT 토큰 검증 헬퍼 함수
 const validateAuth = (request: Request) => {
@@ -26,29 +33,47 @@ const validateAuth = (request: Request) => {
 }
 
 export const handlers = [
-  // 알림 조회 API 모킹
+  // 전체 알림 목록 조회 API 모킹
   http.get('/api/v1/notifications', ({ request }) => {
+    const auth = validateAuth(request)
+    if (!auth.isValid) {
+      return HttpResponse.json(
+        { detail: 'Not authenticated.' },
+        { status: 401 }
+      )
+    }
+
     const url = new URL(request.url)
     const status = url.searchParams.get('status') || 'all'
     const limit = parseInt(url.searchParams.get('limit') || '10')
     const offset = parseInt(url.searchParams.get('offset') || '0')
 
-    let filteredNotifications = notificationsData
+    let filteredNotifications = mutableNotificationsData
 
-    // status 필터링
     if (status === 'read') {
-      filteredNotifications = notificationsData.filter((item) => item.is_read)
+      filteredNotifications = mutableNotificationsData.filter(
+        (item) => item.is_read
+      )
     } else if (status === 'unread') {
-      filteredNotifications = notificationsData.filter((item) => !item.is_read)
+      filteredNotifications = mutableNotificationsData.filter(
+        (item) => !item.is_read
+      )
     }
 
-    // 페이지네이션 적용
     const start = offset
     const end = offset + limit
     const paginatedResults = filteredNotifications.slice(start, end)
 
+    const simulatedTotalCount = {
+      all: 123,
+      unread: 45,
+      read: 78,
+    }
+
     const response: NotificationResponse = {
-      count: filteredNotifications.length,
+      count:
+        simulatedTotalCount[status as 'all' | 'unread' | 'read'] ||
+        simulatedTotalCount.all,
       next:
         end < filteredNotifications.length
           ? `?offset=${end}&limit=${limit}`
@@ -73,7 +98,68 @@ export const handlers = [
       )
     }
 
-    // API 명세서에 따라 204 No Content 응답 (응답 본문 없음)
+    // 모든 알림을 읽음 상태로 변경
+    mutableNotificationsData = mutableNotificationsData.map((notification) => ({
+      ...notification,
+      is_read: true,
+    }))
+
     return new HttpResponse(null, { status: 204 })
+  }),
+
+  // 특정 알림 읽음 처리 API (API 명세서 기반)
+  http.post('/api/v1/notifications/:id/read', ({ request, params }) => {
+    const auth = validateAuth(request)
+    if (!auth.isValid) {
+      return HttpResponse.json(
+        { detail: 'Not authenticated.' },
+        { status: 401 }
+      )
+    }
+    const notificationId = Number(params.id)
+
+    // 유효하지 않은 ID
+    if (isNaN(notificationId) || notificationId <= 0) {
+      return HttpResponse.json(
+        { detail: 'The request body is invalid.' },
+        { status: 400 }
+      )
+    }
+
+    const targetIndex = mutableNotificationsData.findIndex(
+      (item) => item.notification_id === notificationId
+    )
+
+    // 알림을 찾을 수 없음
+    if (targetIndex === -1) {
+      return HttpResponse.json(
+        { detail: 'Notification not found.' },
+        { status: 404 }
+      )
+    }
+
+    mutableNotificationsData[targetIndex] = {
+      ...mutableNotificationsData[targetIndex],
+      is_read: true,
+    }
+
+    return HttpResponse.json(mutableNotificationsData[targetIndex])
+  }),
+
+  // 읽지 않은 개수 조회 API
+  http.get('/api/v1/notifications/unread-count', ({ request }) => {
+    const auth = validateAuth(request)
+    if (!auth.isValid) {
+      return HttpResponse.json(
+        { detail: 'Not authenticated.' },
+        { status: 401 }
+      )
+    }
+
+    const unreadCount = mutableNotificationsData.filter(
+      (item) => !item.is_read
+    ).length
+
+    return HttpResponse.json({ unread_count: unreadCount })
   }),
 ]

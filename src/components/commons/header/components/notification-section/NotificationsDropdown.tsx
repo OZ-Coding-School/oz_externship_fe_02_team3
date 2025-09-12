@@ -3,36 +3,38 @@ import { Z_INDEX } from '@constants/ui'
 import { cn } from '@utils/cn'
 import NotificationTabs from './NotificationTabs'
 import NotificationItem from './NotificationItem'
-import { useNotifications } from '@src/hooks/useNotifications'
 import NotificationsSkeleton from './NotificationsSkeleton'
+import {
+  useNotifications,
+  useMarkAllAsRead,
+  useUnreadCountQuery,
+} from '@hooks/useNotifications'
 
 interface NotificationsDropdownProps {
   setIsNotificationOpen: (isNotificationOpen: boolean) => void
   notificationsDropdownRef: RefObject<HTMLDivElement | null>
-  onUnreadCountChange: (count: number) => void
 }
 
 export default function NotificationsDropdown({
   setIsNotificationOpen,
   notificationsDropdownRef,
-  onUnreadCountChange,
 }: NotificationsDropdownProps) {
   const [notificationFilter, setNotificationFilter] = useState<
     'all' | 'unread' | 'read'
   >('all')
-  const [markAllError, setMarkAllError] = useState<string | null>(null)
-  const { notifications, loading, error, loadNotifications, markAllAsRead } =
-    useNotifications()
 
-  const handleMarkAllAsRead = async () => {
-    setMarkAllError(null)
-    try {
-      await markAllAsRead()
+  const { notifications, totalCount, isLoading, error } = useNotifications()
+  const { unreadCount } = useUnreadCountQuery()
+  const markAllAsReadMutation = useMarkAllAsRead()
+
+  const handleMarkAllAsRead = () => {
+    if (unreadCount === 0 || markAllAsReadMutation.isPending) {
+      return
+    }
+
+    markAllAsReadMutation.mutate()
+    if (notificationFilter === 'unread') {
       setNotificationFilter('all')
-      setMarkAllError(null)
-    } catch (err) {
-      const error = err as Error
-      setMarkAllError(error.message || '모두 읽음 처리에 실패했어요.')
     }
   }
 
@@ -47,20 +49,12 @@ export default function NotificationsDropdown({
     }
   }, [notifications, notificationFilter])
 
-  // 읽지 않은 알림 개수를 부모에게 전달
+  // unreadCount가 0이 되면 자동으로 전체보기로
   useEffect(() => {
-    const unreadCount = notifications.filter((noti) => !noti.is_read).length
-    onUnreadCountChange(unreadCount)
-  }, [notifications, onUnreadCountChange])
-
-  // 초기 로딩시에만 전체 알림을 가져옴
-  useEffect(() => {
-    loadNotifications({
-      status: 'all', // 항상 전체 데이터 가져오기
-      limit: 50,
-      offset: 0,
-    })
-  }, [loadNotifications])
+    if (unreadCount === 0 && notificationFilter === 'unread') {
+      setNotificationFilter('all')
+    }
+  }, [unreadCount, notificationFilter])
 
   return (
     <div
@@ -77,11 +71,11 @@ export default function NotificationsDropdown({
         </h3>
         <button
           type="button"
-          disabled={loading}
+          disabled={unreadCount === 0 || markAllAsReadMutation.isPending}
           onClick={handleMarkAllAsRead}
           className="text-primary-600 flex items-center justify-center text-center text-sm"
         >
-          {loading ? '처리 중…' : '모두 읽음'}
+          {markAllAsReadMutation.isPending ? '처리 중…' : '모두 읽음'}
         </button>
       </div>
 
@@ -89,28 +83,19 @@ export default function NotificationsDropdown({
         setNotificationFilter={setNotificationFilter}
         notificationFilter={notificationFilter}
         notifications={notifications}
+        totalCount={totalCount}
+        unreadCount={unreadCount}
       />
-      {markAllError && (
-        <div role="alert" className="px-4 py-2 text-sm text-red-600">
-          {markAllError}
-          <button
-            onClick={handleMarkAllAsRead} // 재시도 연결
-            className="ml-2 underline"
-          >
-            다시 시도
-          </button>
-        </div>
-      )}
 
       <div
         className="scrollbar-hide flex max-h-80 flex-col overflow-y-auto"
         role="tabpanel"
       >
-        {loading ? (
+        {isLoading ? (
           <NotificationsSkeleton />
         ) : error ? (
           <div className="flex items-center justify-center text-sm text-red-500">
-            {error}
+            알림을 불러오는데 실패했습니다.
           </div>
         ) : filteredNotifications.length !== 0 ? (
           filteredNotifications.map((notification) => (

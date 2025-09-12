@@ -6,15 +6,16 @@ interface NotificationTabsProps {
   setNotificationFilter: (filter: 'all' | 'unread' | 'read') => void
   notificationFilter: 'all' | 'unread' | 'read'
   notifications: NotificationItem[]
+  totalCount: number
+  unreadCount: number
 }
 export default function NotificationTabs({
   setNotificationFilter,
   notificationFilter,
   notifications,
+  unreadCount,
+  totalCount,
 }: NotificationTabsProps) {
-  const unreadCount = notifications.filter(
-    (notification) => !notification.is_read
-  ).length
   const readCount = notifications.filter(
     (notification) => notification.is_read
   ).length
@@ -43,7 +44,7 @@ export default function NotificationTabs({
           })
         )}
       >
-        전체보기 ({notifications.length})
+        전체보기 ({totalCount})
       </button>
       <button
         role="tab"
