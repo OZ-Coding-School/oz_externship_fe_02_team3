@@ -13,10 +13,10 @@ export default function NotificationTabs({
   notifications,
 }: NotificationTabsProps) {
   const unreadCount = notifications.filter(
-    (notification) => notification.isUnread
+    (notification) => !notification.is_read
   ).length
   const readCount = notifications.filter(
-    (notification) => notification.isRead
+    (notification) => notification.is_read
   ).length
   const isUnreadTabDisabled = unreadCount === 0
   const isReadTabDisabled = unreadCount === 0
