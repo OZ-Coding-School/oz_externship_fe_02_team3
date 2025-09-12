@@ -8,8 +8,8 @@ export interface NotificationItem {
   content: string
   type: NotificationType
   is_read: boolean
-  back_url_link: string
   created_at: string
+  redirect_url: string
 }
 
 export interface NotificationResponse {
