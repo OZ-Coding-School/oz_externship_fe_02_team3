@@ -2,7 +2,11 @@ import { cn } from '@src/utils/cn'
 import SelectedTag from './SelectedTag'
 import { useMemo } from 'react'
 
-export type TagOption = { id: string; label: string; colorClass?: string }
+export interface TagOption {
+  id: string
+  label: string
+  colorClass?: string
+}
 
 interface SelectedTagListProps {
   selectedIds: string[] // 선택된 태그 id 목록
