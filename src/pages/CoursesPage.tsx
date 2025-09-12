@@ -64,7 +64,8 @@ export default function CoursesPage({ className }: CoursesPageProps) {
     )
   }
 
-  if (courses.length === 0) {
+  // 로그인 사용자일 때만 EmptyState 표시
+  if (courses.length === 0 && isAuthenticated) {
     return (
       <div className={cn('min-h-screen bg-gray-50', className)}>
         <div className="border-b border-gray-200 bg-white px-6 py-6">
