@@ -14,13 +14,23 @@ import { useState } from 'react'
 import Calendar from '@src/components/commons/calendar/Calendar'
 import { useToast } from '@src/components/commons/toast'
 import TagCheckbox from '@src/components/commons/tag/TagCheckbox'
+import type { TagOption } from '@src/components/commons/tag/SelectedTagList'
+import SelectedTagList from '@src/components/commons/tag/SelectedTagList'
 
 export default function TestUIPage() {
   const [selectedCategory, setSelectedCategory] = useState('전체')
   const [selectedSort, setSelectedSort] = useState('인기순')
   const toast = useToast()
+  const [selectedIds, setSelectedIds] = useState<string[]>(['t1'])
 
   // 임시 데이터 (나중에 상수로 분리)
+
+  const dummyTags: TagOption[] = [
+    { id: 't1', label: '초보자환영' },
+    { id: 't2', label: '주말스터디' },
+    { id: 't3', label: '프로젝트중심' },
+  ]
+
   const categories = [
     { id: 1, name: '전체' },
     { id: 2, name: '프론트엔드' },
@@ -190,6 +200,7 @@ export default function TestUIPage() {
             title: '오류가 발생했습니다.',
             content: '네트워크 연결을 확인하고 다시 시도해주세요.',
 
+<<<<<<< HEAD
             showBar: true,
           })
         }
@@ -203,5 +214,50 @@ export default function TestUIPage() {
       />
       <TagCheckbox label="안녕" />
     </div>
+=======
+              showBar: true,
+            })
+          }
+        />
+        <ChatFloatButton />
+        <Calendar
+          value={date}
+          onChange={setDate}
+          variant="outline"
+          size="md"
+          width={300}
+        />
+
+        {/* 태그 선택 컴포넌트 테스트 */}
+
+        <h2 className="text-lg font-bold">Tag 컴포넌트 테스트</h2>
+
+        {/* 선택된 태그 리스트 */}
+        <SelectedTagList
+          selectedIds={selectedIds}
+          options={dummyTags}
+          onRemove={(id) =>
+            setSelectedIds((prev) => prev.filter((v) => v !== id))
+          }
+        />
+
+        {/* 체크박스 리스트 */}
+        <div className="space-y-2">
+          {dummyTags.map((tag) => (
+            <TagCheckbox
+              key={tag.id}
+              label={tag.label}
+              checked={selectedIds.includes(tag.id)}
+              onChange={(next) =>
+                setSelectedIds((prev) =>
+                  next ? [...prev, tag.id] : prev.filter((v) => v !== tag.id)
+                )
+              }
+            />
+          ))}
+        </div>
+      </div>
+    </>
+>>>>>>> 9717ab4 (chore: TagCheckbox 수정 및 testUIPage 태그 관련 테스트 코드 추가)
   )
 }
