@@ -14,6 +14,7 @@ import {
 import { useState } from 'react'
 import Calendar from '@src/components/commons/calendar/Calendar'
 import { useToast } from '@src/components/commons/toast'
+import TagCheckbox from '@src/components/commons/form/TagCheckbox'
 
 export default function TestUIPage() {
   const [selectedCategory, setSelectedCategory] = useState('전체')
@@ -167,9 +168,6 @@ export default function TestUIPage() {
 
         {/* 뱃지 */}
         <Badge badgeTitle="거절됨" className="bg-danger-100 text-danger-800" />
-      </div>
-      <div className="flex gap-2">
-        {/* 토스트 알림 컴포넌트 태스트 */}
 
         <Button
           buttonInnerText="성공 토스트"
@@ -181,6 +179,7 @@ export default function TestUIPage() {
             })
           }
         />
+        {/* 토스트 알림 컴포넌트 태스트 */}
         <Button
           buttonInnerText="에러 토스트"
           onClick={() =>
@@ -202,16 +201,16 @@ export default function TestUIPage() {
             })
           }
         />
+        <ChatFloatButton />
+        <Calendar
+          value={date}
+          onChange={setDate}
+          variant="outline"
+          size="md"
+          width={300}
+        />
+        <TagCheckbox label="안녕" />
       </div>
-
-      <ChatFloatButton />
-      <Calendar
-        value={date}
-        onChange={setDate}
-        variant="outline"
-        size="md"
-        width={300}
-      />
     </>
   )
 }
