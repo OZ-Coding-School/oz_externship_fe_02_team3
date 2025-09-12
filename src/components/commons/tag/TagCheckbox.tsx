@@ -42,7 +42,14 @@ export default function TagCheckbox({
         className
       )}
     >
-      <span className="text-sm text-gray-700">{label}</span>
+      <span
+        className={cn(
+          'text-sm font-semibold',
+          isChecked ? 'text-primary-900' : 'text-gray-900'
+        )}
+      >
+        {label}
+      </span>
       <input
         id={id}
         type="checkbox"
