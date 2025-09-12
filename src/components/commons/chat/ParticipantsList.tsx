@@ -18,6 +18,13 @@ export default function ParticipantsList({
   const [startX, setStartX] = useState(0)
   const [scrollLeft, setScrollLeft] = useState(0)
 
+  const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (scrollRef.current) {
+      e.preventDefault()
+      scrollRef.current.scrollLeft += e.deltaY
+    }
+  }
+
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDown(true)
     setStartX(e.pageX - (scrollRef.current?.offsetLeft ?? 0))
@@ -50,6 +57,7 @@ export default function ParticipantsList({
       onMouseLeave={onMouseLeave}
       onMouseUp={onMouseUp}
       onMouseMove={onMouseMove}
+      onWheel={onWheel}
     >
       {participants.map((participant, index) => (
         <div
