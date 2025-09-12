@@ -8,7 +8,7 @@ import type {
 
 // 변경 가능한 알림 데이터 선언
 
-let mutableNotificationsData = [...notificationsData]
+let mutableNotificationsData: NotificationItem[] = [...notificationsData]
 
 // JWT 토큰 검증 헬퍼 함수
 const validateAuth = (request: Request) => {
@@ -70,7 +70,7 @@ export const handlers = [
       read: 78,
     }
 
-    const response = {
+    const response: NotificationResponse = {
       count:
         simulatedTotalCount[status as 'all' | 'unread' | 'read'] ||
         simulatedTotalCount.all,
