@@ -4,16 +4,22 @@ import remarkBreaks from 'remark-breaks'
 import rehypeSanitize from 'rehype-sanitize'
 import { mdSanitizeSchema } from './sanitizeSchema'
 import Img from './useImageRender'
+import { cn } from '@src/utils/cn'
 
 export default function MdPreview({
   value,
+  height,
 }: {
   value: string
   embedded?: boolean
+  height?: number
 }) {
   return (
     <div
-      className={['bg-white p-3 text-sm', 'border-t border-gray-200'].join(' ')}
+      className={cn(
+        'overflow-y-auto border-t border-gray-200 bg-white p-3 text-sm'
+      )}
+      style={height ? { height, overflowY: 'auto' } : undefined}
     >
       <ReactMarkdown
         remarkPlugins={[remarkGfm, remarkBreaks]} // GFM + 개행(\n) 처리
