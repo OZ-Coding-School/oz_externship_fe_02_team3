@@ -8,21 +8,11 @@ export default function RecruitmentCreate() {
   return (
     <div className="min-h-dvh w-full">
       <div className="mx-auto mt-8 flex w-full max-w-[1120px] flex-col gap-8 px-6 lg:px-12">
-        <div>
-          <RecCreateHeader />
-        </div>
-        <div>
-          <RecCreateBasicInfo />
-        </div>
-        <div>
-          <RecCreateContentSection />
-        </div>
-        <div>
-          <RecCreateAdditionalInfo />
-        </div>
-        <div>
-          <RecCreateFooter />
-        </div>
+        <RecCreateHeader />
+        <RecCreateBasicInfo />
+        <RecCreateContentSection />
+        <RecCreateAdditionalInfo />
+        <RecCreateFooter />
       </div>
     </div>
   )
