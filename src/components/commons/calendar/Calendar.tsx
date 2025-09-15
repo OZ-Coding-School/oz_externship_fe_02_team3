@@ -35,7 +35,7 @@ interface CalendarProps extends ButtonStyleProps {
 export default function Calendar({
   value,
   onChange,
-  width = 300,
+  width,
   placeholder = '-/-/-',
   disabled,
   dateFormat = 'yyyy/MM/dd',
@@ -44,6 +44,8 @@ export default function Calendar({
   fullWidth = false,
   className,
 }: CalendarProps) {
+  const triggerWidth = fullWidth ? undefined : width
+
   return (
     <ReactDatePicker
       selected={value}
@@ -56,6 +58,7 @@ export default function Calendar({
       shouldCloseOnSelect
       calendarClassName="inline-block rounded-xl bg-white p-3 shadow-xl ring-1 ring-black/5 border-0"
       popperClassName={`${Z_INDEX.DROPDOWN}`}
+      wrapperClassName={fullWidth ? 'block w-full' : undefined}
       showPopperArrow={false}
       locale={ko}
       formatWeekDay={(n) => n.slice(0, 1)}
@@ -113,7 +116,7 @@ export default function Calendar({
           variant={variant}
           size={size}
           fullWidth={fullWidth}
-          width={width}
+          width={triggerWidth}
           disabled={disabled}
         />
       }

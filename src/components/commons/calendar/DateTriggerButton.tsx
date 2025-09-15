@@ -38,7 +38,13 @@ const DateTriggerButton = forwardRef<HTMLButtonElement, DateTriggerButtonProps>(
         className={cn(buttonVariants({ variant, size, fullWidth }), className)}
         style={{ width }}
       >
-        <span className={labelVariants({ hasValue: !!value })}>
+        <span
+          className={cn(
+            labelVariants({ hasValue: !!value }),
+            'break-words whitespace-normal'
+          )}
+        >
+          {' '}
           {value || placeholder}
         </span>
         <CalendarIcon className="h-5 w-5" />
