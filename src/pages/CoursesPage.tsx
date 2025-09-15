@@ -26,7 +26,6 @@ interface CoursesPageProps {
 }
 
 export default function CoursesPage({ className }: CoursesPageProps) {
-  // 임시 인증 상태 (추후 실제 인증 훅으로 대체)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const { courses, loading, error, refetch } = useCourses()
