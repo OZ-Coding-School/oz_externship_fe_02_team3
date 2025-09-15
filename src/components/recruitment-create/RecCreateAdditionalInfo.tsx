@@ -1,4 +1,5 @@
 import { FileUploadBox } from './FileUploadBox'
+import PriceInput from './PriceInput'
 import TagBox from './tag-ui/TagBox'
 
 export default function RecCreateAdditionalInfo() {
@@ -9,11 +10,7 @@ export default function RecCreateAdditionalInfo() {
       <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-gray-700">
         예상 결제 비용 (원)
       </label>
-      <input
-        type="text"
-        className="w-full rounded-[8px] border border-gray-300 px-[17px] py-[13px] focus:outline-none"
-        placeholder="미입력시 강의 비용 자동 계산"
-      />
+      <PriceInput />
       <div className="mt-6">
         <TagBox />
       </div>
