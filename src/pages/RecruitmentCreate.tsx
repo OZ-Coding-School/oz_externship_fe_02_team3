@@ -1,4 +1,3 @@
-import TagBox from '@src/components/recruitment-create/tag-ui/TagBox'
 import RecCreateBasicInfo from '@src/components/recruitment-create/RecCreateBasicInfo'
 import RecCreateAdditionalInfo from '@src/components/recruitment-create/RecCreateAdditionalInfo'
 import RecCreateContentSection from '@src/components/recruitment-create/RecCreateContentSection'
