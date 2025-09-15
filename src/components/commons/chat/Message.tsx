@@ -6,15 +6,29 @@ interface MessageProps {
   isOwn: boolean
 }
 
+const formatMessageTime = (dateString: string) => {
+  if (!dateString) return ''
+
+  const messageDate = new Date(dateString)
+
+  // 항상 시:분 형식으로 표시 (24시간 형식)
+  return messageDate.toLocaleTimeString('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+}
+
 export default function Message({
   sender,
   message,
   time,
   isOwn,
 }: MessageProps) {
+  const formattedTime = formatMessageTime(time)
   return (
     <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'} gap-1`}>
-      <div className="flex flex-col gap-1">
+      <div className={cn('flex flex-col gap-1', isOwn ? 'items-end' : '')}>
         {!isOwn && sender && <p className="text-xs">{sender}</p>}
         <div
           className={cn(
@@ -29,7 +43,7 @@ export default function Message({
             {message}
           </p>
         </div>
-        <p className="text-xs text-gray-500">{time}</p>
+        <p className="text-xs text-gray-500">{formattedTime}</p>
       </div>
     </div>
   )

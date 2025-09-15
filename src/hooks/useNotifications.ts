@@ -160,6 +160,7 @@ export function useNotifications() {
 
 // 읽지않은 알림 개수 조회
 export function useUnreadCountQuery() {
+  // useQuery 은 데이터 조회 (GET)
   const query = useQuery({
     queryKey: ['notifications', 'unread-count'],
     queryFn: async () => {
@@ -179,7 +180,7 @@ export function useUnreadCountQuery() {
 
 // 모든 알림 읽음
 export function useMarkAllAsRead() {
-  //   queryClient = 캐시 창고의 관리자
+  // queryClient = 캐시 창고의 관리자
   // 이 관리자를 통해 캐시된 데이터를 삭제하거나 업데이트할 수 있음
   const queryClient = useQueryClient()
 

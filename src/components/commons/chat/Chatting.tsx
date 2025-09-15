@@ -8,6 +8,8 @@ import ChatRoomHeader from './chat-header/ChatRoomHeader'
 import MessageInput from './MessageInput'
 import MessageList from './MessageList'
 import ParticipantsList from './ParticipantsList'
+import { useChatMessages } from '@src/hooks/useChatting'
+import { participants } from '@src/mock/participants'
 
 interface ChatProps {
   isOpen: boolean
@@ -16,6 +18,9 @@ interface ChatProps {
 export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   const [currentView, setCurrentView] = useState<'list' | 'chat'>('list')
   const [selectedChatRoom, setSelectedChatRoom] = useState<Chat | null>(null)
+  const { chatMessages, isLoading: isMessagesLoading } = useChatMessages(
+    selectedChatRoom?.study_group_uuid
+  )
 
   const openChatRoom = (chatData: Chat) => {
     setSelectedChatRoom(chatData)
@@ -26,7 +31,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
     setCurrentView('list')
   }
 
-    const toggleChat = () => {
+  const toggleChat = () => {
     setIsOpen(!isOpen)
   }
   const sendMessage = (message: string) => {
@@ -57,9 +62,15 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
           onBack={handleBack}
           toggleChat={toggleChat}
         />
-        {/* <ParticipantsList participants={selectedChatRoom.participants} /> */}
+        <ParticipantsList participants={participants} />
         <div className="flex-1">
-          {/* <MessageList messages={selectedChatRoom.messages} /> */}
+          {isMessagesLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <div>메시지를 불러오는 중...</div>
+            </div>
+          ) : (
+            <MessageList messages={chatMessages} />
+          )}
         </div>
         <MessageInput onSend={sendMessage} />
       </div>

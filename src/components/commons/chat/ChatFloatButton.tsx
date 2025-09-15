@@ -3,7 +3,6 @@ import { cn } from '@utils/cn'
 import Chat from '@components/commons/chat/Chatting'
 import { MessageCircle as MessageIcon, X as CloseIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { set } from 'react-hook-form'
 
 interface ChatFloatButtonProps {
   className?: string
@@ -13,10 +12,6 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const chatRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLDivElement>(null)
-
-  const openChatList = () => {
-    setIsOpen(!isOpen)
-  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

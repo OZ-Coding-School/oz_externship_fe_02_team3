@@ -1,27 +1,3 @@
-// export interface ChatList {
-//   id: number
-//   uuid?: string  
-//   title: string
-//   date: string
-//   unreadCount?: number
-//   lastMessage: {  
-//     sender: string
-//     content: string
-//   } | null
-//   modifiedAt: string
-//   participants: Array<{
-//     name: string
-//     status: 'online' | 'offline'
-//   }>
-//   messages: Array<{
-//     id: number
-//     sender: string
-//     message: string
-//     time: string
-//     isOwn: boolean
-//   }>
-// }
-
 export interface Chat {
   study_group_uuid: string
   study_group_name: string
@@ -30,5 +6,32 @@ export interface Chat {
     content: string
     created_at: string
   } | null
+
   unread_count: number
+  created_at: string
+}
+
+export interface MessagesResponse {
+  next_cursor: string | null
+  results: Array<{
+    message_id: number
+    sender: {
+      user_uuid: string
+      nickname: string
+      profile_img_url: string
+    }
+    content: string
+    created_at: string
+  }>
+}
+
+export interface ChatMessage {
+  message_id: number
+  sender: {
+    user_uuid: string
+    nickname: string
+    profile_img_url: string
+  }
+  content: string
+  created_at: string
 }

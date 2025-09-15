@@ -84,7 +84,7 @@ export default function NotificationItem({
   const handleNotificationClick = () => {
     if (notification.is_read || readNotificationMutation.isPending) {
       setIsNotificationOpen(false)
-      if (notification.redirect_url) navigate(notification.redirect_url)
+      if (notification.back_url_link) navigate(notification.back_url_link)
       return
     }
 

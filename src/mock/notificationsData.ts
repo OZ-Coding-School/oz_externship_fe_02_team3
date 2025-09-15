@@ -8,7 +8,7 @@ const notificationsData: NotificationItem[] = [
       'Unity 게임 개발 프로젝트 팀원 모집 구인 공고에 대한 1건의 대기중인 지원자가 있습니다.Unity 게임 개발 프로젝트 팀원 모집 구인 공고에 대한 1건의 대기중인 지원자가 있습니다. Unity 게임 개발 프로젝트 팀원 모집 구인 공고에 대한 1건의 대기중인 지원자가 있습니다.',
     type: 'ADD_APPLICATION',
     is_read: false,
-    redirect_url: '/recruitment/manage',
+    back_url_link: '/recruitment/manage',
     created_at: '2025-09-11T06:00:00Z',
   },
   {
@@ -17,7 +17,7 @@ const notificationsData: NotificationItem[] = [
       'React 실무 프로젝트 함께하실 분 모집합니다! 구인 공고에 대한 지원내역이 승인되었습니다.',
     type: 'APPROVE_APPLICATION',
     is_read: false,
-    redirect_url: '/applications/uuid-2',
+    back_url_link: '/applications/uuid-2',
     created_at: '2025-09-11T09:30:00Z',
   },
   {
@@ -26,7 +26,7 @@ const notificationsData: NotificationItem[] = [
       'React 실무 프로젝트 스터디에 김민지님이 참여했습니다. 환영해주세요!',
     type: 'NEW_MEMBER_JOIN',
     is_read: true,
-    redirect_url: '/studies/uuid-3',
+    back_url_link: '/studies/uuid-3',
     created_at: '2025-09-10T08:45:00Z',
   },
   {
@@ -35,7 +35,7 @@ const notificationsData: NotificationItem[] = [
       'Vue.js 프론트엔드 개발팀 모집 구인 공고에 대한 지원내역이 거절되었습니다.',
     type: 'REJECT_APPLICATION',
     is_read: true,
-    redirect_url: '/applications/uuid-4',
+    back_url_link: '/applications/uuid-4',
     created_at: '2024-11-30T16:20:00Z',
   },
   {
@@ -44,7 +44,7 @@ const notificationsData: NotificationItem[] = [
       '오늘은 Python 데이터 분석 스터디의 종료일이에요! 스터디 후기를 기록해주세요!',
     type: 'STUDY_END',
     is_read: false,
-    redirect_url: '/studies/uuid-5/review',
+    back_url_link: '/studies/uuid-5/review',
     created_at: '2024-11-29T14:15:00Z',
   },
   {
@@ -53,7 +53,7 @@ const notificationsData: NotificationItem[] = [
       'React 실무 프로젝트 함께하실 분 모집합니다! 구인 공고에 대한 2건의 대기중인 지원자가 있습니다.',
     type: 'ADD_APPLICATION',
     is_read: true,
-    redirect_url: '/recruitment/manage',
+    back_url_link: '/recruitment/manage',
     created_at: '2024-11-29T11:30:00Z',
   },
 ]
