@@ -10,9 +10,10 @@ import MessageList from './MessageList'
 import ParticipantsList from './ParticipantsList'
 
 interface ChatProps {
-  toggleChat: () => void
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
 }
-export default function Chatting({ toggleChat }: ChatProps) {
+export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   const [currentView, setCurrentView] = useState<'list' | 'chat'>('list')
   const [selectedChatRoom, setSelectedChatRoom] = useState<Chat | null>(null)
 
@@ -25,17 +26,20 @@ export default function Chatting({ toggleChat }: ChatProps) {
     setCurrentView('list')
   }
 
+    const toggleChat = () => {
+    setIsOpen(!isOpen)
+  }
   const sendMessage = (message: string) => {
     console.log(message)
   }
 
-  const getOnlineCount = () => {
-    if (!selectedChatRoom) return 0
-    const onlineCount = selectedChatRoom.participants.filter(
-      (p) => p.status === 'online'
-    )
-    return onlineCount.length
-  }
+  // const getOnlineCount = () => {
+  //   if (!selectedChatRoom) return 0
+  //   const onlineCount = selectedChatRoom.participants.filter(
+  //     (p) => p.status === 'online'
+  //   )
+  //   return onlineCount.length
+  // }
 
   const renderListView = () => (
     <>
@@ -48,14 +52,14 @@ export default function Chatting({ toggleChat }: ChatProps) {
     selectedChatRoom && (
       <div className="flex h-full flex-col">
         <ChatRoomHeader
-          title={selectedChatRoom.title}
-          onlineCount={getOnlineCount()}
+          title={selectedChatRoom.study_group_name}
+          // onlineCount={getOnlineCount()}
           onBack={handleBack}
-          onClose={toggleChat}
+          toggleChat={toggleChat}
         />
-        <ParticipantsList participants={selectedChatRoom.participants} />
+        {/* <ParticipantsList participants={selectedChatRoom.participants} /> */}
         <div className="flex-1">
-          <MessageList messages={selectedChatRoom.messages} />
+          {/* <MessageList messages={selectedChatRoom.messages} /> */}
         </div>
         <MessageInput onSend={sendMessage} />
       </div>

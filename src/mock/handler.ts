@@ -5,10 +5,13 @@ import type {
   NotificationItem,
   NotificationResponse,
 } from '@src/types/notification'
+import type { Chat } from '@src/types/chat'
+import { chatList } from './chatListData'
 
 // 변경 가능한 알림 데이터 선언
-
 let mutableNotificationsData: NotificationItem[] = [...notificationsData]
+const mutableNChatListData: Chat[] = [...chatList]
+
 
 // JWT 토큰 검증 헬퍼 함수
 const validateAuth = (request: Request) => {
@@ -162,4 +165,19 @@ export const handlers = [
 
     return HttpResponse.json({ unread_count: unreadCount })
   }),
+
+  // 스터디 그룹 채팅 목록 조회 API
+  http.get('/api/v1/chat/rooms/', ({request}) => {
+    const auth = validateAuth(request)
+    if (!auth.isValid) {
+      return HttpResponse.json(
+        { detail: 'Not authenticated.' },
+        { status: 401 }
+      )
+    }
+
+    const response : Chat[]= [ ...mutableNChatListData]
+    return HttpResponse.json(response)
+
+  })
 ]

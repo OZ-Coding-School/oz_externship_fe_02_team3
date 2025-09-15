@@ -3,16 +3,16 @@ import { ArrowLeft as ArrowLeftIcon, X as CloseIcon } from 'lucide-react'
 
 interface ChatRoomHeaderProps {
   title: string
-  onlineCount: number
+  // onlineCount: number
   onBack: () => void
-  onClose: () => void
+  toggleChat: () => void
 }
 
 export default function ChatRoomHeader({
   title,
-  onlineCount,
+  // onlineCount,
   onBack,
-  onClose,
+  toggleChat,
 }: ChatRoomHeaderProps) {
   return (
     <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-3 pt-3 pb-[13px]">
@@ -33,7 +33,7 @@ export default function ChatRoomHeader({
           </h3>
           <div className="flex items-center gap-1">
             <div className="size-2 rounded-full bg-green-500" />
-            <p className="text-xs text-gray-600">{onlineCount}명 온라인</p>
+            {/* <p className="text-xs text-gray-600">{onlineCount}명 온라인</p> */}
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@ export default function ChatRoomHeader({
         iconSize="sm"
         iconClassName="stroke-gray-400"
         className="hover:bg-transparent active:bg-transparent"
-        onClick={onClose}
+        onClick={toggleChat}
         ariaLabel="채팅창 닫기"
       />
     </div>
