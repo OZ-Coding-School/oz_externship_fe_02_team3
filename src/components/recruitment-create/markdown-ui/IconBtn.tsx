@@ -14,7 +14,7 @@ export default function IconBtn({
       type="button"
       title={title} // (작성 / 미리보기) & 아이콘 버튼
       onClick={onClick}
-      className="hover: inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-gray-700 hover:bg-gray-100"
+      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-gray-700 hover:bg-gray-100"
     >
       {children}
     </button>
