@@ -11,7 +11,7 @@ export default function RecCreateAdditionalInfo() {
       </label>
       <input
         type="text"
-        className="w-full rounded-[8px] border border-gray-300 px-[17px] py-[13px]"
+        className="w-full rounded-[8px] border border-gray-300 px-[17px] py-[13px] focus:outline-none"
         placeholder="미입력시 강의 비용 자동 계산"
       />
       <div className="mt-6">

@@ -31,7 +31,7 @@ export default function RecCreateBasicInfo() {
       </label>
       <input
         type="text"
-        className="h-[50px] w-full rounded-lg border border-gray-300 px-4 text-gray-900 placeholder:text-gray-400"
+        className="h-[50px] w-full rounded-lg border border-gray-300 px-4 text-gray-900 placeholder:text-gray-400 focus:outline-none"
         aria-label="공고 제목 input"
         placeholder="예: React 스터디 함께하실 분을 찾습니다!"
       />
