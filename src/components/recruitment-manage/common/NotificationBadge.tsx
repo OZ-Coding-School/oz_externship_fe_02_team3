@@ -16,7 +16,7 @@ export default function NotificationBadge({
   iconColor,
 }: BadgeProps) {
   return (
-    <div className="flex h-[102px] w-[286px] items-center gap-4 rounded-lg bg-white p-4 shadow-sm ring-1 ring-[#E5E7EB]">
+    <div className="flex h-[102px] w-[286px] items-center gap-4 rounded-lg bg-white p-4 ring-1 ring-gray-200">
       <div
         className={`grid h-12 w-12 place-items-center rounded-lg ${bgColor}`}
       >

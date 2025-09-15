@@ -81,7 +81,7 @@ export default function RecCreateBasicInfo() {
 
         {/* 예상 모집 인원 field */}
         <div>
-          <label className="mb-2 block text-sm leading-5 font-medium text-[#374151]">
+          <label className="mb-2 block text-sm leading-5 font-medium text-gray-700">
             예상 모집 인원
             <span className="text-danger-500" aria-label="필수 입력">
               {' '}
