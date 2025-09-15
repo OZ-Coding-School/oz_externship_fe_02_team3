@@ -16,6 +16,7 @@ import { useToast } from '@src/components/commons/toast'
 import TagCheckbox from '@src/components/commons/tag/TagCheckbox'
 import type { TagOption } from '@src/components/commons/tag/SelectedTagList'
 import SelectedTagList from '@src/components/commons/tag/SelectedTagList'
+import Pagination from '@src/components/commons/pagination/Pagination'
 
 export default function TestUIPage() {
   const [selectedCategory, setSelectedCategory] = useState('전체')
@@ -29,6 +30,11 @@ export default function TestUIPage() {
     { id: 't2', label: '주말스터디' },
     { id: 't3', label: '프로젝트중심' },
   ]
+
+  //페이지네이션 임시 변수
+  const [page, setPage] = useState(1)
+  const size = 5
+  const totalCount = 50 // 서버 응답에서 count로 받아옴
 
   const categories = [
     { id: 1, name: '전체' },
@@ -245,6 +251,13 @@ export default function TestUIPage() {
             />
           ))}
         </div>
+        {/* 페이지 네이션 테스트  */}
+        <Pagination
+          page={page}
+          totalCount={totalCount}
+          size={size}
+          onPageChange={setPage}
+        />
       </div>
     </>
   )
