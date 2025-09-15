@@ -12,9 +12,6 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const chatRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLDivElement>(null)
-  const toggleChat = () => {
-    setIsOpen(!isOpen)
-  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -55,7 +52,7 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
       </div>
       {isOpen && (
         <div ref={chatRef}>
-          <Chat toggleChat={toggleChat} />
+          <Chat setIsOpen={setIsOpen} isOpen={isOpen} />
         </div>
       )}
     </>

@@ -12,6 +12,7 @@ import {
 import { offset, shift } from '@floating-ui/dom'
 import './Calendar.style.css'
 import { Z_INDEX } from '@constants/ui'
+import { useState } from 'react'
 
 type RDPProps = React.ComponentProps<typeof ReactDatePicker>
 
@@ -35,7 +36,7 @@ interface CalendarProps extends ButtonStyleProps {
 export default function Calendar({
   value,
   onChange,
-  width = 300,
+  width,
   placeholder = '-/-/-',
   disabled,
   dateFormat = 'yyyy/MM/dd',
@@ -44,18 +45,38 @@ export default function Calendar({
   fullWidth = false,
   className,
 }: CalendarProps) {
+  const triggerWidth = fullWidth ? undefined : width
+
+  const [open, setOpen] = useState<boolean>(false)
+
+  const handleChange = (d: Date | null) => {
+    onChange(d)
+    setOpen(false)
+  }
+
+  const handlePickToday = () => {
+    onChange(new Date())
+    setOpen(false)
+  }
+
   return (
     <ReactDatePicker
       selected={value}
-      onChange={(d) => onChange(d)}
+      onChange={handleChange}
       dateFormat={dateFormat}
       disabled={disabled}
       withPortal={false}
       popperPlacement="bottom-start"
       popperModifiers={[offset(8), shift({ padding: 8 })]}
       shouldCloseOnSelect
-      calendarClassName="inline-block rounded-xl bg-white p-3 shadow-xl ring-1 ring-black/5 border-0"
+      open={open}
+      onCalendarOpen={() => setOpen(true)}
+      onCalendarClose={() => setOpen(false)}
+      onInputClick={() => !disabled && setOpen(true)}
+      onClickOutside={() => setOpen(false)}
+      calendarClassName="inline-block rounded-xl bg-white p-3 border border-gray-300"
       popperClassName={`${Z_INDEX.DROPDOWN}`}
+      wrapperClassName={fullWidth ? 'block w-full' : undefined}
       showPopperArrow={false}
       locale={ko}
       formatWeekDay={(n) => n.slice(0, 1)}
@@ -83,7 +104,7 @@ export default function Calendar({
             <button
               type="button"
               className="text-primary-500 hover:text-primary-500 text-sm font-semibold"
-              onClick={() => onChange(new Date())}
+              onClick={handlePickToday}
             >
               오늘
             </button>
@@ -113,7 +134,7 @@ export default function Calendar({
           variant={variant}
           size={size}
           fullWidth={fullWidth}
-          width={width}
+          width={triggerWidth}
           disabled={disabled}
         />
       }

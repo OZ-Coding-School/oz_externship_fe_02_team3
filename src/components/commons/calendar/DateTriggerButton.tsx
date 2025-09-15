@@ -35,10 +35,20 @@ const DateTriggerButton = forwardRef<HTMLButtonElement, DateTriggerButtonProps>(
         ref={ref}
         onClick={onClick}
         disabled={disabled}
-        className={cn(buttonVariants({ variant, size, fullWidth }), className)}
+        className={cn(
+          buttonVariants({ variant, size, fullWidth }),
+          'cursor-pointer',
+          className
+        )}
         style={{ width }}
       >
-        <span className={labelVariants({ hasValue: !!value })}>
+        <span
+          className={cn(
+            labelVariants({ hasValue: !!value }),
+            'break-words whitespace-normal'
+          )}
+        >
+          {' '}
           {value || placeholder}
         </span>
         <CalendarIcon className="h-5 w-5" />

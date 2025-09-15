@@ -5,10 +5,12 @@ import type {
   NotificationItem,
   NotificationResponse,
 } from '@src/types/notification'
+import type { Chat } from '@src/types/chat'
+import chatMessagesData, { chatList } from './chatListData'
 
-// 변경 가능한 알림 데이터 선언
-
+// 변경 가능한 데이터 선언
 let mutableNotificationsData: NotificationItem[] = [...notificationsData]
+const mutableChatListData: Chat[] = [...chatList]
 
 // JWT 토큰 검증 헬퍼 함수
 const validateAuth = (request: Request) => {
@@ -161,5 +163,49 @@ export const handlers = [
     ).length
 
     return HttpResponse.json({ unread_count: unreadCount })
+  }),
+
+  // 스터디 그룹 채팅 목록 조회 API
+  http.get('/api/v1/chat/rooms/', ({ request }) => {
+    const auth = validateAuth(request)
+    if (!auth.isValid) {
+      return HttpResponse.json(
+        { detail: 'Not authenticated.' },
+        { status: 401 }
+      )
+    }
+
+    const response: Chat[] = [...mutableChatListData]
+    return HttpResponse.json(response)
+  }),
+
+  http.get('/api/v1/chat/rooms/:id/messages', ({ request, params }) => {
+    const auth = validateAuth(request)
+    if (!auth.isValid) {
+      return HttpResponse.json(
+        { detail: 'Not authenticated.' },
+        { status: 401 }
+      )
+    }
+    const chatRoomId = params.id as string
+    // 유효하지 않은 ID
+    if (!chatRoomId) {
+      return HttpResponse.json(
+        { detail: 'Chat room ID is required.' },
+        { status: 400 }
+      )
+    }
+    const chatMessages = chatMessagesData[chatRoomId]
+
+    // 존재하지 않는 채팅방인 경우
+    if (!chatMessages) {
+      return HttpResponse.json(
+        { detail: 'Chat room not found.' },
+        { status: 404 }
+      )
+    }
+
+    const responseData = { ...chatMessages }
+    return HttpResponse.json(responseData)
   }),
 ]

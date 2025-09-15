@@ -32,10 +32,10 @@ export default function StudyIntroMarkdown({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         style={{ height }}
-        className="block w-full resize-none border-t border-gray-200 bg-white p-3 text-sm outline-none focus:ring-2 focus:ring-blue-500/30"
+        className="block w-full resize-none border-t border-gray-200 bg-white p-3 text-sm outline-none"
       />
     ),
-    preview: <MdPreview embedded value={value} />,
+    preview: <MdPreview embedded value={value} height={height} />,
   } as const
 
   return (

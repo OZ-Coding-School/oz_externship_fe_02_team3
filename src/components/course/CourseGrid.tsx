@@ -1,11 +1,6 @@
 import { EmptyState } from '../commons/EmptyState'
 import CourseCardWithBookmark from './CourseCardWithBookmark'
-import {
-  EMPTY_MESSAGES,
-  ARIA_LABELS,
-  CARD,
-  LIST_SETTINGS,
-} from '@src/constants/ui'
+import { EMPTY_MESSAGES, ARIA_LABELS, LIST_SETTINGS } from '@src/constants/ui'
 import type { Course } from '@src/types/course'
 
 interface CourseGridProps {
@@ -28,14 +23,11 @@ export default function CourseGrid({ courses, onBookmark }: CourseGridProps) {
 
   return (
     <section aria-label={ARIA_LABELS.COURSE_GRID}>
-      <div
-        className={`grid gap-6 grid-cols-${LIST_SETTINGS.COURSES_PER_ROW.MOBILE} md:grid-cols-${LIST_SETTINGS.COURSES_PER_ROW.TABLET} lg:grid-cols-${LIST_SETTINGS.COURSES_PER_ROW.DESKTOP} `}
-      >
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {courses.map((course: Course) => (
           <div
             key={course.id}
-            className={`${CARD.TRANSITION} ${CARD.HOVER_SCALE}`}
-            style={{ minHeight: `${CARD.MIN_HEIGHT}px` }}
+            className="w-full min-w-0 transition-all duration-200 hover:scale-105"
           >
             <CourseCardWithBookmark
               cardTitle={

@@ -1,10 +1,6 @@
+import type { Participant } from '@src/types/participants'
 import { cn } from '@utils/cn'
 import { useRef, useState } from 'react'
-
-interface Participant {
-  name: string
-  status: 'online' | 'offline'
-}
 
 interface ParticipantsListProps {
   participants: Participant[]
