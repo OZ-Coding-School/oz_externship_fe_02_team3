@@ -33,14 +33,7 @@ export default function MdPreview({
           ul: (p) => <ul {...p} className="my-2 ml-5 list-disc" />,
           ol: (p) => <ol {...p} className="my-2 ml-5 list-decimal" />,
           li: (p) => <li {...p} className="my-1" />,
-          a: (p) => (
-            <a
-              {...p}
-              className="text-blue-600 underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            />
-          ),
+          a: (p) => <a {...p} target="_blank" rel="noopener noreferrer" />,
           code: (p) => (
             <code {...p} className="rounded bg-gray-100 px-1 py-0.5" />
           ),

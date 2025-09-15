@@ -35,7 +35,11 @@ const DateTriggerButton = forwardRef<HTMLButtonElement, DateTriggerButtonProps>(
         ref={ref}
         onClick={onClick}
         disabled={disabled}
-        className={cn(buttonVariants({ variant, size, fullWidth }), className)}
+        className={cn(
+          buttonVariants({ variant, size, fullWidth }),
+          'cursor-pointer',
+          className
+        )}
         style={{ width }}
       >
         <span

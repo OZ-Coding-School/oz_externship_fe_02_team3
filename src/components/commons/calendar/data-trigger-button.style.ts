@@ -5,7 +5,7 @@ export const buttonVariants = cva(
     'inline-flex items-center justify-between flex-wrap', // 내부 아이템 정렬
     'rounded-xl border text-sm bg-white', // 모양, 기본 배경
     'transition-colors', // hover 등 색상 전환 부드럽게
-    'focus:outline-none focus:ring-2 focus:ring-blue-500/50', // 포커스 상태
+    'focus:outline-none focus:ring-1 focus:ring-gray-200', // 포커스 상태
     'disabled:cursor-not-allowed disabled: opacity-60', // 비활성화 상태
   ].join(' '),
   {
