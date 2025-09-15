@@ -2,6 +2,7 @@ import RecCreateBasicInfo from '@src/components/recruitment-create/RecCreateBasi
 import RecCreateAdditionalInfo from '@src/components/recruitment-create/RecCreateAdditionalInfo'
 import RecCreateContentSection from '@src/components/recruitment-create/RecCreateContentSection'
 import RecCreateHeader from '@src/components/recruitment-create/RecCreateHeader'
+import RecCreateFooter from '@src/components/recruitment-create/RecCreateFooter'
 
 export default function RecruitmentCreate() {
   return (
@@ -18,6 +19,9 @@ export default function RecruitmentCreate() {
         </div>
         <div>
           <RecCreateAdditionalInfo />
+        </div>
+        <div>
+          <RecCreateFooter />
         </div>
       </div>
     </div>
