@@ -10,10 +10,12 @@ const studyGroup = [
 ]
 
 const capacityGroup = [
-  { id: 1, name: '스터디 그룹1' },
-  { id: 2, name: '스터디 그룹2' },
-  { id: 3, name: '스터디 그룹3' },
-  { id: 4, name: '스터디 그룹4' },
+  { id: 1, name: '1명' },
+  { id: 2, name: '2명' },
+  { id: 3, name: '3명' },
+  { id: 4, name: '4명' },
+  { id: 5, name: '5명' },
+  { id: 6, name: '6명' },
 ]
 
 export default function RecCreateBasicInfo() {
