@@ -37,10 +37,16 @@
 }
 
 .rdp-day--selected,
-.react-datepicker__day--selected,
-.react-datepicker__day--keyboard-selected {
+.react-datepicker__day--selected {
   background: #fef9c3 !important;
   color: #a16207 !important;
+  border-radius: 0.375rem;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background: transparent !important;
+  color: inherit !important;
+  outline-offset: -1px;
   border-radius: 0.375rem;
 }
 
