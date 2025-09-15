@@ -24,22 +24,17 @@ function CourseCardWithBookmark({
   return (
     <article
       className={cn(
-        'relative cursor-pointer',
-        'w-full',
-        'overflow-hidden',
-        'min-w-0',
+        'relative w-full cursor-pointer overflow-hidden',
+        'mx-auto max-w-sm min-w-[280px]',
         className
       )}
     >
       <CourseCard {...cardProps} />
-
-      {/* 북마크 버튼 컨테이너 */}
-      <div
-        className={cn('absolute top-2 right-2', 'z-10', 'pointer-events-auto')}
-      >
+      <div className="pointer-events-auto absolute top-2 right-2 z-10 sm:top-3 sm:right-3">
         <BookmarkButton
           courseId={courseId}
           onBookmarkToggle={onBookmarkClick}
+          className="h-8 w-8 sm:h-10 sm:w-10"
         />
       </div>
     </article>
