@@ -11,11 +11,11 @@ export interface Tag {
 }
 
 export interface TagBoxProps {
-  value?: Tag[] // 선택 (선택)
-  onChange?: (next: Tag[]) => void // 변경 콜백 (선택)
-  max?: number // 기본 5
+  value?: Tag[] // 선택된 태그 목록
+  onChange?: (next: Tag[]) => void // 변경 콜백
+  max?: number // 최대 선택 가능 개수 기본 5
   title?: string // 기본 '사용자 정의 태그'
-  onOpenSearch?: () => void // (옵션) 모달 연결
+  onOpenSearch?: () => void // 모달 연결
 }
 
 export default function TagBox({
