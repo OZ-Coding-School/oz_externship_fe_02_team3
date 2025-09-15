@@ -49,10 +49,10 @@ export default function RecBasicInfo() {
       />
 
       {/* 공고 마감 기한 & 예상 모집 인원 field*/}
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* 공고 마감 기한 field */}
         <div>
-          <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-[#374151]">
+          <label className="mb-2 block text-sm leading-5 font-medium text-[#374151]">
             공고 마감 기한
             <span className="text-[#EF4444]"> *</span>
           </label>
@@ -66,7 +66,7 @@ export default function RecBasicInfo() {
 
         {/* 예상 모집 인원 field */}
         <div>
-          <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-[#374151]">
+          <label className="mb-2 block text-sm leading-5 font-medium text-[#374151]">
             예상 모집 인원
             <span className="text-[#EF4444]"> *</span>
           </label>
