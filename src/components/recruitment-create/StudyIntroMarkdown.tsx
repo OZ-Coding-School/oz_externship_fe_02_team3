@@ -35,7 +35,7 @@ export default function StudyIntroMarkdown({
         className="block w-full resize-none border-t border-gray-200 bg-white p-3 text-sm outline-none focus:ring-2 focus:ring-blue-500/30"
       />
     ),
-    preview: <MdPreview embedded value={value} />,
+    preview: <MdPreview embedded value={value} height={height} />,
   } as const
 
   return (

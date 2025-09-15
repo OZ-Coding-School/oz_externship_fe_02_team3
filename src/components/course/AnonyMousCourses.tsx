@@ -33,11 +33,14 @@ export default function AnonymousCourses() {
           variant="outline"
         />
       </div>
+
+      {/* 강의 미리보기 카드들 - 데이터가 있을 때만 표시 */}
       <div className="mt-8 flex flex-col gap-4 text-center">
         <p className="text-sm text-gray-600">
           로그인 후 이런 맞춤 추천을 받을 수 있어요
         </p>
         <div className="flex gap-4">
+          {/* 기본 플레이스홀더 카드들을 항상 표시 */}
           {Array.from({ length: 3 }).map((_, index) => (
             <CoursePreviewCard key={index} />
           ))}
