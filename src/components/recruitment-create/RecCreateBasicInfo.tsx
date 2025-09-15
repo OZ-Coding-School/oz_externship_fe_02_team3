@@ -24,12 +24,15 @@ export default function RecCreateBasicInfo() {
   const [deadLine, setDeadLine] = useState<Date | null>(null)
 
   return (
-    <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-[#111827]">
+    <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-gray-900">
       <p className="text-[20px] leading-7 font-semibold">기본 정보</p>
       {/* 공고 제목 field*/}
-      <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-[#374151]">
+      <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-gray-700">
         공고 제목
-        <span className="text-[#EF4444]"> *</span>
+        <span className="text-danger-500" aria-label="필수 입력">
+          {' '}
+          *
+        </span>
       </label>
       <input
         type="text"
@@ -39,9 +42,12 @@ export default function RecCreateBasicInfo() {
       />
 
       {/* 대상 스터디 그룹 field*/}
-      <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-[#374151]">
+      <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-gray-700">
         대상 스터디 그룹
-        <span className="text-[#EF4444]"> *</span>
+        <span className="text-danger-500" aria-label="필수 입력">
+          {' '}
+          *
+        </span>
       </label>
       <DropDown
         selected={selectedGroup}
@@ -54,9 +60,12 @@ export default function RecCreateBasicInfo() {
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* 공고 마감 기한 field */}
         <div>
-          <label className="mb-2 block text-sm leading-5 font-medium text-[#374151]">
+          <label className="mb-2 block text-sm leading-5 font-medium text-gray-700">
             공고 마감 기한
-            <span className="text-[#EF4444]"> *</span>
+            <span className="text-danger-500" aria-label="필수 입력">
+              {' '}
+              *
+            </span>
           </label>
           <Calendar
             value={deadLine}
@@ -70,7 +79,10 @@ export default function RecCreateBasicInfo() {
         <div>
           <label className="mb-2 block text-sm leading-5 font-medium text-[#374151]">
             예상 모집 인원
-            <span className="text-[#EF4444]"> *</span>
+            <span className="text-danger-500" aria-label="필수 입력">
+              {' '}
+              *
+            </span>
           </label>
           <DropDown
             selected={selectedCapacity}

@@ -25,11 +25,14 @@ export default function RecCreateContentSection() {
   const [markDown, setMarkDown] = useState('')
 
   return (
-    <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-[#111827]">
+    <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-gray-900">
       <p className="text-[20px] leading-7 font-semibold">공고 내용</p>
       <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-gray-700">
         공고 내용
-        <span className="text-[#EF4444]"> *</span>
+        <span className="text-danger-500" aria-label="필수 입력">
+          {' '}
+          *
+        </span>
       </label>
       <div className="flex justify-between text-[12px] font-normal text-gray-500">
         <p>마크다운 문법을 사용할 수 있습니다</p>

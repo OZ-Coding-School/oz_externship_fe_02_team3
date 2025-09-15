@@ -23,8 +23,8 @@ export default function NotificationBadge({
         <Icon className="h-6 w-6 shrink-0" strokeWidth={2} color={iconColor} />
       </div>
       <div className="flex flex-col leading-tight">
-        <p className="text-[22px] font-bold text-[#111827]">{count}</p>
-        <p className="text-sm font-normal text-[#4B5563]">{title}</p>
+        <p className="text-[22px] font-bold text-gray-900">{count}</p>
+        <p className="text-sm font-normal text-gray-600">{title}</p>
       </div>
     </div>
   )

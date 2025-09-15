@@ -6,7 +6,7 @@ import { ROUTES } from '@constants/routes'
 export default function RecCreateFooter() {
   const navigate = useNavigate()
   return (
-    <div className="mb-12 w-full max-w-[832px] border-t-1 border-gray-200 text-[#111827]">
+    <div className="mb-12 w-full max-w-[832px] border-t-1 border-gray-200 text-gray-900">
       <div className="flex justify-end gap-4 pt-[25px]">
         <Button
           buttonInnerText="취소"
