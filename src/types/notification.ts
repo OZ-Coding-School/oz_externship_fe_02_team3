@@ -9,7 +9,7 @@ export interface NotificationItem {
   type: NotificationType
   is_read: boolean
   created_at: string
-  redirect_url: string
+  back_url_link: string
 }
 
 export interface NotificationResponse {

@@ -8,13 +8,19 @@ import ChatRoomHeader from './chat-header/ChatRoomHeader'
 import MessageInput from './MessageInput'
 import MessageList from './MessageList'
 import ParticipantsList from './ParticipantsList'
+import { useChatMessages } from '@src/hooks/useChatting'
+import { participants } from '@src/mock/participants'
 
 interface ChatProps {
-  toggleChat: () => void
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
 }
-export default function Chatting({ toggleChat }: ChatProps) {
+export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   const [currentView, setCurrentView] = useState<'list' | 'chat'>('list')
   const [selectedChatRoom, setSelectedChatRoom] = useState<Chat | null>(null)
+  const { chatMessages, isLoading: isMessagesLoading } = useChatMessages(
+    selectedChatRoom?.study_group_uuid
+  )
 
   const openChatRoom = (chatData: Chat) => {
     setSelectedChatRoom(chatData)
@@ -25,17 +31,20 @@ export default function Chatting({ toggleChat }: ChatProps) {
     setCurrentView('list')
   }
 
+  const toggleChat = () => {
+    setIsOpen(!isOpen)
+  }
   const sendMessage = (message: string) => {
     console.log(message)
   }
 
-  const getOnlineCount = () => {
-    if (!selectedChatRoom) return 0
-    const onlineCount = selectedChatRoom.participants.filter(
-      (p) => p.status === 'online'
-    )
-    return onlineCount.length
-  }
+  // const getOnlineCount = () => {
+  //   if (!selectedChatRoom) return 0
+  //   const onlineCount = selectedChatRoom.participants.filter(
+  //     (p) => p.status === 'online'
+  //   )
+  //   return onlineCount.length
+  // }
 
   const renderListView = () => (
     <>
@@ -48,14 +57,20 @@ export default function Chatting({ toggleChat }: ChatProps) {
     selectedChatRoom && (
       <div className="flex h-full flex-col">
         <ChatRoomHeader
-          title={selectedChatRoom.title}
-          onlineCount={getOnlineCount()}
+          title={selectedChatRoom.study_group_name}
+          // onlineCount={getOnlineCount()}
           onBack={handleBack}
-          onClose={toggleChat}
+          toggleChat={toggleChat}
         />
-        <ParticipantsList participants={selectedChatRoom.participants} />
+        <ParticipantsList participants={participants} />
         <div className="flex-1">
-          <MessageList messages={selectedChatRoom.messages} />
+          {isMessagesLoading ? (
+            <div className="flex h-full items-center justify-center">
+              <div>메시지를 불러오는 중...</div>
+            </div>
+          ) : (
+            <MessageList messages={chatMessages} />
+          )}
         </div>
         <MessageInput onSend={sendMessage} />
       </div>
