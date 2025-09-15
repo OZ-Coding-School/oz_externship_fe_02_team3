@@ -27,7 +27,10 @@ export default function RecCreateBasicInfo() {
     <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-gray-900">
       <p className="text-[20px] leading-7 font-semibold">기본 정보</p>
       {/* 공고 제목 field*/}
-      <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-gray-700">
+      <label
+        htmlFor="title"
+        className="mt-6 mb-2 block text-sm leading-5 font-medium text-gray-700"
+      >
         공고 제목
         <span className="text-danger-500" aria-label="필수 입력">
           {' '}
@@ -35,6 +38,7 @@ export default function RecCreateBasicInfo() {
         </span>
       </label>
       <input
+        id="title"
         type="text"
         className="h-[50px] w-full rounded-lg border border-gray-300 px-4 text-gray-900 placeholder:text-gray-400 focus:outline-none"
         aria-label="공고 제목 input"
