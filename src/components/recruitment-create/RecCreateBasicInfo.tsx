@@ -16,7 +16,7 @@ const capacityGroup = [
   { id: 4, name: '스터디 그룹4' },
 ]
 
-export default function RecBasicInfo() {
+export default function RecCreateBasicInfo() {
   const [selectedGroup, setSelectedGroup] = useState<string>()
   const [selectedCapacity, setSelectedCapacity] = useState<string>()
   const [deadLine, setDeadLine] = useState<Date | null>(null)
