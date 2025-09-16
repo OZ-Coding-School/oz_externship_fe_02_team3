@@ -15,6 +15,7 @@ const mutableChatListData: Chat[] = [...chatList]
 // JWT 토큰 검증 헬퍼 함수
 const validateAuth = (request: Request) => {
   const authHeader = request.headers.get('Authorization')
+  console.log(authHeader) // Bearer null
 
   if (!authHeader) {
     return { isValid: false, error: 'Authorization header missing' }
@@ -25,12 +26,23 @@ const validateAuth = (request: Request) => {
   }
 
   const token = authHeader.replace('Bearer ', '')
+  console.log(token) // null
 
   // 개발 환경에서는 단순 토큰 검증 (실제로는 JWT 검증 로직 필요)
-  if (!token || token === 'invalid') {
+  // if (!token || token === 'invalid') {
+  //   // (문자열 "null"은 truthy 값!)
+  //   return { isValid: false, error: 'Invalid or expired token' }
+  // }
+  if (
+    !token ||
+    token === 'invalid' ||
+    token === 'null' ||
+    token === 'undefined'
+  ) {
     return { isValid: false, error: 'Invalid or expired token' }
   }
 
+  // 개발 환경에서는 기본 토큰 제공
   return { isValid: true }
 }
 
