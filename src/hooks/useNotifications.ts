@@ -1,10 +1,6 @@
 // src/hooks/useNotifications.ts
-import { useState, useCallback } from 'react'
 import axios from 'axios'
-import type {
-  NotificationItem,
-  NotificationResponse,
-} from '@src/types/notification'
+import type { NotificationResponse } from '@src/types/notification'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 const getAuthToken = () => {

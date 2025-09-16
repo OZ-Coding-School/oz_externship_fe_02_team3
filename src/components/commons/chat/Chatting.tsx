@@ -40,9 +40,6 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   const toggleChat = () => {
     setIsOpen(!isOpen)
   }
-  const sendMessage = (message: string) => {
-    console.log(message)
-  }
 
   // const getOnlineCount = () => {
   //   if (!selectedChatRoom) return 0
