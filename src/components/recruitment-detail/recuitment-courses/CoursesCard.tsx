@@ -18,7 +18,7 @@ export default function CoursesCard({ course }: CourseCardProps) {
         <p className="mb-3 text-gray-600">강사: {course.instructor}</p>
         <div className="text-primary-600 flex items-center justify-between">
           <h4 className="text-xl font-semibold">{course.price}</h4>
-          <a href={course.url} className="flex items-center">
+          <a href={course.url} className="flex items-center hover:underline">
             강의 보기 <ArrowRightIcon className="h-4" />
           </a>
         </div>
