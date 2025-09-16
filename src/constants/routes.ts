@@ -16,6 +16,7 @@ export const ROUTES = {
   RECRUITMENT_CREATE: '/recruitment/create',
   RECRUITMENT_MANAGE: '/recruitment/manage',
   RECRUITMENT_EDIT: (id: string | number) => `/recruitment/${id}/edit`,
+  RECRUITMENT_EDIT_PATTERN: '/recruitment/:id/edit',
 
   // Auth
   LOGIN: '/auth/login',
