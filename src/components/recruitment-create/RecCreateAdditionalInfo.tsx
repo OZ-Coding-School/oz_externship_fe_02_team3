@@ -1,6 +1,6 @@
 import { FileUploadBox } from './FileUploadBox'
 import PriceInput from './PriceInput'
-import TagBox from './tag-ui/TagBox'
+import TagSection from './tag-ui/TagSection'
 
 export default function RecCreateAdditionalInfo() {
   return (
@@ -12,7 +12,7 @@ export default function RecCreateAdditionalInfo() {
       </label>
       <PriceInput />
       <div className="mt-6">
-        <TagBox />
+        <TagSection />
       </div>
       <div className="mt-6">
         <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-gray-700">
