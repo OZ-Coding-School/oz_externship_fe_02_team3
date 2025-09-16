@@ -1,6 +1,7 @@
 import RecruitmentBanner from '@components/recruitment-detail/recruitment-banner/RecruitmentBanner.tsx'
 import BackButton from '@src/components/commons/BackButton'
 import RecruitmentContent from '@src/components/recruitment-detail/recruitment-content/RecruitmentContent'
+import RecuitmentCourses from '@src/components/recruitment-detail/recuitment-courses/RecuitmentCourses'
 
 export default function RecruitmentDetailPage() {
   return (
@@ -12,6 +13,7 @@ export default function RecruitmentDetailPage() {
         <div className="flex flex-col gap-8">
           <RecruitmentBanner />
           <RecruitmentContent />
+          <RecuitmentCourses />
         </div>
       </div>
     </div>
