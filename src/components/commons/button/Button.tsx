@@ -25,6 +25,7 @@ function Button({
   fontWeight,
   disabled = false,
   iconSize = 'md',
+  type = 'button',
   ariaLabel,
   onClick,
   className,
@@ -34,7 +35,7 @@ function Button({
 
   return (
     <button
-      type="button"
+      type={type}
       disabled={disabled}
       className={cn(
         buttonClass({

@@ -1,141 +1,17 @@
 // src/hooks/useNotifications.ts
-import { useState, useCallback } from 'react'
 import axios from 'axios'
-import type {
-  NotificationItem,
-  NotificationResponse,
-} from '@src/types/notification'
+import type { NotificationResponse } from '@src/types/notification'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-export function useNotificationsQuery() {
-  const [notifications, setNotifications] = useState<NotificationItem[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+const getAuthToken = () => {
+  const token = localStorage.getItem('access_token')
 
-  const loadNotifications = useCallback(
-    async (params = {}): Promise<NotificationResponse> => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        // 스켈레톤 테스트위한 함수
-        // await new Promise((res) => setTimeout(res, 2000))
-
-        // localStorage에서 JWT 토큰 가져오기
-        const token = localStorage.getItem('access_token')
-
-        // if (!token) {
-        //   throw new Error('인증 토큰이 없습니다. 다시 로그인해주세요.')
-        // }
-        // 단순하게 API 호출만 (MSW가 인터셉트해서 mock 데이터 반환)
-        const response = await axios.get('/api/v1/notifications', {
-          params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          timeout: 5000,
-        })
-
-        setNotifications(response.data.results || [])
-        return response.data
-      } catch (err) {
-        const error = err as Error
-        setError(error.message || '알림을 불러오는데 실패했습니다.')
-        throw err
-      } finally {
-        setLoading(false)
-      }
-    },
-    []
-  )
-
-  const markAllAsRead = useCallback(async () => {
-    try {
-      setLoading(true)
-
-      // 모두 읽음 실패 테스트
-      // await new Promise((r) => setTimeout(r, 800))
-      // throw new Error('테스트 실패')
-
-      // localStorage에서 JWT 토큰 가져오기
-      const token = localStorage.getItem('access_token')
-
-      // if (!token) {
-      //   throw new Error('인증 토큰이 없습니다. 다시 로그인해주세요.')
-      // }
-
-      // 단순하게 API 호출만 (MSW가 인터셉트해서 mock 데이터 반환)
-      await axios.post(
-        '/api/v1/notifications/read-all',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          timeout: 5000,
-        }
-      )
-
-      // 읽지 않은 알림만 읽음 처리 (명세서: "읽지 않은 모든 알림을 읽음 처리")
-      setNotifications((prev) =>
-        prev.map((notification) => ({
-          ...notification,
-          is_read: true, // 모든 알림을 읽음 상태로 변경
-        }))
-      )
-      // 204 응답에는 본문이 없으므로 빈 객체 반환
-      return { success: true }
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  const readNotification = useCallback(async (id: number) => {
-    try {
-      setLoading(true)
-
-      // localStorage에서 JWT 토큰 가져오기
-      const token = localStorage.getItem('access_token')
-
-      // if (!token) {
-      //   throw new Error('인증 토큰이 없습니다. 다시 로그인해주세요.')
-      // }
-
-      // 단순하게 API 호출만 (MSW가 인터셉트해서 mock 데이터 반환)
-      const response = await axios.post(
-        `/api/v1/notifications/${id}/read`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          timeout: 5000,
-        }
-      )
-      console.log(response.data)
-      const updatedNotification = response.data
-
-      setNotifications((prev) =>
-        prev.map((notification) =>
-          notification.notification_id === id
-            ? { ...notification, is_read: true }
-            : notification
-        )
-      )
-      return updatedNotification
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  return {
-    notifications: notifications || [],
-    loading,
-    error,
-    loadNotifications,
-    readNotification,
-    markAllAsRead,
+  if (!import.meta.env.DEV) {
+    return token // 프로덕션에서는 localStorage 토큰만 반환
   }
+
+  // 개발 환경에서는 기본 토큰 제공
+  return token || 'dev-token'
 }
 
 // 알림 목록 조회
@@ -143,7 +19,7 @@ export function useNotifications() {
   const query = useQuery<NotificationResponse>({
     queryKey: ['notifications'],
     queryFn: async () => {
-      const token = localStorage.getItem('access_token')
+      const token = getAuthToken()
       const response = await axios.get('/api/v1/notifications', {
         params: { status: 'all', limit: 50, offset: 0 },
         headers: { Authorization: `Bearer ${token}` },
@@ -164,7 +40,8 @@ export function useUnreadCountQuery() {
   const query = useQuery({
     queryKey: ['notifications', 'unread-count'],
     queryFn: async () => {
-      const token = localStorage.getItem('access_token')
+      // const token = localStorage.getItem('access_token')
+      const token = getAuthToken()
       const response = await axios.get('/api/v1/notifications/unread-count', {
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -188,7 +65,8 @@ export function useMarkAllAsRead() {
   return useMutation({
     // mutationFn: 실제로 서버에 요청을 보내는 함수
     mutationFn: async () => {
-      const token = localStorage.getItem('access_token')
+      // const token = localStorage.getItem('access_token')
+      const token = getAuthToken()
       const response = await axios.post(
         '/api/v1/notifications/read-all',
         {},
@@ -214,7 +92,9 @@ export function useReadNotification() {
   // useMutation은 변경(POST/PUT/DELETE)
   return useMutation({
     mutationFn: async (id: number) => {
-      const token = localStorage.getItem('access_token')
+      // const token = localStorage.getItem('access_token')
+
+      const token = getAuthToken()
       const response = await axios.post(
         `/api/v1/notifications/${id}/read`,
         {},

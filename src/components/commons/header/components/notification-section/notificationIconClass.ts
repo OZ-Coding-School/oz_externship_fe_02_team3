@@ -6,15 +6,17 @@ export const notificationIconClass = cva(
     variants: {
       type: {
         ADD_APPLICATION: 'bg-blue-100',
-        APPROVE_APPLICATION: 'bg-green-100',
-        REJECT_APPLICATION: 'bg-red-100',
-        NEW_MEMBER_JOIN: 'bg-purple-100',
-        STUDY_END: 'bg-orange-100',
-        REMINDER: 'bg-gray-100',
+        APPLICATION_ACCEPT: 'bg-green-100',
+        APPLICATION_REJECT: 'bg-red-100',
+        STUDY_JOIN: 'bg-purple-100',
+        STUDY_NOTE_CREATE: 'bg-[#CCFBF1]',
+        STUDY_REVIEW_REQUEST: 'bg-orange-100',
+        TODAY_SCHEDULE: 'bg-[#FCE7F3]',
+        UPCOMING_SCHEDULE: 'bg-[#E0E7FF]',
       },
     },
     defaultVariants: {
-      type: 'REMINDER',
+      type: 'ADD_APPLICATION',
     },
   }
 )
@@ -23,15 +25,17 @@ export const notificationIconStrokeClass = cva('', {
   variants: {
     type: {
       ADD_APPLICATION: 'stroke-[#2563EB]',
-      APPROVE_APPLICATION: 'stroke-[#16A34A]',
-      REJECT_APPLICATION: 'stroke-[#DC2626]',
-      NEW_MEMBER_JOIN: 'stroke-[#9333EA]',
-      STUDY_END: 'stroke-[#EA580C]',
-      REMINDER: 'stroke-gray-400',
+      APPLICATION_ACCEPT: 'stroke-[#16A34A]',
+      APPLICATION_REJECT: 'stroke-[#DC2626]',
+      STUDY_JOIN: 'stroke-[#9333EA]',
+      STUDY_NOTE_CREATE: 'stroke-[#0D9488]',
+      STUDY_REVIEW_REQUEST: 'stroke-[#EA580C]',
+      TODAY_SCHEDULE: 'stroke-[#DB2777]',
+      UPCOMING_SCHEDULE: 'stroke-[#4F46E5]',
     },
   },
   defaultVariants: {
-    type: 'REMINDER',
+    type: 'ADD_APPLICATION',
   },
 })
 export type NotificationIconClassProps = VariantProps<
