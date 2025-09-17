@@ -1,13 +1,27 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-export default function PriceInput() {
+interface PriceInputProps {
+  defaultValue?: string
+  onChange?: (value: string) => void
+}
+
+export default function PriceInput({
+  defaultValue,
+  onChange,
+}: PriceInputProps) {
   const [value, setValue] = useState<string>('')
+
+  useEffect(() => {
+    if (defaultValue !== undefined) {
+      setValue(String(defaultValue))
+    }
+  }, [defaultValue])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/,/g, '')
-
     if (!isNaN(Number(raw))) {
       setValue(raw)
+      onChange?.(raw)
     }
   }
 

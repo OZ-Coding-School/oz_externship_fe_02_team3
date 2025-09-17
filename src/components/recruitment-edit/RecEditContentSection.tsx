@@ -1,12 +1,23 @@
-import { useState } from 'react'
-import StudyIntroMarkdown from './StudyIntroMarkdown'
-import { ImageUploadBox } from './ImageUploadBox'
+import { useEffect, useState } from 'react'
+import StudyIntroMarkdown from '../recruitment-create/StudyIntroMarkdown'
 import { STUDY_INTRO_PLACEHOLDER } from '@src/constants/studyintroplaceholder'
+
+interface RecEditContentSectionProps {
+  defaultMarkDown?: string
+  onChangeMarkDown?: (md: string) => void
+}
 
 const PLACEHOLDER = STUDY_INTRO_PLACEHOLDER
 
-export default function RecCreateContentSection() {
-  const [markDown, setMarkDown] = useState('')
+export default function RecEditContentSection({
+  defaultMarkDown,
+  onChangeMarkDown,
+}: RecEditContentSectionProps) {
+  const [markDown, setMarkDown] = useState<string>(defaultMarkDown ?? '')
+
+  useEffect(() => {
+    if (defaultMarkDown !== undefined) setMarkDown(defaultMarkDown)
+  }, [defaultMarkDown])
 
   return (
     <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-gray-900">
@@ -27,20 +38,16 @@ export default function RecCreateContentSection() {
       </label>
       <StudyIntroMarkdown
         value={markDown}
-        onChange={setMarkDown}
+        onChange={(value) => {
+          setMarkDown(value)
+          onChangeMarkDown?.(value)
+        }}
         placeholder={PLACEHOLDER}
         height={320}
       />
       <div className="pt-2 text-[12px] leading-4 font-normal text-gray-500">
         <p>• 마크다운 문법: **굵게**, *기울임*, # 제목, - 목록 등</p>
         <p>• 이미지 추가: ![설명](이미지URL) - 최대 5개, 각 5MB 이하</p>
-      </div>
-
-      <div className="mt-8">
-        <label className="mt-2 mb-2 block text-sm leading-5 font-medium text-gray-700">
-          스터디 그룹 대표 이미지(선택사항)
-        </label>
-        <ImageUploadBox />
       </div>
     </div>
   )
