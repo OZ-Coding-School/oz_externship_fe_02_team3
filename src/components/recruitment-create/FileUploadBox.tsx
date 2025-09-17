@@ -30,14 +30,14 @@ export function FileUploadBox({ defaultFiles = [] }: FileUploadBoxProps) {
 
   const adaptedPreset = useMemo<FileWithPreview[]>(
     () =>
-      presetFiles.map((p) => {
-        const f = new File([''], p.name, {
+      presetFiles.map((presentFile) => {
+        const file = new File([''], presentFile.name, {
           type: 'application/octet-stream',
           lastModified: 0,
         }) as FileWithPreview
-        f.preview = p.url
-        f.__preset = true
-        return f
+        file.preview = presentFile.url
+        file.__preset = true
+        return file
       }),
     [presetFiles]
   )
