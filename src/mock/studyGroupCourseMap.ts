@@ -1,4 +1,5 @@
-import { mockCoursesData, type Course } from './coursesData'
+import { mockCoursesData } from './coursesData'
+import type { Course } from '@src/types/course'
 
 export const studyGroupCourseMap: Record<string, number[]> = {
   '스터디 그룹1': [1, 3], // Vue.js, JS ES6+
