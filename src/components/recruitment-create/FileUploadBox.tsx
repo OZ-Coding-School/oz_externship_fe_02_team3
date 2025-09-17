@@ -1,14 +1,59 @@
+import { useMemo, useState } from 'react'
 import { FileUp } from 'lucide-react'
 import DottedBox from './uploadbox-ui/DottedBox'
 import FileList from './uploadbox-ui/FileList'
 import useUploader from './uploadbox-ui/useUploader'
 
-export function FileUploadBox() {
+interface PresetFile {
+  id: number
+  name: string
+  url: string
+}
+
+interface FileWithPreview extends File {
+  preview?: string
+  __preset?: boolean
+}
+
+interface FileUploadBoxProps {
+  defaultFiles?: PresetFile[]
+}
+
+export function FileUploadBox({ defaultFiles = [] }: FileUploadBoxProps) {
   const { files, state, getRootProps, getInputProps, removeAt } = useUploader({
     accept: { '*/*': [] },
     maxFiles: 3,
     onError: (m) => alert(m),
   })
+
+  const [presetFiles, setPresetFiles] = useState<PresetFile[]>(defaultFiles)
+
+  const adaptedPreset = useMemo<FileWithPreview[]>(
+    () =>
+      presetFiles.map((p) => {
+        const f = new File([''], p.name, {
+          type: 'application/octet-stream',
+          lastModified: 0,
+        }) as FileWithPreview
+        f.preview = p.url
+        f.__preset = true
+        return f
+      }),
+    [presetFiles]
+  )
+
+  const combinedFiles = useMemo<FileWithPreview[]>(
+    () => [...adaptedPreset, ...(files as FileWithPreview[])],
+    [adaptedPreset, files]
+  )
+
+  const handleRemove = (index: number) => {
+    if (index < adaptedPreset.length) {
+      setPresetFiles((prev) => prev.filter((_, i) => i !== index))
+    } else {
+      removeAt(index - adaptedPreset.length)
+    }
+  }
 
   return (
     <DottedBox
@@ -17,6 +62,7 @@ export function FileUploadBox() {
       {...getRootProps({ role: 'button', tabIndex: 0 })}
     >
       <input {...getInputProps()} />
+
       <div className="w-full p-6 sm:p-8">
         <div className="text-center select-none">
           <FileUp className="mx-auto mb-2 h-8 w-8 text-gray-500 opacity-70" />
@@ -28,11 +74,11 @@ export function FileUploadBox() {
           </p>
         </div>
 
-        {files.length > 0 && (
+        {combinedFiles.length > 0 && (
           <div className="mx-auto mt-4 max-h-48 overflow-y-auto">
             <FileList
-              files={files}
-              onRemove={removeAt}
+              files={combinedFiles}
+              onRemove={handleRemove}
               showPreview
               thumbSize={24}
               dense
