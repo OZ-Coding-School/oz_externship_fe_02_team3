@@ -40,8 +40,12 @@ export default function RecruitmentEdit() {
           defaultDeadline={MOCKDATA.deadline}
           onGroupChange={(name) => setSelectedGroupName(name)}
         />
-        <RecEditContentSection />
-        <RecEditAdditionalInfo />
+        <RecEditContentSection defaultMarkDown={MOCKDATA.content} />
+        <RecEditAdditionalInfo
+          defaultPrice={priceForInput}
+          onPriceChange={(raw) => setPriceOverride(raw)}
+          defaultFiles={MOCKDATA.files}
+        />
         <RecEditFooter />
       </div>
     </div>
