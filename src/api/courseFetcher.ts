@@ -1,5 +1,5 @@
-import { mockCoursesData, type Course } from '../types/course'
-
+import { mockCoursesData } from '@src/mock/coursesData'
+import type { Course } from '../types/course'
 interface FetchErrorData {
   message: string
   status?: number
