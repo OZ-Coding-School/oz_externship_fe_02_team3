@@ -34,7 +34,7 @@ const capacityGroup = [
   { id: 10, name: '10명' },
 ]
 
-const fmt = (n: number) => new Intl.NumberFormat('ko-KR').format(n)
+const formatPrice = (n: number) => new Intl.NumberFormat('ko-KR').format(n)
 
 export default function RecEditBasicInfo({
   title: defaultTitle,
@@ -102,11 +102,16 @@ export default function RecEditBasicInfo({
             선택된 그룹의 강의 정보
           </p>
           <ul className="space-y-1">
-            {courses.map((c) => (
-              <li key={c.id} className="flex items-center justify-between py-1">
-                <span className="text-primary-700 text-[14px]">{c.title}</span>
+            {courses.map((cource) => (
+              <li
+                key={cource.id}
+                className="flex items-center justify-between py-1"
+              >
+                <span className="text-primary-700 text-[14px]">
+                  {cource.title}
+                </span>
                 <span className="text-primary-700 text-[14px] font-medium">
-                  {fmt(c.price)}원
+                  {formatPrice(cource.price)}원
                 </span>
               </li>
             ))}
@@ -115,7 +120,7 @@ export default function RecEditBasicInfo({
                 총 강의 비용
               </span>
               <span className="text-primary-800 text-[14px] font-medium">
-                {fmt(total)}원
+                {formatPrice(total)}원
               </span>
             </li>
           </ul>
