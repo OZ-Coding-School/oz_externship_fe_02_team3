@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import { mockCoursesData, type Course } from '@src/types/course'
+import { mockCoursesData } from '@src/mock/coursesData'
+import type { Course } from '@src/types/course'
 import type { UseCoursesReturn } from '@src/types/hooks'
 import type { ApiError } from '@src/types/api'
 
