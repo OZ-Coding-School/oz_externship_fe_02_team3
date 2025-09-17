@@ -1,5 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import StudyIntroMarkdown from '../recruitment-create/StudyIntroMarkdown'
+
+interface RecEditContentSectionProps {
+  defaultMarkDown?: string
+  onChangeMarkDown?: (md: string) => void
+}
 
 const STUDY_INTRO_PLACEHOLDER = `# 스터디 소개
 React 실무 프로젝트를 함께 진행할 팀원을 모집합니다!
@@ -20,8 +25,15 @@ React 실무 프로젝트를 함께 진행할 팀원을 모집합니다!
 
 ![이미지 설명](이미지URL)`
 
-export default function RecEditContentSection() {
-  const [markDown, setMarkDown] = useState('')
+export default function RecEditContentSection({
+  defaultMarkDown,
+  onChangeMarkDown,
+}: RecEditContentSectionProps) {
+  const [markDown, setMarkDown] = useState<string>(defaultMarkDown ?? '')
+
+  useEffect(() => {
+    if (defaultMarkDown !== undefined) setMarkDown(defaultMarkDown)
+  }, [defaultMarkDown])
 
   return (
     <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-gray-900">
@@ -42,7 +54,10 @@ export default function RecEditContentSection() {
       </label>
       <StudyIntroMarkdown
         value={markDown}
-        onChange={setMarkDown}
+        onChange={(value) => {
+          setMarkDown(value)
+          onChangeMarkDown?.(value)
+        }}
         placeholder={STUDY_INTRO_PLACEHOLDER}
         height={320}
       />
