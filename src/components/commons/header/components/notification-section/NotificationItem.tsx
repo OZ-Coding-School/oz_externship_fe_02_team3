@@ -9,18 +9,25 @@ import {
   Bell as BellIcon,
   CalendarCheck as CalendarCheckIcon,
   Check as CheckIcon,
+  NotebookPen as CreatingRecordIcon,
   UserRoundPlus as UserRoundPlusIcon,
   UsersRound as UsersRoundIcon,
+  CalendarRange as CalendarRangeIcon,
+  CalendarClock as CalendarClockIcon,
   X as CloseIcon,
 } from 'lucide-react'
+
 const iconMap = {
   ADD_APPLICATION: UserRoundPlusIcon,
-  APPROVE_APPLICATION: CheckIcon,
-  REJECT_APPLICATION: CloseIcon,
-  NEW_MEMBER_JOIN: UsersRoundIcon,
-  STUDY_END: CalendarCheckIcon,
-  REMINDER: BellIcon,
+  APPLICATION_ACCEPT: CheckIcon,
+  APPLICATION_REJECT: CloseIcon,
+  STUDY_JOIN: UsersRoundIcon,
+  STUDY_NOTE_CREATE: CreatingRecordIcon,
+  STUDY_REVIEW_REQUEST: CalendarCheckIcon,
+  TODAY_SCHEDULE: CalendarClockIcon,
+  UPCOMING_SCHEDULE: CalendarRangeIcon,
 }
+
 import type { NotificationItem as NotificationItemType } from '@src/types/notification'
 import { useReadNotification } from '@src/hooks/useNotifications'
 
@@ -82,9 +89,11 @@ export default function NotificationItem({
   const readNotificationMutation = useReadNotification()
 
   const handleNotificationClick = () => {
+    console.log(notification.back_url_link)
+
     if (notification.is_read || readNotificationMutation.isPending) {
       setIsNotificationOpen(false)
-      if (notification.redirect_url) navigate(notification.redirect_url)
+      if (notification.back_url_link) navigate(notification.back_url_link)
       return
     }
 
@@ -95,6 +104,9 @@ export default function NotificationItem({
       onSuccess: () => {
         console.log('읽음 처리 성공!')
         setIsNotificationOpen(false)
+        if (notification.back_url_link) {
+          navigate(notification.back_url_link)
+        }
       },
     })
 

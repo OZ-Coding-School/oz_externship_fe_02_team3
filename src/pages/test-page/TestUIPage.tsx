@@ -93,8 +93,7 @@ export default function TestUIPage() {
   ]
   const [date, setDate] = useState<Date | null>(null)
   return (
-    <>
-      <div className="space-y-4 p-4">
+    <div className="space-y-4 p-4">
         {/* 선택 가능한 드롭다운 */}
         <DropDown
           selected={selectedCategory}
@@ -259,6 +258,5 @@ export default function TestUIPage() {
           onPageChange={setPage}
         />
       </div>
-    </>
   )
 }

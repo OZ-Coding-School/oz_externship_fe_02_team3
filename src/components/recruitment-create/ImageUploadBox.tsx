@@ -6,7 +6,7 @@ export function ImageUploadBox() {
   const { files, state, getRootProps, getInputProps, removeAt, open } =
     useUploader({
       accept: { 'image/*': ['.jpg', '.jpeg', '.png'] },
-      maxFiles: 5,
+      maxFiles: 1,
       multiple: true,
       createPreview: true,
       onError: (m) => alert(m),
@@ -29,9 +29,7 @@ export function ImageUploadBox() {
             <p className="text-sm font-medium text-gray-500">
               클릭하여 이미지 업로드
             </p>
-            <p className="mt-1 text-xs text-gray-500">
-              JPG, PNG (최대 5MB, 최대 5장)
-            </p>
+            <p className="mt-1 text-xs text-gray-500">JPG, PNG (최대 5MB)</p>
           </div>
         )}
 
