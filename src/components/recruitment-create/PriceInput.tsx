@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 interface PriceInputProps {
   defaultValue?: string
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
 }
 
 export default function PriceInput({
