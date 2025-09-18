@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
 import Icon from '../Icon'
 import Badge from '../Badge'
+import { cn } from '@src/utils/cn'
 
 interface SelectedTagProps {
   label: string
@@ -14,8 +15,15 @@ export default function SelectedTag({
   className,
 }: SelectedTagProps) {
   return (
-    <Badge className={className ?? 'bg-primary-100 text-primary-800'}>
-      {label}
+    <Badge
+      className={cn(
+        'inline-flex max-w-full items-center',
+        className ?? 'bg-primary-100 text-primary-800'
+      )}
+    >
+      <span className="max-w-10 truncate sm:max-w-20" title={label}>
+        {label}
+      </span>
       {onRemove && (
         <button
           type="button"
