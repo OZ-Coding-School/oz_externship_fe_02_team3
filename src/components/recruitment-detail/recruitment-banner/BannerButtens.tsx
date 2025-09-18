@@ -21,7 +21,7 @@ export function BannerButtens({
       <Button
         icon={ShareIcon}
         variant="outline"
-        aria-label="북마크"
+        aria-label="공유하기"
         className="rounded-md"
         onClick={onShare}
       />
