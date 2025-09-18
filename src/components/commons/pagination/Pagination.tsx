@@ -37,9 +37,9 @@ export default function Pagination({
       <Button
         icon={ChevronLeftIcon}
         iconSize="sm"
-        variant="secondary"
+        variant="outline"
         iconClassName="text-gray-500"
-        className="rounded-xl border border-gray-200"
+        className="h-9 w-9 rounded-lg border border-gray-200"
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}
         aria-label="이전 페이지"
@@ -49,10 +49,10 @@ export default function Pagination({
           key={pageNum}
           buttonInnerText={String(pageNum)}
           size="base"
-          variant={pageNum === page ? 'primary' : 'secondary'}
+          variant={pageNum === page ? 'primary' : 'outline'}
           onClick={() => onPageChange(pageNum)}
           className={cn(
-            'h-10 w-10 rounded-xl p-0 tabular-nums',
+            'h-9 w-9 rounded-lg p-0 tabular-nums',
             pageNum === page ? '' : 'border border-gray-200'
           )}
           aria-current={pageNum === page ? 'page' : undefined}
@@ -61,9 +61,9 @@ export default function Pagination({
       <Button
         icon={ChevronRightIcon}
         iconSize="sm"
-        variant="secondary"
+        variant="outline"
         iconClassName="text-gray-500"
-        className="rounded-xl border border-gray-200"
+        className="h-9 w-9 rounded-lg border border-gray-200"
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
         aria-label="다음 페이지"

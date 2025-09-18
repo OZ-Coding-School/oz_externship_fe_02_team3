@@ -1,6 +1,7 @@
 import RecEditPriceInput from '../recruitment-edit/RecEditPriceInput'
 import { FileUploadBox } from './FileUploadBox'
-import TagBox from './tag-ui/TagBox'
+import PriceInput from './PriceInput'
+import TagSection from './tag-ui/TagSection'
 
 interface PresetFile {
   id: number
@@ -46,7 +47,7 @@ export default function RecCreateAdditionalInfo({
       />
 
       <div className="mt-6">
-        <TagBox />
+        <TagSection />
       </div>
       <div className="mt-6">
         <label className="mt-6 mb-2 block text-sm leading-5 font-medium text-gray-700">
