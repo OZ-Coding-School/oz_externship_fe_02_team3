@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import StudyIntroMarkdown from './StudyIntroMarkdown'
-import { ImageUploadBox } from './ImageUploadBox'
 import { STUDY_INTRO_PLACEHOLDER } from '@src/constants/studyintroplaceholder'
 
 const PLACEHOLDER = STUDY_INTRO_PLACEHOLDER
