@@ -35,13 +35,6 @@ export default function RecCreateContentSection() {
         <p>• 마크다운 문법: **굵게**, *기울임*, # 제목, - 목록 등</p>
         <p>• 이미지 추가: ![설명](이미지URL) - 최대 5개, 각 5MB 이하</p>
       </div>
-
-      <div className="mt-8">
-        <label className="mt-2 mb-2 block text-sm leading-5 font-medium text-gray-700">
-          스터디 그룹 대표 이미지(선택사항)
-        </label>
-        <ImageUploadBox />
-      </div>
     </div>
   )
 }
