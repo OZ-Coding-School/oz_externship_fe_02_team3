@@ -15,9 +15,9 @@ interface BannerInfoListProps {
 export function BannerInfoList({ items }: BannerInfoListProps) {
   return (
     <div className="flex flex-wrap space-x-6">
-      {items.map((item) => (
+      {items.map((item, index) => (
         <div
-          key={item.label}
+          key={`${item.value}-${index}`}
           className="flex items-center gap-2 text-sm text-gray-600"
         >
           <Icon icon={item.icon} size={16} />

@@ -45,9 +45,9 @@ export function BannerInfoBoxs({ post }: BannerInfoBoxsProps) {
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-      {stats.map((stat, idx) => (
+      {stats.map((stat, index) => (
         <div
-          key={idx}
+          key={`${stat.value}-${index}`}
           className="flex flex-col items-center rounded-lg bg-gray-50 p-4 transition"
         >
           {stat.icon}
