@@ -1,5 +1,6 @@
 import RecruitmentBanner from '@components/recruitment-detail/recruitment-banner/RecruitmentBanner.tsx'
 import BackButton from '@src/components/commons/BackButton'
+import RecruitmentAttachmentList from '@src/components/recruitment-detail/recruitment-attachment-list/RecruitmentAttachmentList'
 import RecruitmentContent from '@src/components/recruitment-detail/recruitment-content/RecruitmentContent'
 import RecuitmentCourses from '@src/components/recruitment-detail/recuitment-courses/RecuitmentCourses'
 
@@ -14,6 +15,7 @@ export default function RecruitmentDetailPage() {
           <RecruitmentBanner />
           <RecruitmentContent />
           <RecuitmentCourses />
+          <RecruitmentAttachmentList />
         </div>
       </div>
     </div>
