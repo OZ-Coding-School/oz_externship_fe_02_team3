@@ -1,12 +1,13 @@
 // src/mocks/handlers.ts
 import { http, HttpResponse } from 'msw'
-import notificationsData from './notificationsData'
 import type {
   NotificationItem,
   NotificationResponse,
 } from '@src/types/notification'
+
 import type { Chat } from '@src/types/chat'
-import chatMessagesData, { chatList } from './chatListData'
+import chatMessagesData, { chatList } from '../chatListData'
+import notificationsData from '../notificationsData'
 
 // 변경 가능한 데이터 선언
 let mutableNotificationsData: NotificationItem[] = [...notificationsData]
@@ -46,7 +47,7 @@ const validateAuth = (request: Request) => {
   return { isValid: true }
 }
 
-export const handlers = [
+export const notificationHandlers = [
   // 전체 알림 목록 조회 API 모킹
   http.get('/api/v1/notifications', ({ request }) => {
     const auth = validateAuth(request)
