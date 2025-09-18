@@ -15,9 +15,20 @@ import ApplicationModal from '@src/components/recruitment-manage/application/App
 export default function RecruitmentBanner() {
   const [openApplication, setOpenApplication] = useState(false)
 
+  // 등록일 형식에 맞게 데이터 수정
+  const date = new Date(post.created_at)
+  const postCreatedAt = new Intl.DateTimeFormat('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  }).format(date)
+
   const jobInfo = [
     { icon: UserIcon, label: '작성자', value: post.author.nickname },
-    { icon: CalendarIcon, label: '등록일', value: post.created_at },
+    { icon: CalendarIcon, label: '등록일', value: postCreatedAt },
     { icon: ViewIcon, label: '조회', value: post.view_count },
     { icon: BookmarkIcon, label: '북마크', value: post.bookmark_count },
   ]

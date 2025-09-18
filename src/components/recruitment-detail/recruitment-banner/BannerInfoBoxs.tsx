@@ -11,6 +11,14 @@ interface BannerInfoBoxsProps {
 }
 
 export function BannerInfoBoxs({ post }: BannerInfoBoxsProps) {
+  // 마감일 형식에 맞게 데이터 수정
+  const date = new Date(post.deadline)
+  const postDeadline = new Intl.DateTimeFormat('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date)
+
   const iconClass = 'h-6 w-6 text-gray-700'
   const stats = [
     {
@@ -26,7 +34,7 @@ export function BannerInfoBoxs({ post }: BannerInfoBoxsProps) {
     {
       icon: <CalendarIcon className={iconClass} />,
       label: '마감일',
-      value: post.deadline,
+      value: postDeadline,
     },
     {
       icon: <UsersIcon className={iconClass} />,
