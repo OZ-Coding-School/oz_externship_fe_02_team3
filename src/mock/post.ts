@@ -73,14 +73,14 @@ Unity를 활용한 3D 게임 개발 프로젝트를 함께 진행할 팀원을 �
       name: 'React 기초',
       instructor: '박유니티',
       price: 120000,
-      url: 'ozcodingschool.com/ozcoding/gamedevcamp',
+      url: 'https://ozcodingschool.com/ozcoding/gamedevcamp',
     },
     {
       thumbnail_image_url: 'https://placehold.co/128x96?text=ex',
       name: 'C# 게임 프로그래밍',
       instructor: '김씨샵',
       price: 60000,
-      url: 'ozcodingschool.com/ozcoding/gamedevcamp',
+      url: 'https://ozcodingschool.com/ozcoding/gamedevcamp',
     },
   ],
   tags: [
