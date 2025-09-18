@@ -3,15 +3,39 @@ import RecCreateAdditionalInfo from '@src/components/recruitment-create/RecCreat
 import RecCreateContentSection from '@src/components/recruitment-create/RecCreateContentSection'
 import RecCreateHeader from '@src/components/recruitment-create/RecCreateHeader'
 import RecCreateFooter from '@src/components/recruitment-create/RecCreateFooter'
+import { useMemo, useState } from 'react'
+import {
+  getCoursesForGroup,
+  sumCoursePrices,
+} from '@src/mock/studyGroupCourseMap'
 
 export default function RecruitmentCreate() {
+  const [studyGroup, setStudyGroup] = useState<string | undefined>(undefined)
+  const [priceOverride, setPriceOverride] = useState<string | null>(null)
+
+  const courses = useMemo(() => getCoursesForGroup(studyGroup), [studyGroup])
+
+  const price = useMemo(
+    () => (courses?.length ? String(sumCoursePrices(courses)) : ''),
+    [courses]
+  )
+
+  const priceForInput = priceOverride ?? price
+
   return (
     <div className="min-h-dvh w-full">
       <div className="mx-auto mt-8 flex w-full max-w-[1120px] flex-col items-center gap-8 px-6 lg:px-12">
         <RecCreateHeader />
-        <RecCreateBasicInfo />
+        <RecCreateBasicInfo
+          onGroupChange={(name) => {
+            setStudyGroup(name)
+          }}
+        />
         <RecCreateContentSection />
-        <RecCreateAdditionalInfo />
+        <RecCreateAdditionalInfo
+          price={priceForInput}
+          onPriceChange={(raw) => setPriceOverride(raw === '' ? null : raw)}
+        />
         <RecCreateFooter />
       </div>
     </div>
