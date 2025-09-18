@@ -14,11 +14,11 @@ import { useCourses } from '@src/hooks/course/useCourse'
 import { useCourseFilters } from '@src/hooks/course/useCourseFilters'
 import { usePagination } from '@src/hooks/course/usePagination'
 import { useBookmark } from '@src/hooks/course/useBookmark'
+import { useIntersectionObserver } from '@src/hooks/useIntersectionObserver'
 import LoadingSpinner from '@src/components/commons/LoadingSpinner'
 import ErrorMessage from '@src/components/course/ErrorMessage'
 import CourseStats from '@src/components/course/CourseStats'
 import CourseGrid from '@src/components/course/CourseGrid'
-import LoadMoreButton from '@src/components/course/LoadMoreButton'
 import { EmptyState } from '@src/components/commons/EmptyState'
 
 interface CoursesPageProps {
@@ -47,6 +47,14 @@ export default function CoursesPage({ className }: CoursesPageProps) {
     usePagination(filteredCourses)
 
   const { toggleBookmark } = useBookmark()
+
+  const targetRef = useIntersectionObserver({
+    enabled: true,
+    hasNextPage: hasMore,
+    isFetchingNextPage: false,
+    onIntersect: loadMore,
+    threshold: 1,
+  })
 
   if (loading) {
     return <LoadingSpinner message={LOADING_MESSAGES.COURSES} />
@@ -143,9 +151,7 @@ export default function CoursesPage({ className }: CoursesPageProps) {
                 onBookmark={toggleBookmark}
               />
 
-              {hasMore && (
-                <LoadMoreButton onClick={loadMore} className="mt-8" />
-              )}
+              {hasMore && <div ref={targetRef} style={{ height: '1px' }} />}
             </>
           ) : (
             <EmptyState
