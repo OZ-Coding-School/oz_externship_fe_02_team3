@@ -2,7 +2,7 @@ import RecruitmentBanner from '@components/recruitment-detail/recruitment-banner
 import BackButton from '@src/components/commons/BackButton'
 import RecruitmentAttachmentList from '@src/components/recruitment-detail/recruitment-attachment-list/RecruitmentAttachmentList'
 import RecruitmentContent from '@src/components/recruitment-detail/recruitment-content/RecruitmentContent'
-import RecuitmentLecture from '@src/components/recruitment-detail/recuitment-courses/RecuitmentLecture'
+import RecuitmentLecture from '@src/components/recruitment-detail/recuitment-lecture/RecuitmentLecture'
 
 export default function RecruitmentDetailPage() {
   return (
