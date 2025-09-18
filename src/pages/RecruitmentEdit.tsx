@@ -31,7 +31,7 @@ export default function RecruitmentEdit() {
 
   return (
     <div className="min-h-dvh w-full">
-      <div className="mx-auto mt-8 flex w-full max-w-[1120px] flex-col gap-8 px-6 lg:px-12">
+      <div className="mx-auto mt-8 flex w-full max-w-[1120px] flex-col items-center gap-8 px-6 lg:px-12">
         <RecEditHeader />
         <RecEditBasicInfo
           title={MOCKDATA.title}
