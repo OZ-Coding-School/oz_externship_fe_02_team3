@@ -57,7 +57,11 @@ export default function CoursesPage({ className }: CoursesPageProps) {
   })
 
   if (loading) {
-    return <LoadingSpinner message={LOADING_MESSAGES.COURSES} />
+    return (
+      <div className="h-screen w-full">
+        <LoadingSpinner message={LOADING_MESSAGES.COURSES} />
+      </div>
+    )
   }
 
   if (error) {

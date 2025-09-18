@@ -30,15 +30,14 @@ export default function TagCheckbox({
     if (checked === undefined) setInnerChecked(next)
     onChange?.(next)
   }
-
   return (
     <label
       htmlFor={id}
       className={cn(
-        'flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border px-4 py-3',
+        'flex h-12 w-full cursor-pointer items-center justify-between rounded-xl border px-4 py-3',
         isChecked
           ? 'border-primary-300 bg-primary-50'
-          : 'hover:border-primary-300 border-gray-400',
+          : 'hover:border-primary-300 border-gray-300',
         className
       )}
     >
@@ -60,7 +59,7 @@ export default function TagCheckbox({
       />
       <span
         className={cn(
-          'flex h-4 w-4 items-center justify-center rounded-sm border-2 border-gray-400 peer-checked:border-none',
+          'flex h-4 w-4 items-center justify-center rounded-sm border-2 border-gray-300 peer-checked:border-none',
           'peer-checked:bg-primary-500 peer-checked:border-none'
         )}
       >

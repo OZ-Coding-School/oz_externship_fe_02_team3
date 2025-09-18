@@ -64,7 +64,8 @@ export default function ApplicationModal({
     reset,
     clearErrors,
     setValue,
-    formState: { errors, isValid, isSubmitting },
+    setFocus,
+    formState: { errors },
   } = useForm<Form>({ mode: 'onChange' })
 
   const hasExp = watch('hasExp') ?? false
@@ -73,6 +74,15 @@ export default function ApplicationModal({
     console.log(data)
     reset()
     onClose()
+  }
+  const onInvalid = () => {
+    const firstErrorName = Object.keys(errors)[0] as keyof Form | undefined
+    if (!firstErrorName) return
+
+    setFocus(firstErrorName, { shouldSelect: true })
+
+    const el = document.getElementById(String(firstErrorName))
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
   const handleClose = () => {
@@ -94,6 +104,7 @@ export default function ApplicationModal({
       onClose={handleClose}
       size="md"
       closeOnOutsideClick={false}
+      className="max-h-[100vh]"
     >
       <Modal.Header onClose={handleClose}>
         <h2 className="truncate text-xl font-semibold text-gray-900">
@@ -102,7 +113,7 @@ export default function ApplicationModal({
         <p className="mt-1 text-sm text-gray-500">{title}</p>
       </Modal.Header>
 
-      <div className="max-h-[80vh] min-h-0 flex-1 space-y-6 overflow-y-auto px-10 py-4">
+      <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-10 py-4">
         {/* 반복되는 텍스트영역 map */}
         {TEXT_FIELDS.map(({ name, label, placeholder }) => {
           const value = (watch(name) as string) ?? ''
@@ -179,8 +190,7 @@ export default function ApplicationModal({
             size="base"
             fontWeight="medium"
             iconClassName="rotate-[90deg]"
-            disabled={!isValid || isSubmitting}
-            onClick={handleSubmit(onSubmit)}
+            onClick={handleSubmit(onSubmit, onInvalid)}
             iconSize="sm"
           />
         </div>
