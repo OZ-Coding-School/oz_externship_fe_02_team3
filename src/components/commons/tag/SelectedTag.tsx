@@ -1,4 +1,4 @@
-import { X } from 'lucide-react'
+import { X as XIcon } from 'lucide-react'
 import Icon from '../Icon'
 import Badge from '../Badge'
 import { cn } from '@src/utils/cn'
@@ -32,7 +32,7 @@ export default function SelectedTag({
           className="ml-2 text-xs leading-none hover:opacity-80"
         >
           <Icon
-            icon={X}
+            icon={XIcon}
             className="hover:text-danger-800 h-3 w-3 cursor-pointer"
             strokeWidth={3}
           />
