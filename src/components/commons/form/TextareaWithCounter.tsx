@@ -21,5 +21,5 @@ const TextareaWithCounter = forwardRef<HTMLTextAreaElement, Props>(
     )
   }
 )
-
+TextareaWithCounter.displayName = 'TextareaWithCounter'
 export default TextareaWithCounter
