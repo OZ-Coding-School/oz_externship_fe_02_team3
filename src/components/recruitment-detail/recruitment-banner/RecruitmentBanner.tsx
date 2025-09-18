@@ -33,6 +33,10 @@ export default function RecruitmentBanner() {
     { icon: BookmarkIcon, label: '북마크', value: post.bookmark_count },
   ]
 
+  const handleShare = () => {
+    // 공유하기 로직
+  }
+
   const handleBookmark = () => {
     // 북마크 로직
   }
@@ -46,6 +50,7 @@ export default function RecruitmentBanner() {
           <BannerTags tags={post.tags} />
         </div>
         <BannerButtens
+          onShare={handleShare}
           onBookmark={handleBookmark}
           onClick={() => setOpenApplication(true)}
         />
