@@ -1,6 +1,4 @@
-import { useParams } from 'react-router-dom'
-import { jobPosts } from '@src/mock/jobPosts'
-import type { JobPost } from '@src/types/jobPosts'
+import { post } from '@src/mock/post'
 import {
   Bookmark as BookmarkIcon,
   Calendar as CalendarIcon,
@@ -16,24 +14,12 @@ import ApplicationModal from '@src/components/recruitment-manage/application/App
 
 export default function RecruitmentBanner() {
   const [openApplication, setOpenApplication] = useState(false)
-  const { id } = useParams<{ id: string }>()
-  const jobId = Number(id)
-
-  const job: JobPost | undefined = jobPosts.find((post) => post.id === jobId)
-  const exJob = {
-    name: '박유니티',
-    date: '등록일: 2024년 11월 22일 오후 06:00',
-  }
-
-  if (!job) {
-    return <div>해당 공고를 찾을 수 없습니다.</div>
-  }
 
   const jobInfo = [
-    { icon: UserIcon, label: '작성자', value: exJob.name },
-    { icon: CalendarIcon, label: '등록일', value: exJob.date },
-    { icon: ViewIcon, label: '조회', value: job.viewCount },
-    { icon: BookmarkIcon, label: '북마크', value: job.commentCount },
+    { icon: UserIcon, label: '작성자', value: post.author.nickname },
+    { icon: CalendarIcon, label: '등록일', value: post.created_at },
+    { icon: ViewIcon, label: '조회', value: post.view_count },
+    { icon: BookmarkIcon, label: '북마크', value: post.bookmark_count },
   ]
 
   const handleBookmark = () => {
@@ -44,16 +30,16 @@ export default function RecruitmentBanner() {
     <div className="w-full rounded-xl border border-gray-200 bg-white p-8">
       <div className="flex items-start justify-between pb-6">
         <div className="flex flex-col gap-4">
-          <h2 className="text-3xl font-bold">{job.title}</h2>
+          <h2 className="text-3xl font-bold">{post.title}</h2>
           <BannerInfoList items={jobInfo} />
-          <BannerTags tags={job.tags} />
+          <BannerTags tags={post.tags} />
         </div>
         <BannerButtens
           onBookmark={handleBookmark}
           onClick={() => setOpenApplication(true)}
         />
       </div>
-      <BannerInfoBoxs job={job} />
+      <BannerInfoBoxs post={post} />
 
       <ApplicationModal
         open={openApplication}
