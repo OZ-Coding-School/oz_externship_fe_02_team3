@@ -2,7 +2,7 @@ import RecruitmentBanner from '@components/recruitment-detail/recruitment-banner
 import BackButton from '@src/components/commons/BackButton'
 import RecruitmentAttachmentList from '@src/components/recruitment-detail/recruitment-attachment-list/RecruitmentAttachmentList'
 import RecruitmentContent from '@src/components/recruitment-detail/recruitment-content/RecruitmentContent'
-import RecuitmentCourses from '@src/components/recruitment-detail/recuitment-courses/RecuitmentCourses'
+import RecuitmentLecture from '@src/components/recruitment-detail/recuitment-lecture/RecuitmentLecture'
 
 export default function RecruitmentDetailPage() {
   return (
@@ -14,7 +14,7 @@ export default function RecruitmentDetailPage() {
         <div className="flex flex-col gap-8">
           <RecruitmentBanner />
           <RecruitmentContent />
-          <RecuitmentCourses />
+          <RecuitmentLecture />
           <RecruitmentAttachmentList />
         </div>
       </div>
