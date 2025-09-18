@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { BannerInfoList } from './BannerInfoList'
 import { BannerTags } from './BannerTags'
-import { BannerButtens } from './BannerButtens'
+import { BannerButtons } from './BannerButtons'
 import { BannerInfoBoxs } from './BannerInfoBoxs'
 import { useState } from 'react'
 import ApplicationModal from '@src/components/recruitment-manage/application/ApplicationModal'
@@ -49,7 +49,7 @@ export default function RecruitmentBanner() {
           <BannerInfoList items={jobInfo} />
           <BannerTags tags={post.tags} />
         </div>
-        <BannerButtens
+        <BannerButtons
           onShare={handleShare}
           onBookmark={handleBookmark}
           onClick={() => setOpenApplication(true)}

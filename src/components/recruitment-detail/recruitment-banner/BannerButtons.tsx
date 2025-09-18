@@ -5,17 +5,17 @@ import {
 } from 'lucide-react'
 import Button from '@components/commons/button/Button'
 
-interface BannerButtensProps {
+interface BannerButtonsProps {
   onShare?: () => void
   onBookmark?: () => void
   onClick?: () => void
 }
 
-export function BannerButtens({
+export function BannerButtons({
   onShare,
   onBookmark,
   onClick,
-}: BannerButtensProps) {
+}: BannerButtonsProps) {
   return (
     <div className="flex gap-2">
       <Button
