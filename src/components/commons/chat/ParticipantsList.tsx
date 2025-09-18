@@ -1,10 +1,6 @@
+import type { Participant } from '@src/types/participants'
 import { cn } from '@utils/cn'
 import { useRef, useState } from 'react'
-
-interface Participant {
-  name: string
-  status: 'online' | 'offline'
-}
 
 interface ParticipantsListProps {
   participants: Participant[]
@@ -17,6 +13,13 @@ export default function ParticipantsList({
   const [isDown, setIsDown] = useState(false)
   const [startX, setStartX] = useState(0)
   const [scrollLeft, setScrollLeft] = useState(0)
+
+  const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (scrollRef.current) {
+      e.preventDefault()
+      scrollRef.current.scrollLeft += e.deltaY
+    }
+  }
 
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDown(true)
@@ -50,6 +53,7 @@ export default function ParticipantsList({
       onMouseLeave={onMouseLeave}
       onMouseUp={onMouseUp}
       onMouseMove={onMouseMove}
+      onWheel={onWheel}
     >
       {participants.map((participant, index) => (
         <div

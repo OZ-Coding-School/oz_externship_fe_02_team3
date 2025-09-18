@@ -29,7 +29,7 @@ export default function ModalRoot({
   size = 'md',
   children,
   className,
-  speed = 'slow',
+  speed = 'fast',
   closeOnOutsideClick = true,
 }: ModalProps) {
   useScrollLock(open)

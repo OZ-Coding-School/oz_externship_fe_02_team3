@@ -6,6 +6,7 @@ import {
   XCircle,
   Inbox as NoDataIcon,
   type LucideIcon,
+  Tag,
 } from 'lucide-react'
 
 // 페이지네이션 설정
@@ -134,6 +135,7 @@ export const EMPTY_MESSAGES = {
   SEARCH_RESULTS: '검색 결과가 없습니다.',
   NoData: '공고가 없습니다',
   FALLBACK: '데이터가 없습니다.',
+  TAG: '선택된 태그가 없습니다.',
 } as const
 
 export const EMPTY_STATE_ICONS: Record<
@@ -146,6 +148,7 @@ export const EMPTY_STATE_ICONS: Record<
   SEARCH_RESULTS: Search,
   NoData: NoDataIcon,
   FALLBACK: AlertCircle,
+  TAG: Tag,
 } as const
 
 // 에러 메시지와 아이콘
@@ -210,46 +213,15 @@ export const LIST_MESSAGES = {
 } as const
 
 export const NOTIFICATION_TYPE = {
-  APPLICATION: 'application',
-  APPROVAL: 'approval',
-  REJECTION: 'rejection',
-  JOIN: 'join',
-  STUDY_END: 'study_end',
-  REMINDER: 'reminder',
+  ADD_APPLICATION: 'ADD_APPLICATION',
+  APPLICATION_ACCEPT: 'APPLICATION_ACCEPT',
+  APPLICATION_REJECT: 'APPLICATION_REJECT',
+  STUDY_JOIN: 'STUDY_JOIN',
+  STUDY_NOTE_CREATE: 'STUDY_NOTE_CREATE',
+  STUDY_REVIEW_REQUEST: 'STUDY_REVIEW_REQUEST',
+  TODAY_SCHEDULE: 'TODAY_SCHEDULE',
+  UPCOMING_SCHEDULE: 'UPCOMING_SCHEDULE',
 } as const
-
-export const NOTIFICATION_ICON_CONFIG = [
-  {
-    type: NOTIFICATION_TYPE.APPLICATION,
-    bgColor: 'bg-blue-100',
-    strokeColor: 'stroke-[#2563EB]',
-    icon: 'UserRoundPlus',
-  },
-  {
-    type: NOTIFICATION_TYPE.APPROVAL,
-    bgColor: 'bg-green-100',
-    strokeColor: 'stroke-[#16A34A]',
-    icon: 'Check',
-  },
-  {
-    type: NOTIFICATION_TYPE.REJECTION,
-    bgColor: 'bg-red-100',
-    strokeColor: 'stroke-[#DC2626]',
-    icon: 'X',
-  },
-  {
-    type: NOTIFICATION_TYPE.JOIN,
-    bgColor: 'bg-purple-100',
-    strokeColor: 'stroke-[#9333EA]',
-    icon: 'UsersRound',
-  },
-  {
-    type: NOTIFICATION_TYPE.STUDY_END,
-    bgColor: 'bg-orange-100',
-    strokeColor: 'stroke-[#EA580C]',
-    icon: 'CalendarCheck',
-  },
-]
 
 export const Z_INDEX = {
   HEADER: 'z-10',

@@ -4,11 +4,17 @@ export type NotificationType =
   (typeof NOTIFICATION_TYPE)[keyof typeof NOTIFICATION_TYPE]
 
 export interface NotificationItem {
-  id: number
+  notification_id: number
+  content: string
   type: NotificationType
-  title: string
-  message: string
-  date: string
-  isRead: boolean
-  isUnread: boolean
+  is_read: boolean
+  created_at: string
+  back_url_link: string
+}
+
+export interface NotificationResponse {
+  count: number
+  next: string | null
+  previous: string | null
+  results: NotificationItem[]
 }

@@ -3,6 +3,7 @@ import { cn } from '@utils/cn'
 import Chat from '@components/commons/chat/Chatting'
 import { MessageCircle as MessageIcon, X as CloseIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 
 interface ChatFloatButtonProps {
   className?: string
@@ -10,11 +11,9 @@ interface ChatFloatButtonProps {
 
 export function ChatFloatButton({ className }: ChatFloatButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [searchParams] = useSearchParams()
   const chatRef = useRef<HTMLDivElement>(null)
   const buttonRef = useRef<HTMLDivElement>(null)
-  const toggleChat = () => {
-    setIsOpen(!isOpen)
-  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -32,6 +31,13 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [isOpen])
+
+  useEffect(() => {
+    const studyGroupUuid = searchParams.get('study_group_uuid')
+    if (studyGroupUuid) {
+      setIsOpen(true) // 채팅창을 열어줌
+    }
+  }, [searchParams])
 
   return (
     <>
@@ -55,7 +61,7 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
       </div>
       {isOpen && (
         <div ref={chatRef}>
-          <Chat toggleChat={toggleChat} />
+          <Chat setIsOpen={setIsOpen} isOpen={isOpen} />
         </div>
       )}
     </>

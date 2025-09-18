@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import Badge from './Badge'
 import Icon from './Icon'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@src/constants/routes'
 import type { JobPost } from '@src/types/jobPosts'
 
@@ -25,6 +25,8 @@ export default function JobPostCard({
   onClickApply,
   editTo,
 }: JobPostCardProps) {
+  const NAVIGATE = useNavigate()
+
   if (!post) return null
 
   const {
@@ -50,10 +52,10 @@ export default function JobPostCard({
 
         <div className="flex w-full flex-col">
           {/* 제목과 조회수/댓글 + (옵션) 편집 버튼 */}
-          <div className="flex w-full justify-between pb-3">
+          <div className="flex w-full items-center justify-between pb-3">
             <p className="line-clamp-2 text-lg font-semibold">{title}</p>
 
-            <div className="ml-2 flex items-start gap-2">
+            <div className="ml-2 flex gap-2">
               <div className="flex items-center gap-1">
                 <Icon
                   icon={ViewCountIcon}
@@ -69,17 +71,21 @@ export default function JobPostCard({
                   className="stroke-gray-500"
                 />
                 <p className="text-sm text-gray-500">{commentCount}</p>
+                {editTo && (
+                  <button
+                    type="button"
+                    aria-label="스터디 공고 수정"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      NAVIGATE(editTo)
+                    }}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
+                  >
+                    <PencilIcon size={16} className="stroke-gray-500" />
+                  </button>
+                )}
               </div>
-
-              {editTo && (
-                <Link
-                  to={editTo}
-                  className="inline-flex h-7 w-7 items-center justify-center rounded-full hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <PencilIcon size={16} className="stroke-gray-500" />
-                </Link>
-              )}
             </div>
           </div>
 
@@ -114,33 +120,39 @@ export default function JobPostCard({
           </div>
 
           {/* 강의 태그 */}
-          <div className="flex flex-wrap gap-2">
-            {tags.map((tag, tagIndex) => (
-              <Badge
-                badgeTitle={tag}
-                key={tagIndex}
-                className="bg-primary-100 text-primary-800"
-              />
-            ))}
-          </div>
-
-          {/* (옵션) 하단 우측 신청 버튼 */}
-          {applyLabel && (
-            <div className="mt-4 flex justify-end">
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  onClickApply?.()
-                }}
-                className="inline-flex h-9 items-center rounded-md bg-[#3B82F6] px-6 text-sm font-medium text-white hover:bg-blue-700"
-              >
-                <Icon icon={FileTextIcon} size="sm" className="stroke-white" />
-                <span className="pl-2.5">{applyLabel}</span>
-              </button>
+          <div className="grid grid-cols-2">
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag, tagIndex) => (
+                <Badge
+                  badgeTitle={tag}
+                  key={tagIndex}
+                  className="bg-primary-100 text-primary-800"
+                />
+              ))}
             </div>
-          )}
+
+            {/* (옵션) 하단 우측 신청 버튼 */}
+            {applyLabel && (
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    onClickApply?.()
+                  }}
+                  className="inline-flex h-9 items-center rounded-md bg-[#3B82F6] px-6 text-sm font-medium text-white hover:bg-blue-700"
+                >
+                  <Icon
+                    icon={FileTextIcon}
+                    size="sm"
+                    className="stroke-white"
+                  />
+                  <span className="pl-2.5">{applyLabel}</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </Link>

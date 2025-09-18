@@ -1,59 +1,60 @@
 import { useEffect, useMemo, useState, type RefObject } from 'react'
-import notificationsData from '@mock/notificationsData'
 import { Z_INDEX } from '@constants/ui'
 import { cn } from '@utils/cn'
 import NotificationTabs from './NotificationTabs'
-import type { NotificationItem as NotificationItemType } from '@src/types/notification'
 import NotificationItem from './NotificationItem'
+import NotificationsSkeleton from './NotificationsSkeleton'
+import {
+  useNotifications,
+  useMarkAllAsRead,
+  useUnreadCountQuery,
+} from '@hooks/useNotifications'
 
 interface NotificationsDropdownProps {
   setIsNotificationOpen: (isNotificationOpen: boolean) => void
-  /** 부모에서 useOutsideClick에 연결된 패널 ref를 그대로 전달 */
   notificationsDropdownRef: RefObject<HTMLDivElement | null>
-  onUnreadCountChange: (count: number) => void
 }
 
 export default function NotificationsDropdown({
   setIsNotificationOpen,
   notificationsDropdownRef,
-  onUnreadCountChange,
 }: NotificationsDropdownProps) {
-  // const [notifications, setNotifications] = useState<NotificationItemType[]>([])
-  const [notifications, setNotifications] =
-    useState<NotificationItemType[]>(notificationsData)
-
   const [notificationFilter, setNotificationFilter] = useState<
     'all' | 'unread' | 'read'
   >('all')
 
+  const { notifications, totalCount, isLoading, error } = useNotifications()
+  const { unreadCount } = useUnreadCountQuery()
+  const markAllAsReadMutation = useMarkAllAsRead()
+
   const handleMarkAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notification) => ({
-        ...notification,
-        isRead: true,
-        isUnread: false,
-      }))
-    )
-    // 현재 '읽지않음' 탭이 선택되어 있다면 '전체보기'로 전환
-    setNotificationFilter('all')
+    if (unreadCount === 0 || markAllAsReadMutation.isPending) {
+      return
+    }
+
+    markAllAsReadMutation.mutate()
+    if (notificationFilter === 'unread') {
+      setNotificationFilter('all')
+    }
   }
 
   const filteredNotifications = useMemo(() => {
     switch (notificationFilter) {
       case 'unread':
-        return notifications.filter((notification) => notification.isUnread)
+        return notifications.filter((notification) => !notification.is_read)
       case 'read':
-        return notifications.filter((notification) => notification.isRead)
+        return notifications.filter((notification) => notification.is_read)
       default:
         return notifications
     }
   }, [notifications, notificationFilter])
 
-  // 읽지 않은 알림 개수를 부모에게 전달
+  // unreadCount가 0이 되면 자동으로 전체보기로
   useEffect(() => {
-    const unreadCount = notifications.filter((n) => n.isUnread).length
-    onUnreadCountChange(unreadCount)
-  }, [notifications, onUnreadCountChange])
+    if (unreadCount === 0 && notificationFilter === 'unread') {
+      setNotificationFilter('all')
+    }
+  }, [unreadCount, notificationFilter])
 
   return (
     <div
@@ -70,10 +71,11 @@ export default function NotificationsDropdown({
         </h3>
         <button
           type="button"
+          disabled={unreadCount === 0 || markAllAsReadMutation.isPending}
           onClick={handleMarkAllAsRead}
           className="text-primary-600 flex items-center justify-center text-center text-sm"
         >
-          모두 읽음
+          {markAllAsReadMutation.isPending ? '처리 중…' : '모두 읽음'}
         </button>
       </div>
 
@@ -81,16 +83,24 @@ export default function NotificationsDropdown({
         setNotificationFilter={setNotificationFilter}
         notificationFilter={notificationFilter}
         notifications={notifications}
+        totalCount={totalCount}
+        unreadCount={unreadCount}
       />
 
       <div
         className="scrollbar-hide flex max-h-80 flex-col overflow-y-auto"
         role="tabpanel"
       >
-        {filteredNotifications.length !== 0 ? (
+        {isLoading ? (
+          <NotificationsSkeleton />
+        ) : error ? (
+          <div className="flex items-center justify-center text-sm text-red-500">
+            알림을 불러오는데 실패했습니다.
+          </div>
+        ) : filteredNotifications.length !== 0 ? (
           filteredNotifications.map((notification) => (
             <NotificationItem
-              key={notification.id}
+              key={notification.notification_id}
               {...notification}
               setIsNotificationOpen={setIsNotificationOpen}
             />

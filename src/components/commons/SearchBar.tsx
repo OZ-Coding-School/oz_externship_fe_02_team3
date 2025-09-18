@@ -29,7 +29,7 @@ export function SearchBar({
   return (
     <div
       className={cn(
-        'mb-6 flex w-112 items-center gap-2 rounded-lg border border-gray-200 p-3',
+        'focus-within:border-primary-400 mb-6 flex w-112 items-center gap-2 rounded-lg border border-gray-200 p-3',
         className
       )}
     >
@@ -40,7 +40,7 @@ export function SearchBar({
         onChange={(e) => setKeyword(e.target.value)}
         placeholder={placeholder}
         aria-label={placeholder}
-        className="focus:border-transparent focus:outline-none"
+        className="w-full focus:border-transparent focus:outline-none"
       />
     </div>
   )

@@ -2,13 +2,23 @@ export const ROUTES = {
   HOME: '/',
   COURSES: '/courses',
   MYPAGE: '/mypage',
+
+  // Study Group
   STUDY_GROUP: '/study-group',
   STUDY_GROUP_ID: (id: string | number) => `/study-group/${id}`,
+  STUDY_GROUP_DETAIL: '/study-group/:id',
   STUDY_GROUP_CREATE: '/study-group/create',
+
+  // Recruitment
   RECRUITMENT: '/recruitment',
   RECRUITMENT_ID: (id: string | number) => `/recruitment/${id}`,
+  RECRUITMENT_DETAIL: '/recruitment/:id',
   RECRUITMENT_CREATE: '/recruitment/create',
   RECRUITMENT_MANAGE: '/recruitment/manage',
+  RECRUITMENT_EDIT: (id: string | number) => `/recruitment/${id}/edit`,
+  RECRUITMENT_EDIT_PATTERN: '/recruitment/:id/edit',
+
+  // Auth
   LOGIN: '/auth/login',
   SIGNUP: '/auth/signup',
   FIND_EMAIL: '/auth/find-email',

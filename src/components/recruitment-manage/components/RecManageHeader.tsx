@@ -9,10 +9,10 @@ export default function RecManageHeader() {
       <div className="flex h-16 w-[340.77px] items-center justify-center">
         <BackButton />
         <div className="ml-4 flex h-full w-[284.77px] flex-col">
-          <p className="text-[30px] leading-9 font-bold text-[#111827]">
+          <p className="text-[30px] leading-9 font-bold text-gray-900">
             공고 관리
           </p>
-          <p className="text-[16px] leading-6 font-normal text-[#4B5563]">
+          <p className="text-[16px] leading-6 font-normal text-gray-600">
             내가 등록한 스터디 구인 공고를 관리하세요
           </p>
         </div>

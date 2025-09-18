@@ -1,5 +1,6 @@
 import CourseCardWithBookmark from './CourseCardWithBookmark'
-import { mockCoursesData, type Course } from '@src/types/course'
+import { mockCoursesData } from '@src/mock/coursesData'
+import type { Course } from '@src/types/course'
 
 export default function LoggedInCourses() {
   const userName = '김개발'

@@ -1,7 +1,14 @@
-import { ChevronDown as ChevronDownIcon, Star as StarIcon } from 'lucide-react'
+import { useState } from 'react'
+import {
+  ChevronDown as ChevronDownIcon,
+  ChevronUp as ChevronUpIcon,
+} from 'lucide-react'
 import Badge from '@components/commons/Badge'
 import Button from '@components/commons/button/Button'
 import Icon from '@components/commons/Icon'
+import StarRating from './StarRating'
+import ReviewSection from './ReviewSection'
+import { mockReviews, type Review } from '@src/mock/reviewData'
 
 interface CourseCardProps {
   cardTitle: string
@@ -11,9 +18,10 @@ interface CourseCardProps {
   reviewCount: number
   originalPrice: number
   price: number
+  reviews?: Review[]
 }
 
-function CourseCard({
+export default function CourseCard({
   cardTitle,
   author,
   cardDescription,
@@ -21,14 +29,22 @@ function CourseCard({
   reviewCount,
   originalPrice,
   price,
+  reviews = mockReviews,
 }: CourseCardProps) {
+  const [isReviewExpanded, setIsReviewExpanded] = useState(false)
+
   const isDiscounted = originalPrice > price && originalPrice !== price
   const discountPercentage = isDiscounted
     ? Math.round(((originalPrice - price) / originalPrice) * 100)
     : 0
 
+  const toggleReviews = () => {
+    setIsReviewExpanded(!isReviewExpanded)
+  }
+
   return (
-    <div className="flex h-auto min-h-[500px] w-full max-w-sm flex-col overflow-hidden rounded-xl border border-solid border-gray-200">
+    <div className="flex w-full max-w-sm flex-col overflow-hidden rounded-xl border border-solid border-gray-200 transition-all duration-300">
+      {/* 강의 썸네일 */}
       <div className="relative flex aspect-video flex-col bg-gray-100">
         <div className="h-full w-full bg-cover bg-center bg-no-repeat" />
         <div className="absolute top-3 right-2 left-2 flex justify-between">
@@ -43,6 +59,8 @@ function CourseCard({
           </div>
         </div>
       </div>
+
+      {/* 강의 정보 */}
       <div className="flex flex-grow flex-col p-5">
         <div className="pb-3">
           <Badge badgeTitle="클라우드" className="bg-gray-100 text-gray-700" />
@@ -55,25 +73,14 @@ function CourseCard({
           </p>
         </div>
 
+        {/* 평점 */}
         <div className="flex items-center pb-3">
-          <div className="flex items-center pr-2">
-            {[...Array(5)].map((_, i) => (
-              <Icon
-                key={i}
-                icon={StarIcon}
-                className={
-                  i < Math.floor(reviewRating)
-                    ? 'stroke-primary-400 fill-primary-400'
-                    : 'stroke-primary-400'
-                }
-                size="sm"
-                fill={i < Math.floor(reviewRating)}
-              />
-            ))}
-          </div>
+          <StarRating rating={reviewRating} className="pr-2" />
           <p className="text-sm font-medium text-gray-700">{reviewRating}</p>
           <p className="text-sm text-gray-500">({reviewCount}개 리뷰)</p>
         </div>
+
+        {/* 가격 */}
         <div className="flex items-center pb-4">
           <p className="mr-2 text-xl font-bold text-gray-900">
             ₩{price.toLocaleString()}
@@ -84,20 +91,28 @@ function CourseCard({
             </p>
           )}
         </div>
-        <div className="mt-auto flex items-center justify-between">
-          <div className="flex items-center gap-1">
+
+        {/* 액션 버튼들 */}
+        <div className="flex items-center justify-between">
+          <button
+            onClick={toggleReviews}
+            className="text-primary-600 hover:text-primary-700 flex items-center gap-1 transition-colors"
+          >
             <Icon
-              icon={ChevronDownIcon}
-              className="stroke-primary-600"
+              icon={isReviewExpanded ? ChevronUpIcon : ChevronDownIcon}
+              className="stroke-current"
               size="sm"
             />
-            <p className="text-primary-600 text-sm font-medium">리뷰 보기</p>
-          </div>
+            <p className="text-sm font-medium">
+              {isReviewExpanded ? '리뷰 접기' : '리뷰 보기'}
+            </p>
+          </button>
           <Button buttonInnerText="강의보러가기" />
         </div>
+
+        {/* 리뷰 섹션 */}
+        <ReviewSection reviews={reviews} isExpanded={isReviewExpanded} />
       </div>
     </div>
   )
 }
-
-export default CourseCard

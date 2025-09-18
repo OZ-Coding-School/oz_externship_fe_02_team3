@@ -14,11 +14,11 @@ import { useCourses } from '@src/hooks/course/useCourse'
 import { useCourseFilters } from '@src/hooks/course/useCourseFilters'
 import { usePagination } from '@src/hooks/course/usePagination'
 import { useBookmark } from '@src/hooks/course/useBookmark'
+import { useIntersectionObserver } from '@src/hooks/useIntersectionObserver'
 import LoadingSpinner from '@src/components/commons/LoadingSpinner'
 import ErrorMessage from '@src/components/course/ErrorMessage'
 import CourseStats from '@src/components/course/CourseStats'
 import CourseGrid from '@src/components/course/CourseGrid'
-import LoadMoreButton from '@src/components/course/LoadMoreButton'
 import { EmptyState } from '@src/components/commons/EmptyState'
 
 interface CoursesPageProps {
@@ -26,7 +26,6 @@ interface CoursesPageProps {
 }
 
 export default function CoursesPage({ className }: CoursesPageProps) {
-  // 임시 인증 상태 (추후 실제 인증 훅으로 대체)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const { courses, loading, error, refetch } = useCourses()
@@ -49,8 +48,20 @@ export default function CoursesPage({ className }: CoursesPageProps) {
 
   const { toggleBookmark } = useBookmark()
 
+  const targetRef = useIntersectionObserver({
+    enabled: true,
+    hasNextPage: hasMore,
+    isFetchingNextPage: false,
+    onIntersect: loadMore,
+    threshold: 1,
+  })
+
   if (loading) {
-    return <LoadingSpinner message={LOADING_MESSAGES.COURSES} />
+    return (
+      <div className="h-screen w-full">
+        <LoadingSpinner message={LOADING_MESSAGES.COURSES} />
+      </div>
+    )
   }
 
   if (error) {
@@ -64,7 +75,8 @@ export default function CoursesPage({ className }: CoursesPageProps) {
     )
   }
 
-  if (courses.length === 0) {
+  // 로그인 사용자일 때만 EmptyState 표시
+  if (courses.length === 0 && isAuthenticated) {
     return (
       <div className={cn('min-h-screen bg-gray-50', className)}>
         <div className="border-b border-gray-200 bg-white px-6 py-6">
@@ -143,9 +155,7 @@ export default function CoursesPage({ className }: CoursesPageProps) {
                 onBookmark={toggleBookmark}
               />
 
-              {hasMore && (
-                <LoadMoreButton onClick={loadMore} className="mt-8" />
-              )}
+              {hasMore && <div ref={targetRef} style={{ height: '1px' }} />}
             </>
           ) : (
             <EmptyState
