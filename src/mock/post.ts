@@ -29,7 +29,7 @@ Unity를 활용한 3D 게임 개발 프로젝트를 함께 진행할 팀원을 �
 - **방식**: 온라인/오프라인 병행 (주 1회 오프라인)
 - **미팅**: 주 3회, 화, 목, 토 오후 7시
 
-![프로젝트 이미지](https://via.placeholder.com/600x300)  
+![프로젝트 이미지](https://placehold.co/120x80?text=ex)  
 
 ## 개발 예정 게임
 **3D 액션 어드벤처 게임**
@@ -45,7 +45,7 @@ Unity를 활용한 3D 게임 개발 프로젝트를 함께 진행할 팀원을 �
 - **3D 모델링**: Blender
 - **UI/UX 디자인**: Figma
 
-![게임 이미지](https://via.placeholder.com/600x300)  
+![게임 이미지](https://placehold.co/120x80?text=ex)  
 
 ## 예상 결과물
 - 완성된 3D 게임 프로토타입
