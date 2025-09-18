@@ -10,17 +10,14 @@ import {
 } from '@src/mock/studyGroupCourseMap'
 
 export default function RecruitmentCreate() {
-  const [studyGroup, setStudyGroup] = useState<string | undefined>(undefined)
+  const [studyGroup, setStudyGroup] = useState<string | undefined>()
   const [priceOverride, setPriceOverride] = useState<string | null>(null)
 
   const courses = useMemo(() => getCoursesForGroup(studyGroup), [studyGroup])
-
-  const price = useMemo(
-    () => (courses?.length ? String(sumCoursePrices(courses)) : ''),
+  const derivedPrice = useMemo(
+    () => (courses.length ? String(sumCoursePrices(courses)) : ''),
     [courses]
   )
-
-  const priceForInput = priceOverride ?? price
 
   return (
     <div className="min-h-dvh w-full">
@@ -29,12 +26,14 @@ export default function RecruitmentCreate() {
         <RecCreateBasicInfo
           onGroupChange={(name) => {
             setStudyGroup(name)
+            setPriceOverride(null)
           }}
         />
         <RecCreateContentSection />
         <RecCreateAdditionalInfo
-          price={priceForInput}
-          onPriceChange={(raw) => setPriceOverride(raw === '' ? null : raw)}
+          derivedPrice={derivedPrice}
+          override={priceOverride}
+          onChangeOverride={(raw) => setPriceOverride(raw)}
         />
         <RecCreateFooter />
       </div>
