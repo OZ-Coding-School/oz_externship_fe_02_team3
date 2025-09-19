@@ -1,6 +1,5 @@
 import RecEditPriceInput from '../recruitment-edit/RecEditPriceInput'
 import { FileUploadBox } from './FileUploadBox'
-import PriceInput from './PriceInput'
 import TagSection from './tag-ui/TagSection'
 
 interface PresetFile {
