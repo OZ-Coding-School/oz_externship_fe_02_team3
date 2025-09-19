@@ -16,7 +16,7 @@ export default function FilterSection() {
           selected={selectedTag}
           options={tagOptions}
           onSelect={setSelectedTag}
-          placeholder="카테고리 선택"
+          placeholder="태그 선택"
           className="w-full"
         />
       </div>
@@ -26,7 +26,7 @@ export default function FilterSection() {
           selected={selectedSort}
           options={sortingOptions}
           onSelect={setSelectedSort}
-          placeholder="카테고리 선택"
+          placeholder="정렬 선택"
           className="w-full"
         />
       </div>
