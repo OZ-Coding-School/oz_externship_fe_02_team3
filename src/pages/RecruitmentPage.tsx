@@ -18,7 +18,7 @@ export default function RecruitmentPage() {
       >
         {isAuthenticated ? '로그아웃 상태로 전환' : '로그인 상태로 전환'}
       </button>
-      <RecruitmentHeader />
+      <RecruitmentHeader isAuthenticated={isAuthenticated} />
       <UserRecruitment isAuthenticated={isAuthenticated} />
       <SearchFilterBar />
       <RecruitmentList />
