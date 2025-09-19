@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import UserRecruitment from '@components/recruitment/user-recruitment/UserRecruitment'
 import RecruitmentList from '@components/recruitment/RecruitmentList'
-import RecruitmentHeader from '@components/recruitment/RecruitmentHeader'
+import RecruitmentHeader from '@src/components/recruitment/recruitment-header/RecruitmentHeader'
 import SearchFilterBar from '@src/components/recruitment/srearch-filter-bar/SearchFilterBar'
 
 export default function RecruitmentPage() {
