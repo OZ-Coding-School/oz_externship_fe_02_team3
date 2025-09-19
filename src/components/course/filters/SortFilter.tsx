@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-react'
-import SelectableDropDown from './SelectableDropDown'
+import SelectableDropDown from '../ui/SelectableDropDown'
 import { cn } from '@src/utils/cn'
 
 interface SortFilterProps {

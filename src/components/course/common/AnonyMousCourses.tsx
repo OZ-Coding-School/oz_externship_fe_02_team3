@@ -1,4 +1,4 @@
-import PageLink from '../commons/page-link/PageLink'
+import PageLink from '@src/components/commons/page-link/PageLink'
 import { ROUTES } from '@src/constants/routes'
 import {
   LogIn as LogInIcon,

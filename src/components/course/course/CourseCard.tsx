@@ -6,8 +6,8 @@ import {
 import Badge from '@components/commons/Badge'
 import Button from '@components/commons/button/Button'
 import Icon from '@components/commons/Icon'
-import StarRating from './StarRating'
-import ReviewSection from './ReviewSection'
+import StarRating from '../ui/StarRating'
+import ReviewSection from '../sections/ReviewSection'
 import { mockReviews, type Review } from '@src/mock/reviewData'
 
 interface CourseCardProps {
