@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { ArrowUp as ArrowUpIcon } from 'lucide-react'
+import { Z_INDEX } from '@src/constants/ui'
 
 export default function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false)
@@ -30,7 +31,7 @@ export default function ScrollToTopButton() {
       <button
         onClick={scrollToTop}
         aria-label="맨 위로 이동"
-        className="group fixed right-6 bottom-28 z-50 flex h-16 w-16 items-center justify-center rounded-full bg-gray-300 text-white shadow-lg transition-all hover:bg-gray-400"
+        className={`group fixed right-6 bottom-28 flex h-16 w-16 items-center justify-center rounded-full bg-gray-300 text-white shadow-lg transition-all hover:bg-gray-400 ${Z_INDEX.BUTTON}`}
       >
         <ArrowUpIcon size={28} />
       </button>
