@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import { ArrowUp as ArrowUpIcon } from 'lucide-react'
 import { Z_INDEX } from '@src/constants/ui'
+import { useLocation } from 'react-router-dom'
 
 export default function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false)
+  const location = useLocation()
 
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [])
+  }, [location.pathname])
 
   useEffect(() => {
     const toggleVisibility = () => {
