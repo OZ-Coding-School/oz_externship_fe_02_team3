@@ -8,9 +8,9 @@ interface BannerTagsProps {
 export function BannerTags({ tags }: BannerTagsProps) {
   return (
     <div className="flex gap-2">
-      {tags.map((tag) => (
+      {tags.map((tag, index) => (
         <Badge
-          key={tag.name}
+          key={`${tag.name}-${index}`}
           badgeTitle={tag.name}
           className="bg-primary-100 text-primary-800"
         />

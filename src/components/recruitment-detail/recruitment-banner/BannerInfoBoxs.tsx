@@ -19,6 +19,9 @@ export function BannerInfoBoxs({ post }: BannerInfoBoxsProps) {
     day: '2-digit',
   }).format(date)
 
+  const cost = post.cost
+  const postCost = cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
   const iconClass = 'h-6 w-6 text-gray-700'
   const stats = [
     {
@@ -29,7 +32,7 @@ export function BannerInfoBoxs({ post }: BannerInfoBoxsProps) {
     {
       icon: <CoinsIcon className={iconClass} />,
       label: '예상 비용',
-      value: `${post.cost}원`,
+      value: `${postCost}원`,
     },
     {
       icon: <CalendarIcon className={iconClass} />,
@@ -45,9 +48,9 @@ export function BannerInfoBoxs({ post }: BannerInfoBoxsProps) {
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-      {stats.map((stat, idx) => (
+      {stats.map((stat, index) => (
         <div
-          key={idx}
+          key={`${stat.value}-${index}`}
           className="flex flex-col items-center rounded-lg bg-gray-50 p-4 transition"
         >
           {stat.icon}
