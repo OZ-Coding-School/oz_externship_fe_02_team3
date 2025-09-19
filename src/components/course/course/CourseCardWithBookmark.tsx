@@ -1,5 +1,5 @@
 import CourseCard from './CourseCard'
-import { BookmarkButton } from './BookmarkButton'
+import { BookmarkButton } from '../ui/BookmarkButton'
 import { cn } from '@src/utils/cn'
 
 interface CourseCardWithBookmarkProps {

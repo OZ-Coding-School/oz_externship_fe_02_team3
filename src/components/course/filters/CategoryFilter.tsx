@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-react'
-import SelectableDropDown from './SelectableDropDown'
+import SelectableDropDown from '../ui/SelectableDropDown'
 import { FILTER_SORT } from '@src/constants/ui'
 import { cn } from '@src/utils/cn'
 

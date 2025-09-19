@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import SearchFilter from '@src/components/course/SearchFilter'
-import UserCourseSection from '@src/components/course/UserCourseSection'
+import SearchFilter from '@src/components/course/filters/SearchFilter'
+import UserCourseSection from '@src/components/course/course/UserCourseSection'
 import { CATEGORY_LIST, SORT_LABELS } from '@src/constants/courses'
 import {
   PAGE_TITLES,
@@ -16,9 +16,9 @@ import { usePagination } from '@src/hooks/course/usePagination'
 import { useBookmark } from '@src/hooks/course/useBookmark'
 import { useIntersectionObserver } from '@src/hooks/useIntersectionObserver'
 import LoadingSpinner from '@src/components/commons/LoadingSpinner'
-import ErrorMessage from '@src/components/course/ErrorMessage'
-import CourseStats from '@src/components/course/CourseStats'
-import CourseGrid from '@src/components/course/CourseGrid'
+import ErrorMessage from '@src/components/course/common/ErrorMessage'
+import CourseStats from '@src/components/course/course/CourseStats'
+import CourseGrid from '@src/components/course/course/CourseGrid'
 import { EmptyState } from '@src/components/commons/EmptyState'
 
 interface CoursesPageProps {

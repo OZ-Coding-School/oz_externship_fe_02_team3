@@ -1,5 +1,5 @@
-import LoggedInCourses from './LoggedIncourses'
-import AnonymousCourses from './AnonyMousCourses'
+import LoggedInCourses from '../sections/LoggedIncourses'
+import AnonymousCourses from '../common/AnonyMousCourses'
 import { cn } from '@src/utils/cn'
 
 interface UserCourseSectionProps {

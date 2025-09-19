@@ -1,4 +1,4 @@
-import CourseCardWithBookmark from './CourseCardWithBookmark'
+import CourseCardWithBookmark from '../course/CourseCardWithBookmark'
 import { mockCoursesData } from '@src/mock/coursesData'
 import type { Course } from '@src/types/course'
 

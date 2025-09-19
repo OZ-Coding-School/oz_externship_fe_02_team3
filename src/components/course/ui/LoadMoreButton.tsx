@@ -1,4 +1,4 @@
-import Button from '../commons/button/Button'
+import Button from '@src/components/commons/button/Button'
 import { cn } from '@src/utils/cn'
 import { BUTTON_TEXT } from '@src/constants/ui'
 
