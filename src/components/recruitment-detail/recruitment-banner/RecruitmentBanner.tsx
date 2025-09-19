@@ -11,6 +11,7 @@ import { BannerButtons } from './BannerButtons'
 import { BannerInfoBoxs } from './BannerInfoBoxs'
 import { useState } from 'react'
 import ApplicationModal from '@src/components/recruitment-manage/application/ApplicationModal'
+import { useToast } from '@src/components/commons/toast'
 
 export default function RecruitmentBanner() {
   const [openApplication, setOpenApplication] = useState(false)
@@ -33,8 +34,23 @@ export default function RecruitmentBanner() {
     { icon: BookmarkIcon, label: '북마크', value: post.bookmark_count },
   ]
 
+  const toast = useToast()
   const handleShare = () => {
-    // 공유하기 로직
+    const url = window.location.href
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        toast.success({
+          title: 'URL이 클립보드에 복사되었습니다.',
+          content: '원하는 곳에 붙여넣기하여 페이지를 공유할 수 있습니다.',
+        })
+      })
+      .catch(() => {
+        toast.warning({
+          title: 'URL 복사에 실패했습니다.',
+          content: '클립보드 접근 권한을 확인하고 다시 시도해주세요.',
+        })
+      })
   }
 
   const handleBookmark = () => {
