@@ -5,7 +5,7 @@ import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import JobPostCard from '@components/commons/JobPostCard'
 import Button from '@components/commons/button/Button'
 import type { JobPost } from '@src/types/jobPosts'
-import { EmptyState } from '../commons/EmptyState'
+import { EmptyState } from '../../commons/EmptyState'
 import { EMPTY_MESSAGES } from '@src/constants/ui'
 
 export default function RecruitmentList() {
