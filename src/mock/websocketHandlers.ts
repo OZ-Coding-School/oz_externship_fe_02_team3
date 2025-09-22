@@ -193,7 +193,7 @@ function handleChatMessage(data: ClientToServerMessage) {
 // 방 퇴장 처리 함수
 function handleLeaveRoom(client: any, data: ClientToServerMessage) {
   // 1. 필요한 정보를 data에서 직접 추출
-  const { room_id, user_uuid, nickname } = data
+  const { room_id, nickname } = data
 
   // 2. 기본적인 유효성 검사 (room_id가 있는지만 확인)
   if (!room_id) {
@@ -286,23 +286,6 @@ export const websocketHandlers = [
     // 브라우저에서 ws.close()를 호출하거나 페이지를 닫을 때 실행됨
     client.addEventListener('close', () => {
       console.log('❌ MSW WebSocket 연결 종료됨')
-
-      // 퇴장 메시지 객체 생성 (다른 클라이언트들에게 알리기 위함)
-      const leaveMessage: WebSocketMessage = {
-        message_id: Date.now(),
-        sender: {
-          user_uuid: 'system',
-          nickname: '시스템',
-          profile_img_url: '',
-        },
-        content: '채팅방에서 나갔습니다',
-        created_at: new Date().toISOString(),
-        type: 'user_left',
-      }
-
-      // 필요시 다른 클라이언트들에게 퇴장 메시지 전송
-      // (단일 클라이언트 테스트에서는 생략)
-      //   handleClientDisconnect(client)
     })
   }),
 ]
