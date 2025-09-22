@@ -1,7 +1,7 @@
-import { SearchInput } from './SearchInput'
+import { SearchInput } from '../ui/SearchInput'
 import { CategoryFilter } from './CategoryFilter'
 import { SortFilter } from './SortFilter'
-import { FilterResetButton } from './FilterResetButton'
+import { FilterResetButton } from '../ui/FilterResetButton'
 import { ARIA_LABELS } from '@src/constants/ui'
 
 interface SearchFilterProps {

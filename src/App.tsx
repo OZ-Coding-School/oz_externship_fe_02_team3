@@ -12,16 +12,19 @@ import CoursesPage from './pages/CoursesPage'
 import { ToastPorvider } from './components/commons/toast'
 import RecruitmentDetailPage from './pages/RecruitmentDetailPage'
 import RecruitmentEdit from './pages/RecruitmentEdit'
+import ScrollLayout from './layouts/ScrollLayout'
 
 const routes = [
   { path: ROUTES.HOME, element: <TestHub /> },
-  { path: ROUTES.RECRUITMENT, element: <RecruitmentPase /> },
-  { path: ROUTES.RECRUITMENT_DETAIL, element: <RecruitmentDetailPage /> },
-  { path: ROUTES.RECRUITMENT_MANAGE, element: <RecruitmentManage /> },
   { path: ROUTES.RECRUITMENT_CREATE, element: <RecruitmentCreate /> },
   { path: ROUTES.RECRUITMENT_EDIT_PATTERN, element: <RecruitmentEdit /> },
   { path: '/test/ApplicationModal', element: <TestApplicationModalPage /> },
   { path: '/test/UI', element: <TestUIPage /> },
+]
+const scrollRoutes = [
+  { path: ROUTES.RECRUITMENT, element: <RecruitmentPase /> },
+  { path: ROUTES.RECRUITMENT_DETAIL, element: <RecruitmentDetailPage /> },
+  { path: ROUTES.RECRUITMENT_MANAGE, element: <RecruitmentManage /> },
   { path: ROUTES.COURSES, element: <CoursesPage /> },
 ]
 
@@ -33,6 +36,18 @@ export default function App() {
           {routes.map((route) => (
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
+        </Route>
+
+        <Route element={<MainLayout />}>
+          <Route element={<ScrollLayout />}>
+            {scrollRoutes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.element}
+              />
+            ))}
+          </Route>
         </Route>
       </Routes>
     </ToastPorvider>

@@ -1,44 +1,33 @@
-import { SectionHeader } from './SectionHeader'
+import { EmptyState } from '@src/components/commons/EmptyState'
 import CourseCardWithBookmark from './CourseCardWithBookmark'
-import { CARD, LIST_SETTINGS } from '@src/constants/ui'
+import { EMPTY_MESSAGES, ARIA_LABELS, LIST_SETTINGS } from '@src/constants/ui'
 import type { Course } from '@src/types/course'
 
-interface RecommendedSectionProps {
-  visibleCourses: Course[]
-  canGoLeft: boolean
-  canGoRight: boolean
-  goLeft: () => void
-  goRight: () => void
+interface CourseGridProps {
+  courses: Course[]
   onBookmark: (courseId: number, isBookmarked: boolean) => void
 }
 
-export default function RecommendedSection({
-  visibleCourses,
-  canGoLeft,
-  canGoRight,
-  goLeft,
-  goRight,
-  onBookmark,
-}: RecommendedSectionProps) {
-  return (
-    <section className="mb-12" aria-labelledby="recommended-courses-title">
-      <SectionHeader
-        title="추천 강의"
-        showNavigation
-        canNavigateLeft={canGoLeft}
-        canNavigateRight={canGoRight}
-        onNavigateLeft={goLeft}
-        onNavigateRight={goRight}
+export default function CourseGrid({ courses, onBookmark }: CourseGridProps) {
+  if (courses.length === 0) {
+    return (
+      <EmptyState
+        title={EMPTY_MESSAGES.FILTERED_COURSES}
+        description="다른 검색어나 필터를 시도해보세요."
+        iconType="FILTERED_COURSES"
+        iconClassName="stroke-gray-400 w-8 h-8"
+        iconContainerClassName="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center"
       />
+    )
+  }
 
-      <div
-        className={`grid gap-6 grid-cols-${LIST_SETTINGS.COURSES_PER_ROW.MOBILE} md:grid-cols-${LIST_SETTINGS.COURSES_PER_ROW.TABLET} lg:grid-cols-${LIST_SETTINGS.COURSES_PER_ROW.DESKTOP} `}
-      >
-        {visibleCourses.map((course: Course) => (
+  return (
+    <section aria-label={ARIA_LABELS.COURSE_GRID}>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {courses.map((course: Course) => (
           <div
-            key={`recommended-${course.id}`}
-            className={`${CARD.TRANSITION} ${CARD.HOVER_SCALE}`}
-            style={{ minHeight: `${CARD.MIN_HEIGHT}px` }}
+            key={course.id}
+            className="w-full min-w-0 transition-all duration-200 hover:scale-105"
           >
             <CourseCardWithBookmark
               cardTitle={

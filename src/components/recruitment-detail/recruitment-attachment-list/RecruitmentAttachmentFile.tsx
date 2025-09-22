@@ -1,8 +1,8 @@
-import type { Attachments } from '@src/mock/postDetailAttachments'
+import type { Attachment } from '@src/types/post'
 import { Download as DownloadIcon, FileText as FileIcon } from 'lucide-react'
 
 interface RecruitmentAttachmentFileProps {
-  file: Attachments
+  file: Attachment
 }
 
 export default function RecruitmentAttachmentFile({
@@ -24,7 +24,9 @@ export default function RecruitmentAttachmentFile({
         className="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-200 active:bg-gray-300 disabled:bg-gray-100"
       >
         <DownloadIcon className="h-4 w-4" />
-        <p>다운로드</p>
+        <a href={file.file_url} download={file.file_name}>
+          다운로드
+        </a>
       </a>
     </div>
   )

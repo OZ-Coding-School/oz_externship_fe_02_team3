@@ -12,6 +12,7 @@ import { useChatMessages } from '@src/hooks/useChatting'
 import { participants } from '@src/mock/participants'
 import { useSearchParams } from 'react-router-dom'
 import { chatList } from '@src/mock/chatListData'
+import { Z_INDEX } from '@src/constants/ui'
 
 interface ChatProps {
   isOpen: boolean
@@ -94,7 +95,9 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   }, [studyGroupUuid, setIsOpen])
 
   return (
-    <div className="fixed right-6 bottom-24 z-40 h-96 w-80 rounded-lg border border-gray-200 bg-white shadow-2xl">
+    <div
+      className={`fixed right-6 bottom-24 h-96 w-80 rounded-lg border border-gray-200 bg-white shadow-2xl ${Z_INDEX.MODAL}`}
+    >
       {currentView === 'list' ? renderListView() : renderChatView()}
     </div>
   )

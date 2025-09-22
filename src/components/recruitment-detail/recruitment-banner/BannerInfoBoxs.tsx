@@ -4,43 +4,53 @@ import {
   Coins as CoinsIcon,
   UsersRound as UsersRoundIcon,
 } from 'lucide-react'
-import type { JobPost } from '@src/types/jobPosts'
+import type { Post } from '@src/types/post'
 
 interface BannerInfoBoxsProps {
-  job: JobPost
+  post: Post
 }
 
-export function BannerInfoBoxs({ job }: BannerInfoBoxsProps) {
-  const estimatedCost = '180,000' // 예상 비용 임시 데이터
+export function BannerInfoBoxs({ post }: BannerInfoBoxsProps) {
+  // 마감일 형식에 맞게 데이터 수정
+  const date = new Date(post.deadline)
+  const postDeadline = new Intl.DateTimeFormat('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date)
+
+  const cost = post.cost
+  const postCost = cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
   const iconClass = 'h-6 w-6 text-gray-700'
   const stats = [
     {
       icon: <UsersRoundIcon className={iconClass} />,
       label: '모집인원',
-      value: `${job.memberLimit}명`,
+      value: `${post.recruit_count}명`,
     },
     {
       icon: <CoinsIcon className={iconClass} />,
       label: '예상 비용',
-      value: `${estimatedCost}원`,
+      value: `${postCost}원`,
     },
     {
       icon: <CalendarIcon className={iconClass} />,
       label: '마감일',
-      value: job.deadline,
+      value: postDeadline,
     },
     {
       icon: <UsersIcon className={iconClass} />,
       label: '스터디 그룹',
-      value: job.title,
+      value: post.title,
     },
   ]
 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-      {stats.map((stat, idx) => (
+      {stats.map((stat, index) => (
         <div
-          key={idx}
+          key={`${stat.value}-${index}`}
           className="flex flex-col items-center rounded-lg bg-gray-50 p-4 transition"
         >
           {stat.icon}
