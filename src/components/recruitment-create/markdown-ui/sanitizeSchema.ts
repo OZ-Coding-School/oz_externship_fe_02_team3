@@ -40,6 +40,6 @@ export const mdSanitizeSchema = {
   },
   protocols: {
     ...(defaultSchema.protocols || {}),
-    img: { src: ['http', 'https', 'data'] },
+    img: { src: ['http', 'https', 'data', 'blob'] },
   },
 } as const
