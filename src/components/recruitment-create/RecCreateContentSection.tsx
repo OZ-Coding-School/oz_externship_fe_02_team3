@@ -1,11 +1,15 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import StudyIntroMarkdown from './StudyIntroMarkdown'
 import { STUDY_INTRO_PLACEHOLDER } from '@src/constants/studyintroplaceholder'
+import { countMdImages } from './markdown-ui/mdImages'
+
+const MAX_IMAGES = 5
 
 const PLACEHOLDER = STUDY_INTRO_PLACEHOLDER
 
 export default function RecCreateContentSection() {
   const [markDown, setMarkDown] = useState('')
+  const usedCount = useMemo(() => countMdImages(markDown), [markDown])
 
   return (
     <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-gray-900">
@@ -19,7 +23,9 @@ export default function RecCreateContentSection() {
       </label>
       <div className="flex justify-between text-[12px] font-normal text-gray-500">
         <p>마크다운 문법을 사용할 수 있습니다</p>
-        <p>이미지 0/5개</p>
+        <p>
+          이미지 {usedCount}/{MAX_IMAGES}개
+        </p>
       </div>
       <label className="mt-2 mb-2 block text-sm leading-5 font-medium text-gray-700">
         스터디 그룹 소개(선택사항)
