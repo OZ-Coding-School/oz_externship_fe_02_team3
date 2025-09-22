@@ -4,6 +4,7 @@ import Chat from '@components/commons/chat/Chatting'
 import { MessageCircle as MessageIcon, X as CloseIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { Z_INDEX } from '@src/constants/ui'
 
 interface ChatFloatButtonProps {
   className?: string
@@ -44,7 +45,7 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
       <div
         ref={buttonRef}
         className={cn(
-          'bg-primary-500 fixed right-6 bottom-6 z-50 cursor-pointer rounded-full shadow-lg',
+          `bg-primary-500 fixed right-6 bottom-6 cursor-pointer rounded-full shadow-lg ${Z_INDEX.BUTTON}`,
           className
         )}
       >
