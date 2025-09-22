@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import SearchFilter from '@src/components/course/SearchFilter'
-import UserCourseSection from '@src/components/course/UserCourseSection'
+import SearchFilter from '@src/components/course/filters/SearchFilter'
+import UserCourseSection from '@src/components/course/course/UserCourseSection'
 import { CATEGORY_LIST, SORT_LABELS } from '@src/constants/courses'
 import {
   PAGE_TITLES,
@@ -14,11 +14,11 @@ import { useCourses } from '@src/hooks/course/useCourse'
 import { useCourseFilters } from '@src/hooks/course/useCourseFilters'
 import { usePagination } from '@src/hooks/course/usePagination'
 import { useBookmark } from '@src/hooks/course/useBookmark'
+import { useIntersectionObserver } from '@src/hooks/useIntersectionObserver'
 import LoadingSpinner from '@src/components/commons/LoadingSpinner'
-import ErrorMessage from '@src/components/course/ErrorMessage'
-import CourseStats from '@src/components/course/CourseStats'
-import CourseGrid from '@src/components/course/CourseGrid'
-import LoadMoreButton from '@src/components/course/LoadMoreButton'
+import ErrorMessage from '@src/components/course/common/ErrorMessage'
+import CourseStats from '@src/components/course/course/CourseStats'
+import CourseGrid from '@src/components/course/course/CourseGrid'
 import { EmptyState } from '@src/components/commons/EmptyState'
 
 interface CoursesPageProps {
@@ -48,8 +48,20 @@ export default function CoursesPage({ className }: CoursesPageProps) {
 
   const { toggleBookmark } = useBookmark()
 
+  const targetRef = useIntersectionObserver({
+    enabled: true,
+    hasNextPage: hasMore,
+    isFetchingNextPage: false,
+    onIntersect: loadMore,
+    threshold: 1,
+  })
+
   if (loading) {
-    return <LoadingSpinner message={LOADING_MESSAGES.COURSES} />
+    return (
+      <div className="h-screen w-full">
+        <LoadingSpinner message={LOADING_MESSAGES.COURSES} />
+      </div>
+    )
   }
 
   if (error) {
@@ -143,9 +155,7 @@ export default function CoursesPage({ className }: CoursesPageProps) {
                 onBookmark={toggleBookmark}
               />
 
-              {hasMore && (
-                <LoadMoreButton onClick={loadMore} className="mt-8" />
-              )}
+              {hasMore && <div ref={targetRef} style={{ height: '1px' }} />}
             </>
           ) : (
             <EmptyState

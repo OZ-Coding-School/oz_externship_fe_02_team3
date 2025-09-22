@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import UserRecruitment from '@components/recruitment/user-recruitment/UserRecruitment'
-import RecruitmentList from '@components/recruitment/RecruitmentList'
-import RecruitmentHeader from '@components/recruitment/RecruitmentHeader'
+import RecruitmentList from '@src/components/recruitment/recruitment-list/RecruitmentList'
+import RecruitmentHeader from '@src/components/recruitment/recruitment-header/RecruitmentHeader'
 import SearchFilterBar from '@src/components/recruitment/srearch-filter-bar/SearchFilterBar'
 
 export default function RecruitmentPage() {
@@ -18,7 +18,7 @@ export default function RecruitmentPage() {
       >
         {isAuthenticated ? '로그아웃 상태로 전환' : '로그인 상태로 전환'}
       </button>
-      <RecruitmentHeader />
+      <RecruitmentHeader isAuthenticated={isAuthenticated} />
       <UserRecruitment isAuthenticated={isAuthenticated} />
       <SearchFilterBar />
       <RecruitmentList />
