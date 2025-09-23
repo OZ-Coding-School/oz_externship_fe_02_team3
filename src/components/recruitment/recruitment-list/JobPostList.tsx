@@ -10,7 +10,8 @@ interface JobPostListProps {
   setInfiniteMode: (value: boolean) => void
   loadMoreRef: RefObject<HTMLDivElement | null>
   isFetchingNextPage: boolean
-  totalCount: number | undefined
+  displayText: string
+  displayCount: number | undefined
 }
 
 export default function JobPostList({
@@ -19,12 +20,13 @@ export default function JobPostList({
   setInfiniteMode,
   loadMoreRef,
   isFetchingNextPage,
-  totalCount,
+  displayText,
+  displayCount,
 }: JobPostListProps) {
   return (
     <div>
       <h4 className="w-full pb-[24px] text-xl font-semibold">
-        전체 공고 ({totalCount})
+        {displayText} ({displayCount})
       </h4>
       <ul className="w-[1216px]">
         {jobs.map((job) => (

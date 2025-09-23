@@ -1,7 +1,9 @@
-import { useState } from 'react'
-import { useInitialJobPosts, useInfiniteJobPosts } from '@hooks/useJobPosts'
+import { useState, useMemo, useEffect } from 'react'
+import { useInfiniteQuery } from '@tanstack/react-query'
+import { fetchJobPosts } from '@api/jobPosts'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
-import type { JobPost } from '@src/types/jobPosts'
+import { useFilterStore } from '@src/store/useJobFilterStore'
+import type { JobPost, JobPostsResponse } from '@src/types/jobPosts'
 import { EmptyState } from '../../commons/EmptyState'
 import { EMPTY_MESSAGES } from '@src/constants/ui'
 import JobPostList from './JobPostList'
@@ -9,22 +11,68 @@ import JobPostList from './JobPostList'
 export default function RecruitmentList() {
   const [infiniteMode, setInfiniteMode] = useState(false)
 
-  const { data: initialData, isLoading: isInitialLoading } =
-    useInitialJobPosts()
+  // 각 필터 값을 개별적으로 구독
+  const searchTerm = useFilterStore((state) => state.searchTerm)
+  const selectedTag = useFilterStore((state) => state.selectedTag)
+  const selectedSort = useFilterStore((state) => state.selectedSort)
+  const hasActiveFilters = useFilterStore((state) => state.hasActiveFilters)
 
-  const {
-    data: infiniteData,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteJobPosts({
-    enabled: infiniteMode,
-    initialData: infiniteMode ? initialData : undefined,
-  })
+  const isFiltered = hasActiveFilters()
 
-  const totalCount = infiniteMode
-    ? infiniteData?.pages[0]?.totalCount
-    : initialData?.totalCount
+  // 필터링이 있으면 자동으로 무한 스크롤 모드 활성화
+  useEffect(() => {
+    if (isFiltered) setInfiniteMode(true)
+  }, [isFiltered])
+
+  // 무한 스크롤용 데이터 관리
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery<JobPostsResponse>({
+      queryKey: ['jobPosts', { searchTerm, selectedTag, selectedSort }],
+      queryFn: ({ pageParam = 1 }) =>
+        fetchJobPosts({ pageParam: pageParam as number }),
+      initialPageParam: 1,
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.hasNext ? allPages.length + 1 : undefined,
+    })
+
+  // 원본 데이터
+  const rawJobs: JobPost[] = useMemo(() => {
+    return (data?.pages.flatMap((page) => page.items) ?? []).map((post) => ({
+      ...post,
+    }))
+  }, [data])
+
+  const filteredJobs = useMemo(() => {
+    let filtered = rawJobs
+
+    // 제목 검색
+    if (searchTerm) {
+      filtered = filtered.filter((job) =>
+        job.title.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }
+
+    // 태그 필터
+    if (selectedTag !== '전체 태그') {
+      filtered = filtered.filter((job) => job.tags.includes(selectedTag))
+    }
+
+    if (selectedSort === '오래된순') {
+      filtered = [...filtered].sort((a, b) => b.id - a.id)
+    } else if (selectedSort === '인기순') {
+      filtered = [...filtered].sort((a, b) => b.viewCount - a.viewCount)
+    }
+
+    return filtered
+  }, [rawJobs, searchTerm, selectedTag, selectedSort])
+
+  // 필터링된 개수 계산
+  const totalCount = data?.pages[0]?.totalCount
+  const filteredCount = filteredJobs.length
+
+  // 표시할 개수와 텍스트 결정
+  const displayCount = isFiltered ? filteredCount : totalCount || 0
+  const displayText = isFiltered ? '검색 공고' : '전체 공고'
 
   const loadMoreRef = useIntersectionObserver({
     enabled: infiniteMode,
@@ -34,20 +82,7 @@ export default function RecruitmentList() {
     threshold: 1,
   })
 
-  if (isInitialLoading) return <p className="text-gray-600">Loading...</p>
-
-  const jobs: JobPost[] = (
-    infiniteMode
-      ? (infiniteData?.pages.flatMap(
-          (page: { items: JobPost[] }) => page.items
-        ) ??
-        initialData?.items ??
-        [])
-      : (initialData?.items ?? [])
-  ).map((post: JobPost) => ({
-    ...post,
-    image: post.image,
-  }))
+  if (isLoading) return <p className="text-gray-600">Loading...</p>
 
   const emptyState = (
     <EmptyState
@@ -61,16 +96,17 @@ export default function RecruitmentList() {
 
   return (
     <div className="flex flex-col items-center">
-      {jobs.length === 0 ? (
+      {filteredJobs.length === 0 ? (
         emptyState
       ) : (
         <JobPostList
-          jobs={jobs}
+          jobs={filteredJobs}
           infiniteMode={infiniteMode}
           setInfiniteMode={setInfiniteMode}
           loadMoreRef={loadMoreRef}
           isFetchingNextPage={isFetchingNextPage}
-          totalCount={totalCount}
+          displayText={displayText}
+          displayCount={displayCount}
         />
       )}
     </div>
