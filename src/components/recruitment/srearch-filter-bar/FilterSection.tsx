@@ -1,10 +1,19 @@
 import DropDown from '@src/components/commons/dropdown/DropDown'
-import { useState } from 'react'
 
-export default function FilterSection() {
+interface FilterSectionProps {
+  selectedTag: string
+  selectedSort: string
+  onTagChange: (value: string) => void
+  onSortChange: (value: string) => void
+}
+
+export default function FilterSection({
+  selectedTag,
+  selectedSort,
+  onTagChange,
+  onSortChange,
+}: FilterSectionProps) {
   // API 연결 전 임시 옵션 목록
-  const [selectedTag, setSelectedTag] = useState('전체 태그')
-  const [selectedSort, setSelectedSort] = useState('최신순')
   const tagOptions = ['전체 태그', '초보자환영', '주말스터디', '프로젝트 중심']
   const sortingOptions = ['최신순', '오래된순', '인기순']
 
@@ -15,7 +24,7 @@ export default function FilterSection() {
         <DropDown
           selected={selectedTag}
           options={tagOptions}
-          onSelect={setSelectedTag}
+          onSelect={onTagChange}
           placeholder="태그 선택"
           className="w-full"
         />
@@ -25,7 +34,7 @@ export default function FilterSection() {
         <DropDown
           selected={selectedSort}
           options={sortingOptions}
-          onSelect={setSelectedSort}
+          onSelect={onSortChange}
           placeholder="정렬 선택"
           className="w-full"
         />
