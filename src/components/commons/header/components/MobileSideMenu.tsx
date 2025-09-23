@@ -3,17 +3,20 @@ import { X as XIcon, LogOut as LogOutIcon } from 'lucide-react'
 import { NAV_ITEMS } from '@src/constants/ui'
 import { Link, useNavigate } from 'react-router-dom'
 import Icon from '@components/commons/Icon'
-import { Z_INDEX } from '@constants/ui'
 import Avatar from '@src/components/recruitment-manage/common/Avatar'
-import Button from '../../button/Button'
+import Button from '@components/commons/button/Button'
 interface MobileSideMenuProps {
   isGnbVisible: boolean
   toggleGnb: () => void
+  sidebarRef: React.RefObject<HTMLDivElement | null>
 }
 export default function MobileSideMenu({
   isGnbVisible,
   toggleGnb,
+  sidebarRef,
 }: MobileSideMenuProps) {
+  const navigate = useNavigate()
+
   // 개발단계에선 해당 값을 true 와 false 로 합니다.
   // 개발단계에선 유저 이름을 '김스터디' 로 합니다.
   // 개발단계에선 유저 이메일을 'kim.dev@example.com' 로 합니다.
@@ -21,23 +24,29 @@ export default function MobileSideMenu({
   const userName = '김스터디'
   const userEmail = 'kim.dev@example.com'
 
-  const navigate = useNavigate()
-
   const handleLogout = () => {
     navigate('/logout')
   }
-
   return (
     <div
-      className={`fixed top-0 left-0 h-screen w-2/3 bg-white ${Z_INDEX.SIDEBAR} shadow-lg transition-transform duration-300 ${
+      className={`fixed top-0 left-0 h-screen w-2/3 bg-white shadow-lg transition-transform duration-300 ${
         isGnbVisible ? 'translate-x-0' : '-translate-x-full'
       }`}
+      ref={sidebarRef}
     >
       <div className="flex items-center justify-between border-b border-gray-200 p-4">
-        <StudyLogo className="size-8" aria-label="StudyHub 로고" />
-        <XIcon size={18} className="text-gray-400" />
+        <Link to="/" onClick={toggleGnb}>
+          <StudyLogo className={`size-7`} aria-label="StudyHub 로고" />
+        </Link>
+        <Button
+          icon={XIcon}
+          iconButtonSize="md"
+          variant="ghost"
+          onClick={toggleGnb}
+          iconClassName="text-gray-400"
+        />
       </div>
-      <div className="flex h-[calc(100vh-65px)] flex-col justify-between">
+      <div className="flex h-[calc(100vh-75px)] flex-col justify-between">
         <div className="flex flex-col gap-4 p-4">
           <p className="px-3 py-2 text-sm font-semibold text-gray-500">메뉴</p>
           <nav className="flex flex-col gap-1">
@@ -46,6 +55,7 @@ export default function MobileSideMenu({
                 <Link
                   key={item.to}
                   to={item.to}
+                  onClick={toggleGnb}
                   className="hover:bg-primary-50 hover:text-primary-600 flex items-center gap-3 rounded-lg p-3 text-sm font-medium text-gray-700"
                 >
                   <div className="">

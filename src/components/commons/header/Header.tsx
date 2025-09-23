@@ -3,13 +3,22 @@ import Navigation from './components/Navigation'
 import MobileSideMenu from './components/MobileSideMenu'
 import { Z_INDEX } from '@constants/ui'
 import { cn } from '@utils/cn'
-import { useState } from 'react'
-
+import { useRef, useState } from 'react'
+import { useOutsideClick } from '@src/hooks/useOutsideClick'
 export default function Header() {
   const [isGnbVisible, setIsGnbVisible] = useState(false)
+  const sidebarButtonRef = useRef<HTMLDivElement>(null)
+  const sidebarRef = useRef<HTMLDivElement>(null)
+
   const toggleGnb = () => {
     setIsGnbVisible((prev) => !prev)
   }
+
+  useOutsideClick(
+    isGnbVisible, // 드롭다운이 열려있는지
+    [sidebarButtonRef, sidebarRef], // 안쪽으로 취급할 영역들
+    () => setIsGnbVisible(false) // 바깥 클릭시 실행할 함수
+  )
 
   return (
     <header
@@ -19,12 +28,14 @@ export default function Header() {
       )}
     >
       <div className="flex h-full w-full max-w-7xl justify-between px-8">
-        <Logo toggleGnb={toggleGnb} />
+        <Logo toggleGnb={toggleGnb} sidebarButtonRef={sidebarButtonRef} />
         <Navigation />
       </div>
-      {isGnbVisible && (
-        <MobileSideMenu isGnbVisible={isGnbVisible} toggleGnb={toggleGnb} />
-      )}
+      <MobileSideMenu
+        isGnbVisible={isGnbVisible}
+        toggleGnb={toggleGnb}
+        sidebarRef={sidebarRef}
+      />
     </header>
   )
 }
