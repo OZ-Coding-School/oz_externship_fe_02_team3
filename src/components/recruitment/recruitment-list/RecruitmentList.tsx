@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
 import { fetchJobPosts } from '@api/jobPosts'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
@@ -18,6 +18,13 @@ export default function RecruitmentList() {
   const hasActiveFilters = useFilterStore((state) => state.hasActiveFilters)
 
   const isFiltered = hasActiveFilters()
+
+  // 필터링이 있으면 자동으로 무한 스크롤 모드 활성화
+  useEffect(() => {
+    if (isFiltered) {
+      setInfiniteMode(true)
+    }
+  }, [isFiltered])
 
   // 초기 10개 데이터를 가져오는 쿼리
   const { data: initialData, isLoading: isInitialLoading } =
