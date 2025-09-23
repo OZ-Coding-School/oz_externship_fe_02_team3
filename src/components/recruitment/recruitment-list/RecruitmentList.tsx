@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react'
-import { useInitialJobPosts, useInfiniteJobPosts } from '@hooks/useJobPosts'
+import { useQuery, useInfiniteQuery } from '@tanstack/react-query'
+import { fetchJobPosts } from '@api/jobPosts'
 import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 import { useFilterStore } from '@src/store/useJobFilterStore'
-import type { JobPost } from '@src/types/jobPosts'
+import type { JobPost, JobPostsResponse } from '@src/types/jobPosts'
 import { EmptyState } from '../../commons/EmptyState'
 import { EMPTY_MESSAGES } from '@src/constants/ui'
 import JobPostList from './JobPostList'
@@ -18,23 +19,39 @@ export default function RecruitmentList() {
 
   const isFiltered = hasActiveFilters()
 
+  // 초기 10개 데이터를 가져오는 쿼리
   const { data: initialData, isLoading: isInitialLoading } =
-    useInitialJobPosts()
+    useQuery<JobPostsResponse>({
+      queryKey: ['jobPosts', 'initial'],
+      queryFn: () => fetchJobPosts({ pageParam: 1 }),
+      enabled: !infiniteMode && !isFiltered,
+    })
 
+  // 무한 스크롤용 데이터 관리
   const {
     data: infiniteData,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-  } = useInfiniteJobPosts({
-    enabled: infiniteMode,
-    initialData: infiniteMode ? initialData : undefined,
+    isLoading: isInfiniteLoading,
+  } = useInfiniteQuery<JobPostsResponse>({
+    queryKey: ['jobPosts', 'infinite'],
+    queryFn: ({ pageParam }) =>
+      fetchJobPosts({ pageParam: pageParam as number }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.hasNext ? allPages.length + 1 : undefined,
+    enabled: infiniteMode || isFiltered,
+    initialData:
+      infiniteMode && initialData
+        ? { pages: [initialData], pageParams: [1] }
+        : undefined,
   })
 
   // 원본 데이터
   const rawJobs: JobPost[] = useMemo(() => {
     return (
-      infiniteMode
+      infiniteMode || isFiltered
         ? (infiniteData?.pages.flatMap(
             (page: { items: JobPost[] }) => page.items
           ) ??
@@ -45,7 +62,7 @@ export default function RecruitmentList() {
       ...post,
       image: post.image,
     }))
-  }, [infiniteMode, infiniteData, initialData])
+  }, [infiniteMode, isFiltered, infiniteData, initialData])
 
   const filteredJobs = useMemo(() => {
     let filtered = rawJobs
@@ -72,9 +89,10 @@ export default function RecruitmentList() {
   }, [rawJobs, searchTerm, selectedTag, selectedSort])
 
   // 필터링된 개수 계산
-  const totalCount = infiniteMode
-    ? infiniteData?.pages[0]?.totalCount
-    : initialData?.totalCount
+  const totalCount =
+    infiniteMode || isFiltered
+      ? infiniteData?.pages[0]?.totalCount
+      : initialData?.totalCount
   const filteredCount = filteredJobs.length
 
   // 표시할 개수와 텍스트 결정
@@ -88,7 +106,10 @@ export default function RecruitmentList() {
     onIntersect: fetchNextPage,
     threshold: 1,
   })
-  if (isInitialLoading) return <p className="text-gray-600">Loading...</p>
+
+  const isLoading = isInitialLoading || isInfiniteLoading
+
+  if (isLoading) return <p className="text-gray-600">Loading...</p>
 
   const emptyState = (
     <EmptyState
