@@ -81,7 +81,7 @@ export default function RecruitmentList() {
 
   // 표시할 개수와 텍스트 결정
   const displayCount = isFiltered ? filteredCount : totalCount || 0
-  const displayText = isFiltered ? '필터링된 공고' : '전체 공고'
+  const displayText = isFiltered ? '검색 공고' : '전체 공고'
 
   const loadMoreRef = useIntersectionObserver({
     enabled: infiniteMode,
