@@ -28,7 +28,7 @@ export default function JobPostList({
       <h4 className="w-full pb-[24px] text-xl font-semibold">
         {displayText} ({displayCount})
       </h4>
-      <ul className="w-[1216px]">
+      <ul className="flex w-[1216px] flex-col gap-2">
         {jobs.map((job) => (
           <li key={job.id} className="rounded-lg bg-white">
             <JobPostCard post={job} />
