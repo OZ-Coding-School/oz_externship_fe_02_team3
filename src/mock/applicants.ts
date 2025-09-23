@@ -1,4 +1,4 @@
-import type { Applicant } from '@src/components/recruitment-manage/components/ApplicantCard'
+import type { Applicant, ApplicantDetail } from '@src/types/applicant'
 
 export const dummyApplicants: Applicant[] = [
   {
@@ -75,5 +75,64 @@ export const dummyApplicants: Applicant[] = [
     availability: '주 3회 이상 참여 가능',
     hasExp: true,
     status: 'pending',
+  },
+]
+
+export const dummyApplicants2: ApplicantDetail[] = [
+  {
+    id: 1,
+    name: '홍길동',
+    gender: '남성',
+    avatarUrl: 'https://i.pravatar.cc/150?img=3',
+    appliedAt: '2025-09-02T14:30:00',
+    availability: '평일 저녁 7~10시, 주말 오후 시간대 참여 가능합니다.',
+    hasExp: true,
+    status: 'pending',
+    intro: '안녕하세요, 열정적인 개발자 홍길동입니다.',
+    motive:
+      '프론트엔드 실력을 더 키우고 싶어서 지원했습니다. 프론트엔드 실력을 더 키우고 싶어서 지원했습니다프론트엔드 실력을 더 키우고 싶어서 지원했습니다프론트엔드 실력을 더 키우고 싶어서 지원했습니다프론트엔드 실력을 더 키우고 싶어서 지원했습니다',
+    goal: '팀원들과 협업하며 실무 감각을 익히는 것이 목표입니다.',
+    expDetail: '작년에 사이드 프로젝트로 2개의 스터디를 진행했습니다.',
+  },
+  {
+    id: 2,
+    name: '김민지',
+    gender: '여성',
+    avatarUrl: 'https://i.pravatar.cc/150?img=5',
+    appliedAt: '2025-09-01T11:15:00',
+    availability: '화요일, 목요일 저녁 7~10시',
+    hasExp: true,
+    status: 'approved',
+    intro: '디자인과 개발을 함께 배우고 있는 김민지입니다.',
+    motive: '풀스택 역량을 기르고 싶습니다.',
+    goal: '작은 서비스라도 직접 기획부터 개발까지 완성하고 싶습니다.',
+    expDetail: '대학교에서 1년간 스터디 운영 경험이 있습니다.',
+  },
+  {
+    id: 3,
+    name: '박개발자',
+    gender: '남성',
+    appliedAt: '2025-08-30T16:45:00',
+    availability: '주 3회 이상 참여 가능',
+    hasExp: false,
+    status: 'rejected',
+    intro: '개발을 막 시작한 박개발자입니다.',
+    motive: '꾸준히 공부하는 습관을 들이고 싶어서 신청했습니다.',
+    goal: '기초 실력을 튼튼히 다지고 싶습니다.',
+    expDetail: '스터디 경험은 아직 없습니다.',
+  },
+  {
+    id: 4,
+    name: '정동근',
+    gender: '남성',
+    avatarUrl: 'https://i.pravatar.cc/150?img=7',
+    appliedAt: '2025-08-30T16:45:00',
+    availability: '주 3회 이상 참여 가능',
+    hasExp: false,
+    status: 'pending',
+    intro: '안녕하세요, 동근입니다.',
+    motive: '협업 프로젝트 경험을 쌓고 싶습니다.',
+    goal: '프론트엔드 개발자로 취업 준비를 하고 있습니다.',
+    expDetail: '스터디 경험은 없지만 회사 프로젝트 경험은 있습니다.',
   },
 ]
