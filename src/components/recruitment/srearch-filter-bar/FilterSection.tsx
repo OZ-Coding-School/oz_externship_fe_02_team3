@@ -14,7 +14,7 @@ export default function FilterSection({
   onSortChange,
 }: FilterSectionProps) {
   // API 연결 전 임시 옵션 목록
-  const tagOptions = ['전체 태그', '초보자환영', '주말스터디', '프로젝트 중심']
+  const tagOptions = ['전체 태그', '프론트엔드', '백엔드']
   const sortingOptions = ['최신순', '오래된순', '인기순']
 
   return (
