@@ -15,6 +15,8 @@ export const buttonClass = cva(
           'bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200 disabled:bg-transparent',
         danger:
           'bg-danger-500 text-white hover:bg-danger-600 active:bg-danger-800 disabled:bg-danger-500',
+        success:
+          'bg-success-500 text-white hover:bg-success-600 active:bg-success-800 disabled:bg-success-500',
       },
       size: {
         sm: 'px-3 py-2 text-sm rounded-md',
