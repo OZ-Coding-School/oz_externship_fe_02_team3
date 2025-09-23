@@ -3,7 +3,6 @@ import StudyLogo from '@assets/images/logo_studyhub.svg?react'
 import { Menu as MenuIcon } from 'lucide-react'
 import { useMediaQuery } from '@src/hooks/useMediaQuery'
 import Button from '@components/commons/button/Button'
-import { useRef } from 'react'
 
 interface LogoProps {
   toggleGnb: () => void
