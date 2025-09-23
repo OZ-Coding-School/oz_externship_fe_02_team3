@@ -5,29 +5,13 @@ import InfoRow from './InfoRow'
 import { formatDate } from '@utils/date'
 import StatusBadge from '@components/commons/StatusBadge'
 import { useCallback, memo } from 'react'
-
-export type ApplicantStatus = 'pending' | 'approved' | 'rejected'
-
-export interface Applicant {
-  id: string | number // 상세 모달 API 호출용으로 필요
-  name: string
-  gender: '남성' | '여성'
-  avatarUrl?: string
-  appliedAt: string
-  availability: string
-  hasExp: boolean
-  status: ApplicantStatus
-}
+import type { Applicant } from '@src/types/applicant'
+import { getExpBadge } from '@src/constants/applicant'
 
 interface Props {
   data: Applicant
   onClick?: (applicant: Applicant) => void
 }
-
-const EXP_BADGE = {
-  true: { title: '경험 있음', className: 'bg-success-100 text-success-800' },
-  false: { title: '경험 없음', className: 'bg-gray-200 text-gray-800' },
-} as const
 
 export default memo(function ApplicantCard({ data, onClick }: Props) {
   const {
@@ -41,8 +25,7 @@ export default memo(function ApplicantCard({ data, onClick }: Props) {
     status,
   } = data
 
-  const { title: expTitle, className: badgeClass } =
-    EXP_BADGE[String(hasExp) as 'true' | 'false']
+  const { title: expTitle, className: badgeClass } = getExpBadge(hasExp)
 
   const handleClick = useCallback(() => onClick?.(data), [onClick, data])
 
