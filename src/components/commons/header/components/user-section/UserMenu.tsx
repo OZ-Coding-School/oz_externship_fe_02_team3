@@ -46,7 +46,7 @@ export default function UserMenu({
   return (
     <div
       ref={userMenuButtonRef}
-      className="relative flex items-center gap-2"
+      className="relative flex cursor-pointer items-center gap-2"
       onClick={handleAvatarToggle}
     >
       <div className="bg-primary-100 flex h-8 w-8 items-center justify-center rounded-full">
