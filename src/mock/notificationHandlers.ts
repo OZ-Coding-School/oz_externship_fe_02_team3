@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw'
-import notificationsData from '../notificationsData'
+import notificationsData from './notificationsData'
 import type {
   NotificationItem,
   NotificationResponse,

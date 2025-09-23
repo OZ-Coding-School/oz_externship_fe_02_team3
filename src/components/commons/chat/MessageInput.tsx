@@ -2,7 +2,11 @@ import Button from '@src/components/commons/button/Button'
 import { Send as SendIcon } from 'lucide-react'
 import { useState } from 'react'
 
-export default function MessageInput() {
+interface MessageInputProps {
+  onSendMessage?: (message: string) => boolean
+}
+
+export default function MessageInput({ onSendMessage }: MessageInputProps) {
   const [message, setMessage] = useState('')
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -13,8 +17,15 @@ export default function MessageInput() {
   const sendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     console.log('메시지 전송:', message)
-  }
 
+    // onSendMessage prop이 있으면 호출
+    if (onSendMessage && message.trim()) {
+      const success = onSendMessage(message.trim())
+      if (success) {
+        setMessage('') // 전송 성공시 입력창 비우기
+      }
+    }
+  }
   return (
     <form
       className="flex items-center justify-between gap-2 border-t border-gray-200 px-3 pt-[13px] pb-3"
@@ -33,7 +44,7 @@ export default function MessageInput() {
         className={`flex size-8 cursor-pointer items-center justify-center rounded-full bg-gray-300`}
       >
         <Button
-          // type="submit"
+          type="submit"
           icon={SendIcon}
           variant="ghost"
           iconButtonSize="lg"

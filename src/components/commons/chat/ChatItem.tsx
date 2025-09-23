@@ -34,6 +34,8 @@ export default function ChatItem({ openChatRoom, ...data }: ChatItemProps) {
     data.last_message?.created_at,
     'lastMessageAt'
   )
+  console.log(data)
+
   return (
     <div
       className="flex cursor-pointer flex-col gap-1 p-3"
@@ -52,15 +54,24 @@ export default function ChatItem({ openChatRoom, ...data }: ChatItemProps) {
           )}
         </div>
       </div>
-      <div className="flex items-center gap-1">
+
+      {data.last_message ? (
+        <>
+          <div className="flex items-center gap-1">
+            <span className="text-xs text-gray-600">
+              {data.last_message?.sender_nickname}:
+            </span>
+            <p className="line-clamp-1 flex-1 text-xs text-gray-600">
+              {data.last_message?.content}
+            </p>
+          </div>
+          <p className="text-xs text-gray-400">수정일시: {lastMessageAt}</p>
+        </>
+      ) : (
         <span className="text-xs text-gray-600">
-          {data.last_message?.sender_nickname}:
+          (대화가 없습니다. 대화를 시작해보세요.)
         </span>
-        <p className="line-clamp-1 flex-1 text-xs text-gray-600">
-          {data.last_message?.content}
-        </p>
-      </div>
-      <p className="text-xs text-gray-400">수정일시: {lastMessageAt}</p>
+      )}
     </div>
   )
 }
