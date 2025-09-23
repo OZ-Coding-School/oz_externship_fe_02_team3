@@ -1,10 +1,12 @@
 import Icon from '@components/commons/Icon'
 import PageLink from '@components/commons/page-link/PageLink'
 import { Z_INDEX } from '@constants/ui'
+import Button from '@src/components/commons/button/Button'
 import { useOutsideClick } from '@src/hooks/useOutsideClick'
 import { cn } from '@utils/cn'
 import { UserRound as UserRoundIcon, LogOut as LogOutIcon } from 'lucide-react'
 import { useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 interface UserMenuProps {
   isNotificationOpen: boolean
@@ -36,6 +38,11 @@ export default function UserMenu({
     setIsUserMenuOpen(false)
   )
 
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    navigate('/logout')
+  }
   return (
     <div
       ref={userMenuButtonRef}
@@ -59,18 +66,19 @@ export default function UserMenu({
             pageLinkInnerText="마이페이지"
             variant="ghost"
             link="/profile"
-            className="text-sm text-gray-700"
+            className="w-full gap-3 text-sm text-gray-700"
             fontWeight="normal"
             icon={UserRoundIcon}
           />
-          <PageLink
-            pageLinkInnerText="로그아웃"
+          <Button
+            buttonInnerText="로그아웃"
             variant="ghost"
-            link="/logout"
+            onClick={handleLogout}
             iconClassName="rotate-180"
-            className="text-sm text-gray-700"
+            className="w-full justify-start gap-3 text-sm text-gray-700"
             fontWeight="normal"
             icon={LogOutIcon}
+            iconSize="sm"
           />
         </div>
       )}

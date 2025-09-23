@@ -5,8 +5,11 @@ import {
   AlertCircle,
   XCircle,
   Inbox as NoDataIcon,
+  UsersRound as UsersRoundIcon,
+  Megaphone as MegaphoneIcon,
   type LucideIcon,
   Tag,
+  Book as BookIcon,
 } from 'lucide-react'
 
 // 페이지네이션 설정
@@ -230,12 +233,13 @@ export const Z_INDEX = {
   MODAL: 'z-30',
   POPUP: 'z-40',
   TOAST: 'z-50',
+  SIDEBAR: 'z-50',
 } as const
 
 export const NAV_ITEMS = [
-  { to: '/courses', label: '강의목록' },
-  { to: '/study-group', label: '스터디 그룹' },
-  { to: '/recruitment', label: '구인 공고' },
+  { to: '/courses', label: '강의목록', icon: BookIcon },
+  { to: '/study-group', label: '스터디 그룹', icon: UsersRoundIcon },
+  { to: '/recruitment', label: '구인 공고', icon: MegaphoneIcon },
 ]
 
 // 페이지 제목과 설명
