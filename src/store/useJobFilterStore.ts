@@ -13,6 +13,10 @@ interface FilterState {
   setSelectedSort: (sort: string) => void
   resetFilters: () => void
   applyFilters: (jobs: JobPost[]) => JobPost[]
+
+  // 유틸리티 매서드
+  hasActiveFilters: () => boolean
+  getFilteredCount: (totalJobs: JobPost[]) => number
 }
 
 export const useFilterStore = create<FilterState>()(
@@ -32,6 +36,17 @@ export const useFilterStore = create<FilterState>()(
           selectedTag: '전체 태그',
           selectedSort: '최신순',
         }),
+
+      // 활성 필터 확인
+      hasActiveFilters: () => {
+        const { searchTerm, selectedTag } = get()
+        return searchTerm !== '' || selectedTag !== '전체 태그'
+      },
+
+      // 필터링된 결과 개수
+      getFilteredCount: (totalJobs: JobPost[]) => {
+        return get().applyFilters(totalJobs).length
+      },
 
       applyFilters: (jobs: JobPost[]) => {
         const { searchTerm, selectedTag, selectedSort } = get()

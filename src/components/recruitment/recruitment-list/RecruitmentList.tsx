@@ -14,6 +14,9 @@ export default function RecruitmentList() {
   const searchTerm = useFilterStore((state) => state.searchTerm)
   const selectedTag = useFilterStore((state) => state.selectedTag)
   const selectedSort = useFilterStore((state) => state.selectedSort)
+  const hasActiveFilters = useFilterStore((state) => state.hasActiveFilters)
+
+  const isFiltered = hasActiveFilters()
 
   const { data: initialData, isLoading: isInitialLoading } =
     useInitialJobPosts()
@@ -28,9 +31,9 @@ export default function RecruitmentList() {
     initialData: infiniteMode ? initialData : undefined,
   })
 
-  // 필터링된 데이터
-  const filteredJobs = useMemo(() => {
-    const rawJobs: JobPost[] = (
+  // 원본 데이터
+  const rawJobs: JobPost[] = useMemo(() => {
+    return (
       infiniteMode
         ? (infiniteData?.pages.flatMap(
             (page: { items: JobPost[] }) => page.items
@@ -42,7 +45,9 @@ export default function RecruitmentList() {
       ...post,
       image: post.image,
     }))
+  }, [infiniteMode, infiniteData, initialData])
 
+  const filteredJobs = useMemo(() => {
     let filtered = rawJobs
 
     // 제목 검색
@@ -57,7 +62,6 @@ export default function RecruitmentList() {
       filtered = filtered.filter((job) => job.tags.includes(selectedTag))
     }
 
-    // 정렬
     if (selectedSort === '최신순') {
       filtered = [...filtered].sort((a, b) => b.id - a.id)
     } else if (selectedSort === '오래된순') {
@@ -67,18 +71,17 @@ export default function RecruitmentList() {
     }
 
     return filtered
-  }, [
-    infiniteMode,
-    infiniteData,
-    initialData,
-    searchTerm,
-    selectedTag,
-    selectedSort,
-  ])
+  }, [rawJobs, searchTerm, selectedTag, selectedSort])
 
+  // 필터링된 개수 계산
   const totalCount = infiniteMode
     ? infiniteData?.pages[0]?.totalCount
     : initialData?.totalCount
+  const filteredCount = filteredJobs.length
+
+  // 표시할 개수와 텍스트 결정
+  const displayCount = isFiltered ? filteredCount : totalCount || 0
+  const displayText = isFiltered ? '필터링된 공고' : '전체 공고'
 
   const loadMoreRef = useIntersectionObserver({
     enabled: infiniteMode,
@@ -87,7 +90,6 @@ export default function RecruitmentList() {
     onIntersect: fetchNextPage,
     threshold: 1,
   })
-
   if (isInitialLoading) return <p className="text-gray-600">Loading...</p>
 
   const emptyState = (
@@ -111,7 +113,8 @@ export default function RecruitmentList() {
           setInfiniteMode={setInfiniteMode}
           loadMoreRef={loadMoreRef}
           isFetchingNextPage={isFetchingNextPage}
-          totalCount={totalCount}
+          displayText={displayText}
+          displayCount={displayCount}
         />
       )}
     </div>
