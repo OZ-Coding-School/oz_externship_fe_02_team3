@@ -8,7 +8,7 @@ export const buttonClass = cva(
         primary:
           'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700 disabled:bg-primary-500',
         secondary:
-          'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300 disabled:bg-gray-100',
+          'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300 disabled:bg-gray-100',
         outline:
           'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 active:bg-gray-100 disabled:bg-white',
         ghost:
