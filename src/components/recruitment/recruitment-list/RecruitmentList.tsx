@@ -87,7 +87,7 @@ export default function RecruitmentList() {
     }
 
     if (selectedSort === '오래된순') {
-      filtered = [...filtered].sort((a, b) => a.id - b.id)
+      filtered = [...filtered].sort((a, b) => b.id - a.id)
     } else if (selectedSort === '인기순') {
       filtered = [...filtered].sort((a, b) => b.viewCount - a.viewCount)
     }
