@@ -62,9 +62,7 @@ export default function RecruitmentList() {
       filtered = filtered.filter((job) => job.tags.includes(selectedTag))
     }
 
-    if (selectedSort === '최신순') {
-      filtered = [...filtered].sort((a, b) => b.id - a.id)
-    } else if (selectedSort === '오래된순') {
+    if (selectedSort === '오래된순') {
       filtered = [...filtered].sort((a, b) => a.id - b.id)
     } else if (selectedSort === '인기순') {
       filtered = [...filtered].sort((a, b) => b.viewCount - a.viewCount)
