@@ -6,12 +6,10 @@ export const chatList: Chat[] = [
     study_group_name: 'React 실무 프로젝트 스터디',
     last_message: {
       sender_nickname: '김스터디',
-      content:
-        '내일 미팅 시간 변경 가능하신가요?내일 미팅 시간 변경 가능하신가요?내일 미팅 시간 변경 가능하신가요?내일 미팅 시간 변경 가능하신가요?',
-      created_at: '2024-01-15T14:30:00Z',
+      content: `내일 미팅 시간 변경 가능하신가요? 내일 미팅 시간 변경 가능하신가요? 내일 미팅 시간 변경 가능하신가요? 내일 미팅 시간 변경 가능하신가요?`,
+      created_at: '2025-09-24T04:30:00Z',
     },
     unread_count: 2,
-    created_at: '2024-01-10T09:00:00Z',
   },
   {
     study_group_uuid: 'b2c3d4e5-f6a7-8901-bcde-f23456789012',
@@ -19,10 +17,9 @@ export const chatList: Chat[] = [
     last_message: {
       sender_nickname: '이데이터',
       content: '과제 제출했습니다!',
-      created_at: '2024-01-15T13:45:00Z',
+      created_at: '2025-09-23T13:45:00Z',
     },
     unread_count: 1,
-    created_at: '2024-01-08T16:30:00Z',
   },
   {
     study_group_uuid: 'c3d4e5f6-a7b8-9012-cdef-345678901234',
@@ -30,10 +27,9 @@ export const chatList: Chat[] = [
     last_message: {
       sender_nickname: '박클라우드',
       content: '좋은 자료 감사합니다',
-      created_at: '2024-01-15T10:20:00Z',
+      created_at: '2025-09-24T05:50:00Z',
     },
     unread_count: 0,
-    created_at: '2024-01-12T11:15:00Z',
   },
   {
     study_group_uuid: 'd4e5f6a7-b8c9-0123-defa-456789012345',
@@ -41,17 +37,15 @@ export const chatList: Chat[] = [
     last_message: {
       sender_nickname: '최서버',
       content: '다들 수고하셨습니다!',
-      created_at: '2024-01-14T18:00:00Z',
+      created_at: '2025-09-24T06:10:00Z',
     },
     unread_count: 0,
-    created_at: '2024-01-05T14:45:00Z',
   },
   {
     study_group_uuid: 'e5f6a7b8-c9d0-1234-efab-567890123456',
     study_group_name: '알고리즘 스터디',
     last_message: null,
     unread_count: 0,
-    created_at: '2024-01-13T20:00:00Z',
   },
 ]
 

@@ -8,7 +8,6 @@ export interface Chat {
   } | null
 
   unread_count: number
-  created_at: string
 }
 
 export interface MessagesResponse {
