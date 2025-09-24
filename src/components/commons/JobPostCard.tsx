@@ -43,7 +43,7 @@ export default function JobPostCard({
 
   return (
     <Link to={`${ROUTES.RECRUITMENT_ID(id)}`}>
-      <div className="flex h-full gap-4 rounded-lg border border-solid border-gray-200 bg-white p-[25px]">
+      <div className="hover:bg-primary-50/60 flex h-full gap-4 rounded-lg border border-solid border-gray-200 bg-white p-[25px] transition-colors duration-300">
         <img
           src={image || 'https://placehold.co/320x240/e5e7eb/e5e7eb.png'}
           alt={title}
