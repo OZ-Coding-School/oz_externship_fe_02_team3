@@ -9,7 +9,7 @@ export default function RecruitmentHeader({
   isAuthenticated,
 }: AuthBasedRecruitmentProps) {
   return (
-    <div className="flex w-[1216px] items-center justify-between">
+    <div className="mx-auto flex w-full max-w-[1216px] items-center justify-between">
       <div>
         <h2 className="pb-2 text-3xl font-bold">스터디 구인 공고</h2>
         <p className="text-gray-600">

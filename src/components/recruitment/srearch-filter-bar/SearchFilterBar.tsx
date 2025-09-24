@@ -12,7 +12,7 @@ export default function SearchFilterBar() {
   } = useFilterStore()
 
   return (
-    <div className="w-[1216px] rounded-lg border border-gray-200 bg-white p-6">
+    <div className="mx-auto w-full max-w-[1216px] rounded-lg border border-gray-200 bg-white p-6">
       <SearchBar
         onSearch={setSearchTerm}
         placeholder="공고 제목으로 검색..."
