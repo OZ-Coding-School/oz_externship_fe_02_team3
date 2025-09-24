@@ -61,7 +61,7 @@ export default function RecruitmentBanner() {
     <div className="w-full rounded-xl border border-gray-200 bg-white p-8">
       <div className="flex items-start justify-between pb-6">
         <div className="flex flex-col gap-4">
-          <h2 className="text-3xl font-bold">{post.title}</h2>
+          <h2 className="line-clamp-1 text-3xl font-bold">{post.title}</h2>
           <BannerInfoList items={jobInfo} />
           <BannerTags tags={post.tags} />
         </div>

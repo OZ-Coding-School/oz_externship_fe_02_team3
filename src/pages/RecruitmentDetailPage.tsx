@@ -7,7 +7,7 @@ import RecuitmentLecture from '@src/components/recruitment-detail/recuitment-lec
 export default function RecruitmentDetailPage() {
   return (
     <div className="flex flex-col items-center">
-      <div className="w-[896px] p-8">
+      <div className="max-w-[896px] p-8 sm:px-16">
         <div className="w-full pb-6">
           <BackButton />
         </div>
