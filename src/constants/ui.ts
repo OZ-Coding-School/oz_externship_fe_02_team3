@@ -267,3 +267,10 @@ export const STATS_TEXT = {
   FILTERED_PREFIX: '전체',
   FILTERED_SUFFIX: '중 필터링됨',
 } as const
+
+export const SCROLLBAR_STYLES =
+  '[&::-webkit-scrollbar]:h-1 ' +
+  '[&::-webkit-scrollbar-track]:bg-transparent ' +
+  '[&::-webkit-scrollbar-thumb]:bg-primary-300 ' +
+  '[&::-webkit-scrollbar-thumb]:rounded-full ' +
+  '[&::-webkit-scrollbar-thumb:hover]:bg-primary-600'
