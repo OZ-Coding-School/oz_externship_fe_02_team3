@@ -4,12 +4,13 @@ import Icon from '@src/components/commons/Icon'
 import type { LucideIcon } from 'lucide-react'
 import type { LinkHTMLAttributes } from 'react'
 import { cn } from '@utils/cn'
+type SvgComponent = React.FC<React.SVGProps<SVGSVGElement>>
 
 interface PageLinkProps
   extends LinkHTMLAttributes<HTMLAnchorElement>,
     PageLinkClassProps {
-  pageLinkInnerText: string
-  icon?: LucideIcon
+  pageLinkInnerText?: string
+  icon?: LucideIcon | SvgComponent
   iconClassName?: string
   iconSize?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   iconButtonSize?: 'sm' | 'md' | 'lg' | 'xl'
