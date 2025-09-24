@@ -30,10 +30,10 @@ const formatDate = (dateString: string | undefined, id: string) => {
 
 export default function ChatItem({ openChatRoom, ...data }: ChatItemProps) {
   const createdAt = formatDate(data.created_at, 'createdAt')
-  const lastMessageAt = formatDate(
-    data.last_message?.created_at,
-    'lastMessageAt'
-  )
+  // const lastMessageAt = formatDate(
+  //   data.last_message?.created_at,
+  //   'lastMessageAt'
+  // )
   console.log(data)
 
   return (
@@ -65,7 +65,7 @@ export default function ChatItem({ openChatRoom, ...data }: ChatItemProps) {
               {data.last_message?.content}
             </p>
           </div>
-          <p className="text-xs text-gray-400">수정일시: {lastMessageAt}</p>
+          {/* <p className="text-xs text-gray-400">수정일시: {lastMessageAt}</p> */}
         </>
       ) : (
         <span className="text-xs text-gray-600">

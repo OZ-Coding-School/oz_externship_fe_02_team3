@@ -33,7 +33,7 @@ export default function RecManageList() {
         내 공고 목록 (4)
       </p>
 
-      <ul className="space-y-4">
+      <ul className="flex w-[1216px] flex-col gap-2">
         {items.map((item, i) => (
           <li key={i} className="rounded-lg bg-white">
             <JobPostCard {...item} />
