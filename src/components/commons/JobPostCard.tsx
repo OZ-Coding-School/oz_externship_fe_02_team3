@@ -120,7 +120,7 @@ export default function JobPostCard({
           </div>
 
           {/* 강의 태그 */}
-          <div className="grid grid-cols-2">
+          <div className="flex items-center justify-between">
             <div className="flex flex-wrap gap-2">
               {tags.map((tag, tagIndex) => (
                 <Badge
