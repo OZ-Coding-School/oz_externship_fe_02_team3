@@ -272,5 +272,4 @@ export const SCROLLBAR_STYLES =
   '[&::-webkit-scrollbar]:h-1 ' +
   '[&::-webkit-scrollbar-track]:bg-transparent ' +
   '[&::-webkit-scrollbar-thumb]:bg-primary-300 ' +
-  '[&::-webkit-scrollbar-thumb]:rounded-full ' +
-  '[&::-webkit-scrollbar-thumb:hover]:bg-primary-600'
+  '[&::-webkit-scrollbar-thumb]:rounded-full '
