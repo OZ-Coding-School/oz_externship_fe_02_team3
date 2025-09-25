@@ -28,6 +28,7 @@ interface CoursesPageProps {
 export default function CoursesPage({ className }: CoursesPageProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
+  const toggleAuth = () => setIsAuthenticated((prev) => !prev)
   const { courses, loading, error, refetch } = useCourses()
   const {
     filteredCourses,
@@ -103,41 +104,47 @@ export default function CoursesPage({ className }: CoursesPageProps) {
 
   // 메인 렌더링
   return (
-    <div className={cn('min-h-screen bg-gray-50', className)}>
-      <header className="border-b border-gray-200 bg-white px-6 py-6">
-        <div className="mx-auto max-w-7xl">
-          <h1 className="mb-2 text-2xl font-bold text-gray-900">
+    <div
+      className={cn(
+        'flex w-full flex-col items-center justify-center gap-8',
+        className
+      )}
+    >
+      <button
+        onClick={toggleAuth}
+        className="mb-6 rounded-lg bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
+      >
+        {isAuthenticated ? '로그아웃 상태로 전환' : '로그인 상태로 전환'}
+      </button>
+
+      <div className="w-full pt-6">
+        <div className="mx-auto max-w-7xl px-8">
+          <h2 className="pb-2 text-3xl font-bold text-gray-900">
             {PAGE_TITLES.COURSES}
-          </h1>
+          </h2>
           <p className="text-gray-600">{PAGE_DESCRIPTIONS.COURSES}</p>
         </div>
-      </header>
+      </div>
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        {/* 임시 토글 버튼 (개발용) */}
-        <div className="mb-6 flex justify-center">
-          <button
-            onClick={() => setIsAuthenticated((prev) => !prev)}
-            className="rounded-lg bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
-          >
-            {isAuthenticated ? '로그아웃 상태로 전환' : '로그인 상태로 전환'}
-          </button>
+      <UserCourseSection isAuthenticated={isAuthenticated} />
+
+      <section className="mx-auto max-w-7xl px-6 py-8">
+        <div className="rounded-lg border border-gray-200 p-6">
+          <SearchFilter
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+            selectedSort={sortBy}
+            onSortChange={setSortBy}
+            categories={CATEGORY_LIST}
+            sortOptions={SORT_LABELS}
+            appliedFiltersCount={appliedFiltersCount}
+            onResetFilters={resetFilters}
+            classname="mb-0"
+            inputClassName="bg-white"
+          />
         </div>
-
-        <UserCourseSection isAuthenticated={isAuthenticated} />
-
-        <SearchFilter
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-          selectedSort={sortBy}
-          onSortChange={setSortBy}
-          categories={CATEGORY_LIST}
-          sortOptions={SORT_LABELS}
-          appliedFiltersCount={appliedFiltersCount}
-          onResetFilters={resetFilters}
-        />
 
         {/* 강의 목록 섹션 */}
         <section>
@@ -171,7 +178,7 @@ export default function CoursesPage({ className }: CoursesPageProps) {
             />
           )}
         </section>
-      </main>
+      </section>
     </div>
   )
 }

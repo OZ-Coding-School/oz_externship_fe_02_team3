@@ -40,7 +40,7 @@ export default function RecommendedSection({
             className={`${CARD.TRANSITION} ${CARD.HOVER_SCALE}`}
             style={{ minHeight: `${CARD.MIN_HEIGHT}px` }}
           >
-            <CourseCardWithBookmark
+            {/* <CourseCardWithBookmark
               cardTitle={
                 course.title.length > LIST_SETTINGS.MAX_TITLE_LENGTH
                   ? `${course.title.substring(0, LIST_SETTINGS.MAX_TITLE_LENGTH)}...`
@@ -59,7 +59,7 @@ export default function RecommendedSection({
               price={course.price ?? 0}
               courseId={course.id}
               onBookmarkClick={onBookmark}
-            />
+            /> */}
           </div>
         ))}
       </div>

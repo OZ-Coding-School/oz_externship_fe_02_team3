@@ -6,6 +6,7 @@ interface SearchInputProps {
   onSearchChange: (query: string) => void
   placeholder?: string
   className?: string
+  inputClassName?: string
 }
 
 export function SearchInput({
@@ -13,13 +14,17 @@ export function SearchInput({
   onSearchChange,
   placeholder = '강의를 검색해보세요...',
   className,
+  inputClassName,
 }: SearchInputProps) {
   return (
     <div className={cn('relative', className)}>
       <input
         type="text"
         placeholder={placeholder}
-        className="focus:border-primary-500 focus:ring-primary-500 h-[38px] w-full cursor-text rounded-lg border border-gray-300 pr-10 pl-4 text-sm transition-colors focus:ring-2 focus:outline-none"
+        className={cn(
+          'focus:border-primary-500 focus:ring-primary-500 h-[38px] w-full cursor-text rounded-lg border border-gray-300 pr-10 pl-4 text-sm transition-colors focus:ring-2 focus:outline-none',
+          inputClassName
+        )}
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
       />

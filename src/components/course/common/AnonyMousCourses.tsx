@@ -6,9 +6,12 @@ import {
   UserPlus as UserPlusIcon,
 } from 'lucide-react'
 
-export default function AnonymousCourses() {
+interface AnonymousCoursesProps {
+  userStyle: string
+}
+export default function AnonymousCourses({ userStyle }: AnonymousCoursesProps) {
   return (
-    <div className="flex w-full flex-col items-center">
+    <div className={`${userStyle} max-w-[1216px]`}>
       <div className="bg-primary-100 mb-3 flex h-16 w-16 items-center justify-center rounded-full">
         <BookOpenIcon className="text-primary-600 h-6 w-6" />
       </div>

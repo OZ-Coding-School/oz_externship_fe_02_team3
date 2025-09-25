@@ -9,14 +9,11 @@ interface UserCourseSectionProps {
 export default function UserCourseSection({
   isAuthenticated,
 }: UserCourseSectionProps) {
-  return (
-    <div className="from-primary-50 border-primary-200 mb-12 inline-block w-full rounded-lg border bg-gradient-to-r to-[#FFF7ED] p-8">
-      <div className={cn(!isAuthenticated && 'hidden')}>
-        <LoggedInCourses />
-      </div>
-      <div className={cn(isAuthenticated && 'hidden')}>
-        <AnonymousCourses />
-      </div>
-    </div>
+  const userStyle =
+    'from-primary-50 border-primary-200 mx-auto inline-block w-full rounded-lg border bg-gradient-to-r to-[#FFF7ED] p-8'
+  return isAuthenticated ? (
+    <LoggedInCourses userStyle={userStyle} />
+  ) : (
+    <AnonymousCourses userStyle={userStyle} />
   )
 }
