@@ -1,62 +1,101 @@
 import JobPostCard from '@components/commons/JobPostCard'
-import { jobPosts } from '@mock/jobPosts'
 import { EmptyState } from '@src/components/commons/EmptyState'
 import { EMPTY_MESSAGES } from '@src/constants/ui'
-import { useState } from 'react'
-import ManageApplicantsModal from './ManageApplicantsModal'
-import { dummyApplicants } from '@src/mock/applicants'
+import { useEffect, useRef } from 'react'
+import type { RecruitmentMeItem } from '@src/api/recManage'
 
-type CardProps = Parameters<typeof JobPostCard>[0]
+interface Props {
+  items: RecruitmentMeItem[]
+  loading: boolean
+  hasNextPage: boolean
+  isFetchingNextPage: boolean
+  onLoadMore: () => void
+  totalCount: number
+}
 
-export default function RecManageList() {
-  const [open, setOpen] = useState(false)
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null)
+const PLACEHOLDER = 'https://placehold.co/128x96'
 
-  const handleOpenApplicants = (postId: number) => {
-    setSelectedPostId(postId)
-    setOpen(true)
-  }
+export default function RecManageList({
+  items,
+  loading,
+  hasNextPage,
+  isFetchingNextPage,
+  onLoadMore,
+  totalCount,
+}: Props) {
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
 
-  const items: CardProps[] = jobPosts.map((post) => ({
+  useEffect(() => {
+    if (!sentinelRef.current) return
+    const el = sentinelRef.current
+    const io = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0]
+        if (first.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          onLoadMore()
+        }
+      },
+      { rootMargin: '200px 0px' }
+    )
+    io.observe(el)
+    return () => io.unobserve(el)
+  }, [hasNextPage, isFetchingNextPage, onLoadMore])
+
+  const cards = items.map((it) => ({
     post: {
-      ...post,
-      image: post.image,
+      id: it.id,
+      title: it.title,
+      viewCount: it.views_count,
+      commentCount: 0,
+      memberLimit: it.expected_headcount,
+      deadline: new Date(it.close_at).toLocaleDateString('ko-KR'),
+      courses: it.lectures.map((l) => `${l.title} - ${l.instructor}`),
+      tags: it.tags,
+      image: it.img ?? PLACEHOLDER,
     },
-    editTo: `/recruitment/${post.id}/edit`,
+    editTo: `/recruitment/${it.id}/edit`,
     applyLabel: '지원 내역',
-    onClickApply: () => handleOpenApplicants(post.id),
+    onClickApply: () => {},
   }))
+
+  const isEmpty = !loading && items.length === 0
 
   return (
     <section>
       <p className="mb-6 text-[20px] leading-7 font-semibold">
-        내 공고 목록 (4)
+        내 공고 목록 ({totalCount})
       </p>
 
       <ul className="flex flex-col gap-2">
-        {items.map((item, i) => (
+        {cards.map((item, i) => (
           <li key={i} className="rounded-lg bg-white">
             <JobPostCard {...item} />
           </li>
         ))}
-        {/* 데이터가 없을 때의 상태 */}
-        <EmptyState
-          title={EMPTY_MESSAGES.NoData}
-          description="새로운 공고가 등록되면 이곳에 표시됩니다."
-          iconType="NoData"
-          iconClassName="stroke-primary-500 w-8 h-8"
-          iconContainerClassName="bg-primary-50 rounded-full w-20 h-20 flex items-center justify-center"
-        />
+
+        {isEmpty && (
+          <EmptyState
+            title={EMPTY_MESSAGES.NoData}
+            description="새로운 공고가 등록되면 이곳에 표시됩니다."
+            iconType="NoData"
+            iconClassName="stroke-primary-500 w-8 h-8"
+            iconContainerClassName="bg-primary-50 rounded-full w-20 h-20 flex items-center justify-center"
+          />
+        )}
       </ul>
-      {selectedPostId !== null && (
-        <ManageApplicantsModal
-          open={open}
-          onClose={() => setOpen(false)}
-          title={
-            jobPosts.find((p) => p.id === selectedPostId)?.title ?? '공고 제목'
-          }
-          applicants={dummyApplicants} // 목데이터 or API 호출 결과
-        />
+
+      <div ref={sentinelRef} />
+
+      {(loading || isFetchingNextPage) && (
+        <div className="py-6 text-center text-sm text-gray-500">
+          불러오는 중…
+        </div>
+      )}
+
+      {!hasNextPage && items.length > 0 && (
+        <div className="py-6 text-center text-sm text-gray-400">
+          마지막 페이지
+        </div>
       )}
     </section>
   )
