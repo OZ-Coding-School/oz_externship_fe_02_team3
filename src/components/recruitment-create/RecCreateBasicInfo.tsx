@@ -30,10 +30,18 @@ const formatPrice = (n: number) => new Intl.NumberFormat('ko-KR').format(n)
 
 interface RecCreateBasicInfoProps {
   onGroupChange?: (name: string | undefined) => void
+  onTitleChange?: (v: string) => void
+  onStudyGroupIdChange?: (id: number | null) => void
+  onDeadlineChange?: (d: Date | null) => void
+  onExpectedHeadcountChange?: (n: number | null) => void
 }
 
 export default function RecCreateBasicInfo({
   onGroupChange,
+  onTitleChange,
+  onStudyGroupIdChange,
+  onDeadlineChange,
+  onExpectedHeadcountChange,
 }: RecCreateBasicInfoProps) {
   const [selectedGroup, setSelectedGroup] = useState<string>()
   const [selectedCapacity, setSelectedCapacity] = useState<string>()
@@ -65,6 +73,7 @@ export default function RecCreateBasicInfo({
         className="h-[50px] w-full rounded-lg border border-gray-300 px-4 text-gray-900 placeholder:text-gray-400 focus:outline-none"
         aria-label="공고 제목 input"
         placeholder="예: React 스터디 함께하실 분을 찾습니다!"
+        onChange={(e) => onTitleChange?.(e.target.value)}
       />
 
       {/* 대상 스터디 그룹 field*/}
@@ -81,6 +90,8 @@ export default function RecCreateBasicInfo({
         onSelect={(name) => {
           setSelectedGroup(name)
           onGroupChange?.(name)
+          const id = Number(String(name).replace(/[^0-9]/g, ''))
+          onStudyGroupIdChange?.(Number.isFinite(id) ? id : null)
         }}
         placeholder="스터디 그룹을 선택해주세요"
       />
@@ -130,7 +141,10 @@ export default function RecCreateBasicInfo({
           </label>
           <Calendar
             value={deadLine}
-            onChange={setDeadLine}
+            onChange={(d) => {
+              setDeadLine(d)
+              onDeadlineChange?.(d)
+            }}
             fullWidth
             placeholder="-/-/-"
           />
@@ -148,7 +162,11 @@ export default function RecCreateBasicInfo({
           <DropDown
             selected={selectedCapacity}
             options={capacityGroup}
-            onSelect={setSelectedCapacity}
+            onSelect={(name) => {
+              setSelectedCapacity(name)
+              const n = Number(String(name).replace(/[^0-9]/g, ''))
+              onExpectedHeadcountChange?.(Number.isFinite(n) ? n : null)
+            }}
             placeholder="1명"
           />
         </div>
