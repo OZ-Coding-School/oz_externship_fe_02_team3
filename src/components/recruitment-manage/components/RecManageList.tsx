@@ -3,6 +3,7 @@ import { EmptyState } from '@src/components/commons/EmptyState'
 import { EMPTY_MESSAGES } from '@src/constants/ui'
 import { useEffect, useRef } from 'react'
 import type { RecruitmentMeItem } from '@src/api/recManage'
+import MobileJobPostCard from './MobileJobPostCard'
 
 interface Props {
   items: RecruitmentMeItem[]
@@ -47,6 +48,7 @@ export default function RecManageList({
       title: it.title,
       viewCount: it.views_count,
       commentCount: 0,
+      bookmarkCount: it.bookmarks_count ?? 0,
       memberLimit: it.expected_headcount,
       deadline: new Date(it.close_at).toLocaleDateString('ko-KR'),
       courses: it.lectures.map((l) => `${l.title} - ${l.instructor}`),
@@ -68,8 +70,13 @@ export default function RecManageList({
 
       <ul className="flex flex-col gap-2">
         {cards.map((item, i) => (
-          <li key={i} className="rounded-lg bg-white">
-            <JobPostCard {...item} />
+          <li key={i}>
+            <div className="sm:hidden">
+              <MobileJobPostCard {...item} />
+            </div>
+            <div className="hidden rounded-lg bg-white sm:block">
+              <JobPostCard {...item} />
+            </div>
           </li>
         ))}
 
