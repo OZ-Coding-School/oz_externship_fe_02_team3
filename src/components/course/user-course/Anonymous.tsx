@@ -6,12 +6,12 @@ import {
   UserPlus as UserPlusIcon,
 } from 'lucide-react'
 
-interface AnonymousCoursesProps {
+interface AnonymousProps {
   userStyle: string
 }
-export default function AnonymousCourses({ userStyle }: AnonymousCoursesProps) {
+export default function Anonymous({ userStyle }: AnonymousProps) {
   return (
-    <div className={`${userStyle} max-w-[1216px]`}>
+    <div className={`${userStyle} flex max-w-[1216px] flex-col items-center`}>
       <div className="bg-primary-100 mb-3 flex h-16 w-16 items-center justify-center rounded-full">
         <BookOpenIcon className="text-primary-600 h-6 w-6" />
       </div>
@@ -45,7 +45,7 @@ export default function AnonymousCourses({ userStyle }: AnonymousCoursesProps) {
         <div className="flex gap-4">
           {/* 기본 플레이스홀더 카드들을 항상 표시 */}
           {Array.from({ length: 3 }).map((_, index) => (
-            <CoursePreviewCard key={index} />
+            <CourseSkeleton key={index} />
           ))}
         </div>
       </div>
@@ -54,21 +54,23 @@ export default function AnonymousCourses({ userStyle }: AnonymousCoursesProps) {
 }
 
 // 강의 미리보기 카드
-function CoursePreviewCard() {
+function CourseSkeleton() {
   return (
-    <div className="relative w-[370px] rounded border border-gray-200 bg-white p-4">
+    <div className="relative w-[370px] rounded-lg border border-gray-200 bg-white p-4">
       {/* 썸네일 영역 */}
       <div className="mb-3 h-24 w-full rounded bg-gray-100"></div>
 
       {/* 플랫폼 배지 */}
-      <div className="mb-2 h-5 w-16 rounded bg-gray-100"></div>
+      <div className="mb-2 h-5 w-8 rounded bg-gray-100"></div>
 
       {/* 제목 */}
-      <div className="mb-2 h-4 w-full rounded bg-gray-100"></div>
-      <div className="mb-2 h-4 w-3/4 rounded bg-gray-100"></div>
+      <div className="mb-2 h-4 w-40 rounded bg-gray-100"></div>
 
       {/* 강사명 */}
       <div className="mb-3 h-3 w-20 rounded bg-gray-100"></div>
+
+      {/* 설명 */}
+      <div className="mb-2 h-4 w-full rounded bg-gray-100"></div>
 
       {/* 평점 */}
       <div className="mb-3 flex gap-2">
@@ -77,13 +79,17 @@ function CoursePreviewCard() {
       </div>
 
       {/* 가격 */}
-      <div className="flex gap-2">
+      <div className="mb-3 flex gap-2">
+        <div className="h-3 w-16 rounded bg-gray-100"></div>
+      </div>
+
+      <div className="flex justify-between">
         <div className="h-4 w-20 rounded bg-gray-100"></div>
         <div className="h-4 w-16 rounded bg-gray-100"></div>
       </div>
 
       {/* 추천 별표 */}
-      <div className="bg-primary-300 absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full text-sm text-white">
+      <div className="bg-primary-300 absolute -top-2 -right-1 flex h-6 w-6 items-center justify-center rounded-full text-sm text-white">
         ★
       </div>
     </div>
