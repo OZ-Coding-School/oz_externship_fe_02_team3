@@ -36,7 +36,7 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
   useEffect(() => {
     const studyGroupUuid = searchParams.get('study_group_uuid')
     if (studyGroupUuid) {
-      setIsOpen(true) // 채팅창을 열어줌
+      setIsOpen(true)
     }
   }, [searchParams])
 

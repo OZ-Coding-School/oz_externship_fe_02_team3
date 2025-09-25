@@ -4,7 +4,7 @@ import { FileText as FileTextIcon, Plus as PlusIcon } from 'lucide-react'
 
 export default function LoggedIn() {
   return (
-    <div className="flex gap-3">
+    <div className="flex flex-col items-end gap-3 lg:flex-row">
       <PageLink
         pageLinkInnerText="공고 관리"
         icon={FileTextIcon}

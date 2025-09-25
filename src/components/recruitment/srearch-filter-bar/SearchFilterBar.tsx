@@ -1,20 +1,29 @@
 import { SearchBar } from '../../commons/SearchBar'
 import FilterSection from './FilterSection'
+import { useFilterStore } from '@src/store/useJobFilterStore'
 
 export default function SearchFilterBar() {
-  const handleSearch = (keyword: string) => {
-    void keyword
-    // TODO: 실제 검색 로직 구현
-  }
+  const {
+    selectedTag,
+    selectedSort,
+    setSearchTerm,
+    setSelectedTag,
+    setSelectedSort,
+  } = useFilterStore()
 
   return (
-    <div className="w-[1216px] rounded-lg border border-gray-200 bg-white p-6">
+    <div className="mx-auto w-full max-w-[1216px] rounded-lg border border-gray-200 bg-white p-6">
       <SearchBar
-        onSearch={handleSearch}
+        onSearch={setSearchTerm}
         placeholder="공고 제목으로 검색..."
         delay={300}
       />
-      <FilterSection />
+      <FilterSection
+        selectedTag={selectedTag}
+        selectedSort={selectedSort}
+        onTagChange={setSelectedTag}
+        onSortChange={setSelectedSort}
+      />
     </div>
   )
 }

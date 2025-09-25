@@ -83,5 +83,20 @@ export function useMdCommands(onChange: (v: string) => void) {
   const toggleUl = () => toggleLinePrefix('- ', /^-\s+/)
   const toggleOl = () => toggleLinePrefix('1. ', /^\d+\.\s+/)
 
-  return { taRef, wrapInline, insertLink, toggleH1, toggleUl, toggleOl }
+  const insertImage = (url: string, alt = 'image') =>
+    withTA((ta) => {
+      const { selectionStart: s, selectionEnd: e } = ta
+      const md = `![${alt}](${url})`
+      ta.setRangeText(md, s, e, 'end')
+    })
+
+  return {
+    taRef,
+    wrapInline,
+    insertLink,
+    toggleH1,
+    toggleUl,
+    toggleOl,
+    insertImage,
+  }
 }

@@ -8,13 +8,15 @@ export const buttonClass = cva(
         primary:
           'bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700 disabled:bg-primary-500',
         secondary:
-          'bg-gray-100 text-gray-900 hover:bg-gray-200 active:bg-gray-300 disabled:bg-gray-100',
+          'bg-gray-100 text-gray-700 hover:bg-gray-200 active:bg-gray-300 disabled:bg-gray-100',
         outline:
           'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 active:bg-gray-100 disabled:bg-white',
         ghost:
           'bg-transparent text-gray-700 hover:bg-gray-100 active:bg-gray-200 disabled:bg-transparent',
         danger:
           'bg-danger-500 text-white hover:bg-danger-600 active:bg-danger-800 disabled:bg-danger-500',
+        success:
+          'bg-success-500 text-white hover:bg-success-600 active:bg-success-800 disabled:bg-success-500',
       },
       size: {
         sm: 'px-3 py-2 text-sm rounded-md',

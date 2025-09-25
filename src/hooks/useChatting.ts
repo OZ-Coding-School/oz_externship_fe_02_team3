@@ -1,4 +1,4 @@
-// src/hooks/useNotifications.ts
+// src/hooks/useChatting.ts
 import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import type { Chat, MessagesResponse } from '@src/types/chat'

@@ -1,20 +1,25 @@
 import { NAV_ITEMS } from '@src/constants/ui'
 import { Link } from 'react-router-dom'
 import HeaderUserSection from './user-section/HeaderUserSection'
-
+import { useMediaQuery } from '@src/hooks/useMediaQuery'
 export default function Navigation() {
+  const isDesktop = useMediaQuery('(min-width: 840px)')
   return (
-    <nav className="flex items-center gap-8">
-      {NAV_ITEMS.map((item) => (
-        <Link
-          key={item.to}
-          to={item.to}
-          className="flex items-center text-base text-gray-700"
-        >
-          {item.label}
-        </Link>
-      ))}
+    <div className="flex items-center gap-8">
+      {isDesktop && (
+        <nav className="flex items-center gap-8">
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="flex items-center text-base text-gray-700"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      )}
       <HeaderUserSection />
-    </nav>
+    </div>
   )
 }

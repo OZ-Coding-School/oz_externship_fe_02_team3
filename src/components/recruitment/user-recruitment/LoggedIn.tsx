@@ -1,11 +1,19 @@
 import JobPostCard from '@components/commons/JobPostCard'
 import { RecruitmentJobPosts } from '@mock/jobPosts'
+import { SCROLLBAR_STYLES } from '@src/constants/ui'
+import { useHorizontalScroll } from '@src/hooks/useHorizontalScroll'
+import { cn } from '@src/utils/cn'
 
-export default function LoggedIn() {
+interface LoggedInProps {
+  userStyle: string
+}
+
+export default function LoggedIn({ userStyle }: LoggedInProps) {
+  const { ref } = useHorizontalScroll()
   const userName = '김스터디' // 임시
 
   return (
-    <div className="w-[1216px]">
+    <div className={`max-w-[1306px] ${userStyle}`}>
       <div className="mb-6 flex items-center">
         <div className="mr-6 text-xl font-semibold">
           <span className="text-primary-600">{userName} </span>
@@ -15,15 +23,25 @@ export default function LoggedIn() {
           개인화 추천
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-6">
-        {RecruitmentJobPosts.map((post) => (
-          <div key={post.id} className="relative">
-            <JobPostCard post={post} />
-            <div className="bg-primary-500 absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full text-sm text-white">
-              ★
+      <div
+        ref={ref}
+        className={cn(
+          'overflow-x-auto overflow-y-hidden pt-2 pb-4',
+          SCROLLBAR_STYLES
+        )}
+      >
+        <div className="flex gap-6">
+          {RecruitmentJobPosts.map((post) => (
+            <div key={post.id} className="relative">
+              <div className="h-full w-[394px]">
+                <JobPostCard post={post} />
+              </div>
+              <div className="bg-primary-500 absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full text-sm text-white">
+                ★
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   )

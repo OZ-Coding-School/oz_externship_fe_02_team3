@@ -3,37 +3,49 @@ import type { Chat } from '@src/types/chat'
 interface ChatItemProps extends Chat {
   openChatRoom: (chatData: Chat) => void
 }
-const formatDate = (dateString: string | undefined, id: string) => {
+
+const formatDate = (dateString: string | undefined) => {
   if (!dateString) return ''
 
   const serverDate = new Date(dateString)
+  const now = new Date()
 
-  // 공통으로 사용할 값들
-  const year = serverDate.getFullYear()
-  const month = String(serverDate.getMonth() + 1).padStart(2, '0')
-  const monthNoZero = String(serverDate.getMonth() + 1)
-  const day = String(serverDate.getDate()).padStart(2, '0')
-  const dayNoZero = String(serverDate.getDate() + 1)
-  const hours = String(serverDate.getHours()).padStart(2, '0')
-  const minutes = String(serverDate.getMinutes()).padStart(2, '0')
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
+  )
+  const startOfYesterday = new Date(startOfToday)
+  startOfYesterday.setDate(startOfYesterday.getDate() - 1)
 
-  // id에 따라 다른 형식 반환
-  if (id === 'createdAt') {
-    return `${monthNoZero}월 ${dayNoZero}일` // 월-일만
-  } else if (id === 'lastMessageAt') {
-    return `${year}-${month}-${day} ${hours}:${minutes}` // 전체 날짜시간
+  const diffMs = now.getTime() - serverDate.getTime() // 밀리초 차이
+  const hours = Math.floor(diffMs / (60 * 60 * 1000))
+  const minutes = Math.floor(diffMs / 60000)
+
+  if (serverDate >= startOfYesterday && serverDate < startOfToday) {
+    return '어제'
+  } else if (minutes < 1) {
+    return '방금 전'
+  } else if (minutes < 60) {
+    return `${minutes}분 전`
+  } else if (hours < 24) {
+    return `${hours}시간 전`
+  } else {
+    return serverDate.toLocaleDateString('ko-KR', {
+      month: 'long',
+      day: 'numeric',
+    })
   }
-
-  // 기본값 (필요시)
-  return `${year}-${month}-${day} ${hours}:${minutes}`
 }
 
 export default function ChatItem({ openChatRoom, ...data }: ChatItemProps) {
-  const createdAt = formatDate(data.created_at, 'createdAt')
-  const lastMessageAt = formatDate(
-    data.last_message?.created_at,
-    'lastMessageAt'
-  )
+  const createdAt = formatDate(data.last_message?.created_at)
+  // const lastMessageAt = formatDate(
+  //   data.last_message?.created_at,
+  //   'lastMessageAt'
+  // )
+  console.log(data)
+
   return (
     <div
       className="flex cursor-pointer flex-col gap-1 p-3"
@@ -52,15 +64,24 @@ export default function ChatItem({ openChatRoom, ...data }: ChatItemProps) {
           )}
         </div>
       </div>
-      <div className="flex items-center gap-1">
+
+      {data.last_message ? (
+        <>
+          <div className="flex items-center gap-1">
+            <span className="text-xs text-gray-600">
+              {data.last_message?.sender_nickname}:
+            </span>
+            <p className="line-clamp-1 max-w-50 flex-1 text-xs text-gray-600">
+              {data.last_message?.content}
+            </p>
+          </div>
+          {/* <p className="text-xs text-gray-400">수정일시: {lastMessageAt}</p> */}
+        </>
+      ) : (
         <span className="text-xs text-gray-600">
-          {data.last_message?.sender_nickname}:
+          (대화가 없습니다. 대화를 시작해보세요.)
         </span>
-        <p className="line-clamp-1 flex-1 text-xs text-gray-600">
-          {data.last_message?.content}
-        </p>
-      </div>
-      <p className="text-xs text-gray-400">수정일시: {lastMessageAt}</p>
+      )}
     </div>
   )
 }
