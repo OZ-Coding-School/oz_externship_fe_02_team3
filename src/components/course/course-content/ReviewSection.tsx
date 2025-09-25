@@ -1,4 +1,4 @@
-import StarRating from '../ui/StarRating'
+import StarRating from './StarRating'
 import type { Review } from '@src/mock/reviewData'
 
 interface ReviewItemProps {
