@@ -8,9 +8,11 @@ interface AuthBasedRecruitmentProps {
 export default function AuthBasedRecruitment({
   isAuthenticated,
 }: AuthBasedRecruitmentProps) {
-  return (
-    <div className="from-primary-50 border-primary-200 inline-block rounded-lg border bg-gradient-to-r to-[#FFF7ED] p-8">
-      {isAuthenticated ? <LoggedIn /> : <Anonymous />}
-    </div>
+  const userStyle =
+    'from-primary-50 border-primary-200 mx-auto inline-block w-full rounded-lg border bg-gradient-to-r to-[#FFF7ED] p-8'
+  return isAuthenticated ? (
+    <LoggedIn userStyle={userStyle} />
+  ) : (
+    <Anonymous userStyle={userStyle} />
   )
 }

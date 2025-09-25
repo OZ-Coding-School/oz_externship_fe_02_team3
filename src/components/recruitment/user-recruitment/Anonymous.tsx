@@ -6,53 +6,67 @@ import {
   UserPlus as UserPlusIcon,
 } from 'lucide-react'
 
-export default function Anonymous() {
+interface AnonymousInProps {
+  userStyle: string
+}
+
+export default function Anonymous({ userStyle }: AnonymousInProps) {
   return (
-    <div className="flex w-[1150px] flex-col items-center">
-      <div className="bg-primary-100 mb-3 flex h-16 w-16 items-center justify-center rounded-full">
-        <UserIcon className="text-primary-600 h-6 w-6" />
-      </div>
-      <h2 className="mb-3 text-2xl font-semibold">
-        개인 맞춤 스터디 공고를 받아보세요
-      </h2>
-      <div className="mb-6 text-center text-gray-600">
-        <p>로그인하시면 관심 분야와 수강 강의를 바탕으로 맞춤형 스터디 공고</p>
-        <p>를 추천해드립니다</p>
-      </div>
-      <div className="flex gap-4">
-        <PageLink
-          pageLinkInnerText="로그인 하기"
-          variant="filled"
-          icon={LogInIcon}
-          size="lg"
-          link={ROUTES.LOGIN}
-        />
-        <PageLink
-          pageLinkInnerText="회원가입하기"
-          icon={UserPlusIcon}
-          link={ROUTES.SIGNUP}
-          variant="outline"
-          size="base"
-        />
-      </div>
-      <div className="mt-8 flex flex-col gap-4 text-center">
-        <p className="text-sm text-gray-600">
-          로그인 후 이런 맞춤 추천을 받을 수 있어요
-        </p>
+    <div className={`${userStyle} max-w-[1216px]`}>
+      <div className={`flex flex-col items-center`}>
+        <div className="bg-primary-100 mb-3 flex h-16 w-16 items-center justify-center rounded-full">
+          <UserIcon className="text-primary-600 h-6 w-6" />
+        </div>
+        <h2 className="mb-3 text-2xl font-semibold">
+          개인 맞춤 스터디 공고를 받아보세요
+        </h2>
+        <div className="mb-6 text-center text-gray-600">
+          <p>
+            로그인하시면 관심 분야와 수강 강의를 바탕으로 맞춤형 스터디 공고
+          </p>
+          <p>를 추천해드립니다</p>
+        </div>
         <div className="flex gap-4">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <Card key={index} />
-          ))}
+          <PageLink
+            pageLinkInnerText="로그인 하기"
+            variant="filled"
+            icon={LogInIcon}
+            size="lg"
+            link={ROUTES.LOGIN}
+          />
+          <PageLink
+            pageLinkInnerText="회원가입하기"
+            icon={UserPlusIcon}
+            link={ROUTES.SIGNUP}
+            variant="outline"
+            size="base"
+          />
+        </div>
+        <div className="mt-8 flex flex-col gap-4 text-center">
+          <p className="text-sm text-gray-600">
+            로그인 후 이런 맞춤 추천을 받을 수 있어요
+          </p>
+          <div className="flex gap-4">
+            <Card />
+            <Card className="hidden lg:block" />
+            <Card className="hidden xl:block" />
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
+interface CardProps {
+  className?: string
+}
+
 // 예시 카드
-function Card() {
+function Card({ className }: CardProps) {
   return (
-    <div className="relative w-[370px] rounded border border-gray-200 bg-white p-4">
+    <div
+      className={`relative w-[370px] rounded border border-gray-200 bg-white p-4 ${className}`}
+    >
       <div className="mb-3 flex">
         <div className="mr-3 h-8 w-12 rounded bg-gray-100"></div>
         <div>

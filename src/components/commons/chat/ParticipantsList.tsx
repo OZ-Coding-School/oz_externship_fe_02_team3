@@ -1,6 +1,6 @@
+import { useHorizontalScroll } from '@src/hooks/useHorizontalScroll'
 import type { Participant } from '@src/types/participants'
 import { cn } from '@utils/cn'
-import { useRef, useState } from 'react'
 
 interface ParticipantsListProps {
   participants: Participant[]
@@ -9,51 +9,12 @@ interface ParticipantsListProps {
 export default function ParticipantsList({
   participants,
 }: ParticipantsListProps) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const [isDown, setIsDown] = useState(false)
-  const [startX, setStartX] = useState(0)
-  const [scrollLeft, setScrollLeft] = useState(0)
-
-  const onWheel = (e: React.WheelEvent<HTMLDivElement>) => {
-    if (scrollRef.current) {
-      e.preventDefault()
-      scrollRef.current.scrollLeft += e.deltaY
-    }
-  }
-
-  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsDown(true)
-    setStartX(e.pageX - (scrollRef.current?.offsetLeft ?? 0))
-    setScrollLeft(scrollRef.current?.scrollLeft ?? 0)
-    document.body.style.userSelect = 'none'
-  }
-  const onMouseLeave = () => {
-    setIsDown(false)
-    document.body.style.userSelect = ''
-  }
-  const onMouseUp = () => {
-    setIsDown(false)
-    document.body.style.userSelect = ''
-  }
-  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDown) return
-    e.preventDefault()
-    const x = e.pageX - (scrollRef.current?.offsetLeft ?? 0)
-    const walk = x - startX
-    if (scrollRef.current) {
-      scrollRef.current.scrollLeft = scrollLeft - walk
-    }
-  }
+  const { ref } = useHorizontalScroll()
 
   return (
     <div
-      ref={scrollRef}
+      ref={ref}
       className="scrollbar-hide flex cursor-grab flex-nowrap items-center gap-2 overflow-x-auto border-b border-gray-200 bg-gray-50 px-2 pt-2 pb-[9px] active:cursor-grabbing"
-      onMouseDown={onMouseDown}
-      onMouseLeave={onMouseLeave}
-      onMouseUp={onMouseUp}
-      onMouseMove={onMouseMove}
-      onWheel={onWheel}
     >
       {participants.map((participant, index) => (
         <div

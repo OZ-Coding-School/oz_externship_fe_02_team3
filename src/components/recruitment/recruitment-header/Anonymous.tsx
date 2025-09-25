@@ -10,6 +10,7 @@ export default function Anonymous() {
       variant="filled"
       size="lg"
       link={ROUTES.LOGIN}
+      className="whitespace-nowrap"
     />
   )
 }
