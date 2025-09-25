@@ -39,7 +39,7 @@ export const LIST_SETTINGS = {
 
 // 필터/정렬 설정
 export const FILTER_SORT = {
-  DEFAULT_CATEGORY: '전체',
+  DEFAULT_CATEGORY: '전체 카테고리',
   DEFAULT_SORT: 'popularity', // 'popularity' | 'latest' | 'price_low' | 'price_high' | 'rating'
   SORT_OPTIONS: {
     POPULARITY: 'popularity',
