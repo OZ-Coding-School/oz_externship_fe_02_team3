@@ -3,11 +3,17 @@ import StudyIntroMarkdown from './StudyIntroMarkdown'
 import { STUDY_INTRO_PLACEHOLDER } from '@src/constants/studyintroplaceholder'
 import { countMdImages } from './markdown-ui/mdImages'
 
+interface RecCreateContentSectionProps {
+  onContentChange?: (v: string) => void
+}
+
 const MAX_IMAGES = 5
 
 const PLACEHOLDER = STUDY_INTRO_PLACEHOLDER
 
-export default function RecCreateContentSection() {
+export default function RecCreateContentSection({
+  onContentChange,
+}: RecCreateContentSectionProps) {
   const [markDown, setMarkDown] = useState('')
   const usedCount = useMemo(() => countMdImages(markDown), [markDown])
 
@@ -32,7 +38,10 @@ export default function RecCreateContentSection() {
       </label>
       <StudyIntroMarkdown
         value={markDown}
-        onChange={setMarkDown}
+        onChange={(v) => {
+          setMarkDown(v)
+          onContentChange?.(v)
+        }}
         placeholder={PLACEHOLDER}
         height={320}
       />
