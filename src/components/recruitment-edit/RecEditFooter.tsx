@@ -3,7 +3,15 @@ import Button from '../commons/button/Button'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '@constants/routes'
 
-export default function RecEditFooter() {
+interface RecEditFooterProps {
+  onSubmit?: () => void
+  submitting?: boolean
+}
+
+export default function RecEditFooter({
+  onSubmit,
+  submitting = false,
+}: RecEditFooterProps) {
   const navigate = useNavigate()
   return (
     <div className="mb-12 w-full max-w-[832px] border-t-1 border-gray-200 text-gray-900">
@@ -15,11 +23,13 @@ export default function RecEditFooter() {
           onClick={() => navigate(`${ROUTES.RECRUITMENT_MANAGE}`)}
         />
         <Button
-          buttonInnerText="공고 수정하기"
+          buttonInnerText={submitting ? '공고 수정 중…' : '공고 수정하기'}
           icon={MousePointer2Icon}
           iconClassName="rotate-[90deg]"
           size="base"
           iconSize="sm"
+          onClick={onSubmit}
+          disabled={submitting}
         />
       </div>
     </div>
