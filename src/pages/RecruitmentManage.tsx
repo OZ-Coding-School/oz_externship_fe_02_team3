@@ -112,8 +112,8 @@ export default function RecruitmentManage() {
   }, [status, totalCnt, openCnt, closedCnt])
   return (
     <div className="min-h-dvh w-full">
-      <div className="mx-auto h-auto max-w-[1440px] px-20">
-        <div className="max-w-7xl p-8">
+      <div className="mx-auto h-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 xl:px-20">
+        <div className="max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
           <div className="rec-manage-section h-[80px]">
             <RecManageHeader />
           </div>
