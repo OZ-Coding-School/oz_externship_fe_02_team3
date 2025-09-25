@@ -3,7 +3,12 @@ import Button from '../commons/button/Button'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '@constants/routes'
 
-export default function RecCreateFooter() {
+interface FooterProps {
+  canSubmit: boolean
+  onSubmit: () => void
+}
+
+export default function RecCreateFooter({ canSubmit, onSubmit }: FooterProps) {
   const navigate = useNavigate()
   return (
     <div className="mb-12 w-full max-w-[832px] border-t-1 border-gray-200 text-gray-900">
@@ -20,6 +25,8 @@ export default function RecCreateFooter() {
           iconClassName="rotate-[90deg]"
           size="base"
           iconSize="sm"
+          onClick={onSubmit}
+          aria-disabled={!canSubmit}
         />
       </div>
     </div>
