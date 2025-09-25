@@ -6,10 +6,11 @@ import {
 import Badge from '@components/commons/Badge'
 import Button from '@components/commons/button/Button'
 import Icon from '@components/commons/Icon'
-import StarRating from '../ui/StarRating'
-import ReviewSection from '../sections/ReviewSection'
+import StarRating from './StarRating'
+import ReviewSection from './ReviewSection'
 import { mockReviews, type Review } from '@src/mock/reviewData'
 import type { Course } from '@src/types/course'
+import { BookmarkButton } from './BookmarkButton'
 
 interface CourseCardProps extends Course {
   reviews?: Review[]
@@ -39,10 +40,17 @@ export default function CourseCard({
   }
 
   return (
-    <div className="flex w-full flex-col overflow-hidden rounded-xl transition-all duration-300">
+    <div className="flex w-full flex-col overflow-hidden rounded-xl border border-gray-200 transition-all duration-300">
       {/* 강의 썸네일 */}
       <div className="relative flex aspect-video flex-col bg-gray-100">
         <div className="h-full w-full bg-cover bg-center bg-no-repeat" />
+        <div className="pointer-events-auto absolute top-2 right-2 z-10 sm:top-3 sm:right-3">
+          <BookmarkButton
+            courseId={courseId}
+            onBookmarkToggle={onBookmarkClick}
+            className="h-8 w-8 sm:h-10 sm:w-10"
+          />
+        </div>
         <div className="absolute top-3 right-2 left-3 flex justify-between">
           <div className="flex flex-col items-start gap-4">
             <Badge badgeTitle="Udemy" className="bg-primary-500 text-white" />
@@ -64,7 +72,7 @@ export default function CourseCard({
             {cardTitle}
           </p>
           <p className="pb-2 text-sm text-gray-600">{author}</p>
-          <p className="line-clamp-3 text-sm text-gray-500">
+          <p className="line-clamp-3 min-h-10 text-sm text-gray-500">
             {cardDescription}
           </p>
         </div>
