@@ -1,4 +1,4 @@
-import { FilterResetButton } from '../ui/FilterResetButton'
+import { FilterResetButton } from './FilterResetButton'
 import { ARIA_LABELS } from '@src/constants/ui'
 import { useCourseFilters } from '@src/hooks/course/useCourseFilters'
 import { useCourses } from '@src/hooks/course/useCourse'

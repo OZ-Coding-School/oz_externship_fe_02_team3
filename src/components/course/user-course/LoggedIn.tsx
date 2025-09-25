@@ -1,13 +1,12 @@
-import CourseCardWithBookmark from '../course/CourseCardWithBookmark'
 import { mockCoursesData } from '@src/mock/coursesData'
 import type { Course } from '@src/types/course'
 import { cn } from '@src/utils/cn'
-import CourseCard from '../course/CourseCard'
-interface LoggedInCoursesProps {
+import CourseCard from '../course-content/CourseCard'
+interface LoggedInProps {
   userStyle: string
 }
 
-export default function LoggedInCourses({ userStyle }: LoggedInCoursesProps) {
+export default function LoggedIn({ userStyle }: LoggedInProps) {
   const userName = '김개발'
 
   const recommendedCourses: Course[] = mockCoursesData
