@@ -3,6 +3,7 @@ import { CategoryFilter } from './CategoryFilter'
 import { SortFilter } from './SortFilter'
 import { FilterResetButton } from '../ui/FilterResetButton'
 import { ARIA_LABELS } from '@src/constants/ui'
+import { cn } from '@src/utils/cn'
 
 interface SearchFilterProps {
   searchQuery: string
@@ -15,6 +16,8 @@ interface SearchFilterProps {
   sortOptions: Record<string, string>
   appliedFiltersCount?: number
   onResetFilters?: () => void
+  classname?: string
+  inputClassName?: string
 }
 
 function SearchFilter({
@@ -28,14 +31,20 @@ function SearchFilter({
   sortOptions,
   appliedFiltersCount = 0,
   onResetFilters,
+  classname,
+  inputClassName,
 }: SearchFilterProps) {
   return (
-    <section className="mb-8" aria-label={ARIA_LABELS.SEARCH_FILTER}>
+    <section
+      className={cn(classname ? classname : 'mb-8')}
+      aria-label={ARIA_LABELS.SEARCH_FILTER}
+    >
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
         <SearchInput
           searchQuery={searchQuery}
           onSearchChange={onSearchChange}
           className="lg:col-span-1"
+          inputClassName={inputClassName}
         />
 
         <CategoryFilter
