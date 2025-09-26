@@ -68,6 +68,7 @@ export default function RecruitmentCreate() {
         />
 
         <RecCreateAdditionalInfo
+          draftId={draftId}
           derivedPrice={derivedPrice}
           override={priceOverride}
           onChangeOverride={(raw) => setPriceOverride(raw)}
