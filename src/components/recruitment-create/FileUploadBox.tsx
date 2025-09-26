@@ -3,6 +3,7 @@ import { FileUp } from 'lucide-react'
 import DottedBox from './uploadbox-ui/DottedBox'
 import FileList from './uploadbox-ui/FileList'
 import useUploader from './uploadbox-ui/useUploader'
+import { useToast } from '@components/commons/toast'
 
 interface PresetFile {
   id: number
@@ -20,10 +21,16 @@ interface FileUploadBoxProps {
 }
 
 export function FileUploadBox({ defaultFiles = [] }: FileUploadBoxProps) {
+  const toast = useToast()
+
   const { files, state, getRootProps, getInputProps, removeAt } = useUploader({
     accept: { '*/*': [] },
     maxFiles: 3,
-    onError: (m) => alert(m),
+    onError: (m) =>
+      toast.error({
+        title: '업로드 오류',
+        content: m,
+      }),
   })
 
   const [presetFiles, setPresetFiles] = useState<PresetFile[]>(defaultFiles)

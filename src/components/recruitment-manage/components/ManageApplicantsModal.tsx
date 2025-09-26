@@ -8,6 +8,7 @@ interface Props {
   title?: string // 공고 제목
   applicants: Applicant[] // 목록 데이터 (추후 API)
   totalCount?: number
+  onOpenApplicantDetail?: (applicant: Applicant) => void
 }
 
 export default function ManageApplicantsModal({
@@ -16,6 +17,7 @@ export default function ManageApplicantsModal({
   title = '공고 제목',
   applicants,
   totalCount = applicants.length,
+  onOpenApplicantDetail,
 }: Props) {
   return (
     <Modal open={open} onClose={onClose} size="lg">
@@ -32,7 +34,11 @@ export default function ManageApplicantsModal({
         {applicants && (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {applicants.map((a) => (
-              <ApplicantCard key={a.id} data={a} />
+              <ApplicantCard
+                key={a.id}
+                data={a}
+                onClick={onOpenApplicantDetail}
+              />
             ))}
           </div>
         )}

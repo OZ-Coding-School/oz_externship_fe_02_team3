@@ -237,7 +237,11 @@ export const Z_INDEX = {
 
 export const NAV_ITEMS = [
   { to: '/courses', label: '강의목록', icon: BookIcon },
-  { to: '/study-group', label: '스터디 그룹', icon: UsersRoundIcon },
+  {
+    to: 'https://study.ozcoding.site/study-group',
+    label: '스터디 그룹',
+    icon: UsersRoundIcon,
+  },
   { to: '/recruitment', label: '구인 공고', icon: MegaphoneIcon },
 ]
 

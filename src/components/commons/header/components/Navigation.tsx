@@ -8,15 +8,25 @@ export default function Navigation() {
     <div className="flex items-center gap-8">
       {isDesktop && (
         <nav className="flex items-center gap-8">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="flex items-center text-base text-gray-700"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV_ITEMS.map((item) =>
+            item.to.startsWith('http') ? (
+              <a
+                key={item.to}
+                href={item.to}
+                className="flex items-center text-base text-gray-700"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="flex items-center text-base text-gray-700"
+              >
+                {item.label}
+              </Link>
+            )
+          )}
         </nav>
       )}
       <HeaderUserSection />
