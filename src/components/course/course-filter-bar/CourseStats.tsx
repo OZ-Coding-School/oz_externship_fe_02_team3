@@ -14,7 +14,7 @@ export default function CourseStats({
   searchQuery,
 }: CourseStatsProps) {
   return (
-    <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center">
         <p className="text-gray-600">
           <span className="font-medium">
@@ -41,6 +41,6 @@ export default function CourseStats({
           {STATS_TEXT.FILTERED_SUFFIX}
         </p>
       )}
-    </div>
+    </section>
   )
 }

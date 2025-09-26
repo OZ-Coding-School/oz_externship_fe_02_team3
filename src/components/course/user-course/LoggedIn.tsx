@@ -1,8 +1,12 @@
-import CourseCardWithBookmark from '../course/CourseCardWithBookmark'
 import { mockCoursesData } from '@src/mock/coursesData'
 import type { Course } from '@src/types/course'
+import { cn } from '@src/utils/cn'
+import CourseCard from '../course-content/CourseCard'
+interface LoggedInProps {
+  userStyle: string
+}
 
-export default function LoggedInCourses() {
+export default function LoggedIn({ userStyle }: LoggedInProps) {
   const userName = '김개발'
 
   const recommendedCourses: Course[] = mockCoursesData
@@ -11,7 +15,7 @@ export default function LoggedInCourses() {
     .slice(0, 3)
 
   return (
-    <div className="w-full">
+    <div className={`max-w-[1306px] px-11 ${userStyle}`}>
       <div className="mb-6 flex items-center">
         <div className="mr-6 text-xl font-semibold">
           <span className="text-primary-600">{userName} </span>
@@ -23,19 +27,12 @@ export default function LoggedInCourses() {
       </div>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {recommendedCourses.map((course) => (
-          <div key={course.id} className="rounded-lg bg-white p-4 shadow-sm">
-            <CourseCardWithBookmark
-              cardTitle={course.title}
-              author={course.instructor ?? course.author}
-              cardDescription={course.description}
-              reviewRating={course.rating ?? course.reviewRating}
-              reviewCount={course.reviewCount}
-              originalPrice={course.originalPrice}
-              price={course.price}
-              courseId={course.id}
-              onBookmarkClick={() => {}}
-            />
-          </div>
+          <article
+            key={course.id}
+            className={cn('relative w-full cursor-pointer overflow-hidden')}
+          >
+            <CourseCard {...course} />
+          </article>
         ))}
       </div>
     </div>
