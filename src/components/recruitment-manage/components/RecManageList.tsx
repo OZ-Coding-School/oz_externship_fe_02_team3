@@ -1,9 +1,13 @@
 import JobPostCard from '@components/commons/JobPostCard'
 import { EmptyState } from '@src/components/commons/EmptyState'
 import { EMPTY_MESSAGES } from '@src/constants/ui'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { RecruitmentMeItem } from '@src/api/recManage'
 import MobileJobPostCard from './MobileJobPostCard'
+import ManageApplicantsModal from './ManageApplicantsModal'
+import ApplicantDetailModal from './ApplicantDetailModal'
+import type { Applicant, ApplicantDetail } from '@src/types/applicant'
+import { dummyApplicants, dummyApplicants2 } from '@src/mock/applicants'
 
 interface Props {
   items: RecruitmentMeItem[]
@@ -25,6 +29,23 @@ export default function RecManageList({
   totalCount,
 }: Props) {
   const sentinelRef = useRef<HTMLDivElement | null>(null)
+  const [openManage, setOpenManage] = useState(false)
+  const [selectedTitle, setSelectedTitle] = useState<string>('')
+  const [openApplicationDetail, setOpenApplicationDetail] = useState(false)
+  const [selectedApplicant, setSelectedApplicant] =
+    useState<ApplicantDetail | null>(null)
+
+  const openApplicantsModal = (title: string) => {
+    setSelectedTitle(title)
+    setOpenManage(true)
+  }
+
+  const openApplicantDetail = (applicant: Applicant) => {
+    const detail = dummyApplicants2.find((d) => d.id === applicant.id)
+    if (!detail) return
+    setSelectedApplicant(detail)
+    setOpenApplicationDetail(true)
+  }
 
   useEffect(() => {
     if (!sentinelRef.current) return
@@ -57,7 +78,7 @@ export default function RecManageList({
     },
     editTo: `/recruitment/${it.id}/edit`,
     applyLabel: '지원 내역',
-    onClickApply: () => {},
+    onClickApply: () => openApplicantsModal(it.title),
   }))
 
   const isEmpty = !loading && items.length === 0
@@ -103,6 +124,22 @@ export default function RecManageList({
         <div className="py-6 text-center text-sm text-gray-400">
           마지막 페이지
         </div>
+      )}
+
+      <ManageApplicantsModal
+        open={openManage}
+        onClose={() => setOpenManage(false)}
+        title={selectedTitle}
+        applicants={dummyApplicants}
+        onOpenApplicantDetail={openApplicantDetail}
+      />
+      {selectedApplicant && (
+        <ApplicantDetailModal
+          open={openApplicationDetail}
+          onClose={() => setOpenApplicationDetail(false)}
+          title="지원자 상세 정보"
+          data={selectedApplicant}
+        />
       )}
     </section>
   )
