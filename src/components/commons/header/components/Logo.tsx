@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom'
 import StudyLogo from '@assets/images/logo_studyhub.svg?react'
 import { Menu as MenuIcon } from 'lucide-react'
 import { useMediaQuery } from '@src/hooks/useMediaQuery'
 import Button from '@components/commons/button/Button'
+import { EXTERNAL } from '@src/constants/external'
 
 interface LogoProps {
   toggleGnb: () => void
@@ -23,7 +23,7 @@ export default function Logo({ toggleGnb, sidebarButtonRef }: LogoProps) {
           />
         </div>
       )}
-      <Link to="/" className="flex items-center gap-2">
+      <a href={EXTERNAL.ACCOUNT_ROOT} className="flex items-center gap-2">
         <StudyLogo
           className={`${isDesktop ? 'size-8' : 'size-7'}`}
           aria-label="StudyHub 로고"
@@ -31,7 +31,7 @@ export default function Logo({ toggleGnb, sidebarButtonRef }: LogoProps) {
         {isDesktop && (
           <p className="text-primary-600 text-xl font-bold">StudyHub</p>
         )}
-      </Link>
+      </a>
     </div>
   )
 }

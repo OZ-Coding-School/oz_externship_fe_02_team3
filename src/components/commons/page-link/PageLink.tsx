@@ -16,6 +16,7 @@ interface PageLinkProps
   iconButtonSize?: 'sm' | 'md' | 'lg' | 'xl'
   ariaLabel?: string
   link: string
+  isExternal?: boolean
 }
 
 export default function PageLink({
@@ -30,9 +31,36 @@ export default function PageLink({
   ariaLabel,
   link,
   className,
+  isExternal = false,
   ...props
 }: PageLinkProps) {
   const iconOnly = !!icon && !pageLinkInnerText
+
+  const classes = cn(
+    pageLinkClass({
+      size: !iconOnly ? size : undefined,
+      iconButtonSize: iconOnly ? iconButtonSize : undefined,
+      variant,
+      fontWeight,
+      iconOnly,
+    }),
+    className
+  )
+
+  if (isExternal) {
+    return (
+      <a
+        href={link}
+        className={classes}
+        aria-label={ariaLabel || pageLinkInnerText}
+        {...props}
+      >
+        {icon && <Icon icon={icon} size={iconSize} className={iconClassName} />}
+        {pageLinkInnerText}
+      </a>
+    )
+  }
+
   return (
     <Link
       className={cn(

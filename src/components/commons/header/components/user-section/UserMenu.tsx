@@ -1,12 +1,10 @@
 import Icon from '@components/commons/Icon'
-import PageLink from '@components/commons/page-link/PageLink'
 import { Z_INDEX } from '@constants/ui'
-import Button from '@src/components/commons/button/Button'
 import { useOutsideClick } from '@src/hooks/useOutsideClick'
 import { cn } from '@utils/cn'
 import { UserRound as UserRoundIcon, LogOut as LogOutIcon } from 'lucide-react'
 import { useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { EXTERNAL } from '@src/constants/external'
 
 interface UserMenuProps {
   isNotificationOpen: boolean
@@ -38,11 +36,6 @@ export default function UserMenu({
     setIsUserMenuOpen(false)
   )
 
-  const navigate = useNavigate()
-
-  const handleLogout = () => {
-    navigate('/logout')
-  }
   return (
     <div
       ref={userMenuButtonRef}
@@ -62,24 +55,20 @@ export default function UserMenu({
             `${Z_INDEX.DROPDOWN}`
           )}
         >
-          <PageLink
-            pageLinkInnerText="마이페이지"
-            variant="ghost"
-            link="/profile"
-            className="w-full gap-3 text-sm text-gray-700"
-            fontWeight="normal"
-            icon={UserRoundIcon}
-          />
-          <Button
-            buttonInnerText="로그아웃"
-            variant="ghost"
-            onClick={handleLogout}
-            iconClassName="rotate-180"
-            className="w-full justify-start gap-3 text-sm text-gray-700"
-            fontWeight="normal"
-            icon={LogOutIcon}
-            iconSize="sm"
-          />
+          <a
+            href={EXTERNAL.MY_PAGE}
+            className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          >
+            <UserRoundIcon className="h-4 w-4" />
+            마이페이지
+          </a>
+          <a
+            href={EXTERNAL.ACCOUNT_ROOT}
+            className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
+          >
+            <LogOutIcon className="h-4 w-4 rotate-180" />
+            로그아웃
+          </a>
         </div>
       )}
     </div>

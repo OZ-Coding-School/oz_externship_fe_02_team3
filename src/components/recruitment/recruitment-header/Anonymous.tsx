@@ -1,5 +1,5 @@
 import PageLink from '@src/components/commons/page-link/PageLink'
-import { ROUTES } from '@src/constants/routes'
+import { EXTERNAL } from '@src/constants/external'
 import { LogIn as LogInIcon } from 'lucide-react'
 
 export default function Anonymous() {
@@ -9,7 +9,8 @@ export default function Anonymous() {
       icon={LogInIcon}
       variant="filled"
       size="lg"
-      link={ROUTES.LOGIN}
+      link={EXTERNAL.LOGIN}
+      isExternal
       className="whitespace-nowrap"
     />
   )

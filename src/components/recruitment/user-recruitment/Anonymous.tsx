@@ -1,5 +1,5 @@
 import PageLink from '@components/commons/page-link/PageLink'
-import { ROUTES } from '@src/constants/routes'
+import { EXTERNAL, withReturnTo } from '@src/constants/external'
 import {
   LogIn as LogInIcon,
   User as UserIcon,
@@ -32,14 +32,16 @@ export default function Anonymous({ userStyle }: AnonymousInProps) {
             variant="filled"
             icon={LogInIcon}
             size="lg"
-            link={ROUTES.LOGIN}
+            link={withReturnTo(EXTERNAL.LOGIN)}
+            isExternal
           />
           <PageLink
             pageLinkInnerText="회원가입하기"
             icon={UserPlusIcon}
-            link={ROUTES.SIGNUP}
+            link={EXTERNAL.SIGNUP}
             variant="outline"
             size="base"
+            isExternal
           />
         </div>
         <div className="mt-8 flex flex-col gap-4 text-center">
