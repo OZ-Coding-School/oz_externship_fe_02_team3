@@ -3,7 +3,8 @@ import axios from 'axios'
 import type { NotificationResponse } from '@src/types/notification'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-const API_BASE_URL = 'https://api.ozcoding.site'
+const API_BASE_URL = 'http://localhost:5173'
+// const API_BASE_URL = 'https://api.ozcoding.site'
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -33,10 +34,9 @@ export function useNotifications() {
       })
       return response.data
     },
-    refetchInterval: 30000, // 30초마다 자동 새로고침
-    refetchOnWindowFocus: true, // 창 포커스 시 즉시 확인
-    refetchOnReconnect: true, // 네트워크 재연결 시 확인
-    refetchIntervalInBackground: false, // 백그라운드에서는 폴링 중단
+    refetchOnWindowFocus: true, // 창 포커스 시에만 확인
+    refetchOnReconnect: true, // 네트워크 재연결 시에만 확인
+    staleTime: 60000, // 1분간은 캐시된 데이터 사용
   })
   return {
     ...query,
@@ -57,7 +57,7 @@ export function useUnreadCountQuery() {
       })
       return response.data
     },
-    refetchInterval: 30000, // 30초마다 자동 새로고침
+    refetchInterval: 60000, // 1분마다 자동 새로고침
     refetchOnWindowFocus: true, // 창 포커스 시 즉시 확인
     refetchOnReconnect: true, // 네트워크 재연결 시 확인
     refetchIntervalInBackground: false, // 백그라운드에서는 폴링 중단
