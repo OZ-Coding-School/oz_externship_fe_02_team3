@@ -4,6 +4,7 @@ import RecCreateContentSection from '@src/components/recruitment-create/RecCreat
 import RecCreateHeader from '@src/components/recruitment-create/RecCreateHeader'
 import RecCreateFooter from '@src/components/recruitment-create/RecCreateFooter'
 import { useMemo, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import {
   getCoursesForGroup,
   sumCoursePrices,
@@ -15,18 +16,20 @@ import { useRecruitCreateForm } from '@src/hooks/useRecruitCreateForm'
 export default function RecruitmentCreate() {
   const toast = useToast()
   const navigate = useNavigate()
+  const draftId = useMemo(() => uuidv4(), [])
   const [studyGroupName, setStudyGroupName] = useState<string | undefined>()
   const [priceOverride, setPriceOverride] = useState<string | null>(null)
+
   const courses = useMemo(
     () => getCoursesForGroup(studyGroupName),
     [studyGroupName]
   )
+
   const derivedPrice = useMemo(
     () => (courses.length ? String(sumCoursePrices(courses)) : ''),
     [courses]
   )
 
-  // ── 폼 훅
   const {
     canSubmit,
     onTitleChange,
@@ -59,7 +62,10 @@ export default function RecruitmentCreate() {
           onExpectedHeadcountChange={onExpectedHeadcountChange}
         />
 
-        <RecCreateContentSection onContentChange={onContentChange} />
+        <RecCreateContentSection
+          draftId={draftId}
+          onContentChange={onContentChange}
+        />
 
         <RecCreateAdditionalInfo
           derivedPrice={derivedPrice}
