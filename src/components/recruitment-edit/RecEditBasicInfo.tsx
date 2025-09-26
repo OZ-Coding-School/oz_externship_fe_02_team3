@@ -12,6 +12,9 @@ interface RecEditBasicInfoProps {
   capacityName?: string
   defaultDeadline?: Date | null
   onGroupChange?: (name: string | undefined) => void
+  onTitleChange?: (v: string) => void
+  onCapacityChange?: (v: string | undefined) => void
+  onDeadlineChange?: (d: Date | null) => void
 }
 
 const studyGroup = [
@@ -42,6 +45,9 @@ export default function RecEditBasicInfo({
   capacityName: defaultCapacityName,
   defaultDeadline = null,
   onGroupChange,
+  onTitleChange,
+  onCapacityChange,
+  onDeadlineChange,
 }: RecEditBasicInfoProps) {
   const [title, setTitle] = useState<string>(defaultTitle ?? '')
   const [selectedGroup, setSelectedGroup] = useState<string | undefined>(
@@ -52,18 +58,28 @@ export default function RecEditBasicInfo({
   )
   const [deadline, setDeadline] = useState<Date | null>(defaultDeadline)
 
-  // 부모에 그룹 변경 알림
   useEffect(() => {
     onGroupChange?.(selectedGroup)
   }, [selectedGroup, onGroupChange])
 
-  // ▼ 선택된 그룹 → 강의 목록 + 합계
   const courses = useMemo(
     () => getCoursesForGroup(selectedGroup),
     [selectedGroup]
   )
   const total = useMemo(() => sumCoursePrices(courses), [courses])
 
+  useEffect(() => {
+    onGroupChange?.(selectedGroup)
+  }, [selectedGroup, onGroupChange])
+  useEffect(() => {
+    onTitleChange?.(title)
+  }, [title, onTitleChange])
+  useEffect(() => {
+    onCapacityChange?.(selectedCapacity)
+  }, [selectedCapacity, onCapacityChange])
+  useEffect(() => {
+    onDeadlineChange?.(deadline)
+  }, [deadline, onDeadlineChange])
   return (
     <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-gray-900">
       <p className="text-[20px] leading-7 font-semibold">기본 정보</p>
