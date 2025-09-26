@@ -3,6 +3,13 @@ import axios from 'axios'
 import type { NotificationResponse } from '@src/types/notification'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
+const API_BASE_URL = 'https://api.ozcoding.site'
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+})
+
 const getAuthToken = () => {
   const token = localStorage.getItem('access_token')
 
@@ -20,12 +27,16 @@ export function useNotifications() {
     queryKey: ['notifications'],
     queryFn: async () => {
       const token = getAuthToken()
-      const response = await axios.get('/api/v1/notifications', {
+      const response = await api.get('/api/v1/notifications', {
         params: { status: 'all', limit: 50, offset: 0 },
         headers: { Authorization: `Bearer ${token}` },
       })
       return response.data
     },
+    refetchInterval: 30000, // 30초마다 자동 새로고침
+    refetchOnWindowFocus: true, // 창 포커스 시 즉시 확인
+    refetchOnReconnect: true, // 네트워크 재연결 시 확인
+    refetchIntervalInBackground: false, // 백그라운드에서는 폴링 중단
   })
   return {
     ...query,
@@ -40,13 +51,16 @@ export function useUnreadCountQuery() {
   const query = useQuery({
     queryKey: ['notifications', 'unread-count'],
     queryFn: async () => {
-      // const token = localStorage.getItem('access_token')
       const token = getAuthToken()
-      const response = await axios.get('/api/v1/notifications/unread-count', {
+      const response = await api.get('/api/v1/notifications/unread-count', {
         headers: { Authorization: `Bearer ${token}` },
       })
       return response.data
     },
+    refetchInterval: 30000, // 30초마다 자동 새로고침
+    refetchOnWindowFocus: true, // 창 포커스 시 즉시 확인
+    refetchOnReconnect: true, // 네트워크 재연결 시 확인
+    refetchIntervalInBackground: false, // 백그라운드에서는 폴링 중단
   })
 
   return {
@@ -65,7 +79,6 @@ export function useMarkAllAsRead() {
   return useMutation({
     // mutationFn: 실제로 서버에 요청을 보내는 함수
     mutationFn: async () => {
-      // const token = localStorage.getItem('access_token')
       const token = getAuthToken()
       const response = await axios.post(
         '/api/v1/notifications/read-all',
@@ -77,8 +90,12 @@ export function useMarkAllAsRead() {
     // 에러 없이 response를 받으면 실행
     onSuccess: () => {
       // "notifications 캐시를 무효화해!"
+      // 알림 목록과 읽지않은 개수 캐시를 무효화
       // 자동으로 mutationFn 다시 실행되어 업데이트 됨
       queryClient.invalidateQueries({ queryKey: ['notifications'] })
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      })
     },
   })
 }
@@ -105,8 +122,12 @@ export function useReadNotification() {
     // 에러 없이 response를 받으면 실행
     onSuccess: () => {
       // "notifications 캐시를 무효화해!"
+      // 알림 목록과 읽지않은 개수 캐시를 무효화
       // 자동으로 mutationFn 다시 실행되어 업데이트 됨
       queryClient.invalidateQueries({ queryKey: ['notifications'] })
+      queryClient.invalidateQueries({
+        queryKey: ['notifications', 'unread-count'],
+      })
       console.log('모든 알림 읽음 처리 완료')
     },
     onError: (error) => {
