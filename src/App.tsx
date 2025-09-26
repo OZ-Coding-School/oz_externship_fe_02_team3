@@ -13,6 +13,7 @@ import { ToastPorvider } from './components/commons/toast'
 import RecruitmentDetailPage from './pages/RecruitmentDetailPage'
 import RecruitmentEdit from './pages/RecruitmentEdit'
 import ScrollLayout from './layouts/ScrollLayout'
+import NotFoundPage from './pages/NotFoundPage'
 
 const routes = [
   { path: ROUTES.HOME, element: <TestHub /> },
@@ -36,6 +37,7 @@ export default function App() {
           {routes.map((route) => (
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         <Route element={<MainLayout />}>
