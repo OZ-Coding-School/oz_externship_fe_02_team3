@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useMutation } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import { useToast } from '@components/commons/toast'
 import {
   getCoursesForGroup,
@@ -23,6 +24,9 @@ export default function RecruitmentEdit() {
   const { recruitment_uuid = 'me-1' } = useParams()
   const navigate = useNavigate()
   const toast = useToast()
+
+  const draftId = useMemo(() => uuidv4(), [])
+
   const MOCKDATA = recMockDatas[0]
   const [title, setTitle] = useState(MOCKDATA.title)
   const [groupName, setGroupName] = useState<string | undefined>(
@@ -34,6 +38,7 @@ export default function RecruitmentEdit() {
   const [deadline, setDeadline] = useState<Date | null>(MOCKDATA.deadline)
   const [markdown, setMarkdown] = useState<string>(MOCKDATA.content)
   const [priceRaw, setPriceRaw] = useState<string>('')
+
   const groupCourses = useMemo(() => getCoursesForGroup(groupName), [groupName])
   const derivedPrice = useMemo(
     () => String(sumCoursePrices(groupCourses)),
@@ -96,10 +101,12 @@ export default function RecruitmentEdit() {
           onDeadlineChange={setDeadline}
         />
         <RecEditContentSection
+          draftId={draftId}
           defaultMarkDown={markdown}
           onChangeMarkDown={setMarkdown}
         />
         <RecEditAdditionalInfo
+          draftId={draftId}
           defaultPrice={derivedPrice}
           onPriceChange={setPriceRaw}
           defaultFiles={MOCKDATA.files}

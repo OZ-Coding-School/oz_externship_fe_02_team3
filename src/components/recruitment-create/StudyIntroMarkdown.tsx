@@ -3,22 +3,25 @@ import MdToolbar from './markdown-ui/MdToolbar'
 import MdPreview from './markdown-ui/MdPreview'
 import MdFooter from './markdown-ui/MdFooter'
 import { useMdCommands } from './markdown-ui/useMdCommands'
-import { useImageUploader } from './markdown-ui/useImageUploader'
 import { useMdImageDnDPaste } from './markdown-ui/useMdImageDnDPaste'
 import { countMdImages } from './markdown-ui/mdImages'
 import { useToast } from '@components/commons/toast'
+import { useSupaBaseUploader } from './markdown-ui/useSupaBaseUploader'
 
 interface StudyIntroProps {
+  draftId: string
   value: string
   onChange: (v: string) => void
   placeholder?: string
   height?: number
 }
+
 const MAX_IMAGES = 5
 const PLACEHOLDER =
   '# 스터디 소개\nReact 실무 프로젝트를 함께 진행할 팀원을 모집합니다!\n\n## 스터디 내용\n- React 기초부터 실무 적용까지\n- 실제 프로젝트 개발 경험\n- 코드 리뷰 및 피드백'
 
 export default function StudyIntroMarkdown({
+  draftId,
   value,
   onChange,
   placeholder = PLACEHOLDER,
@@ -38,8 +41,8 @@ export default function StudyIntroMarkdown({
 
   const toast = useToast()
 
-  const { upload, isUploading } = useImageUploader({
-    mode: 'mock',
+  const { upload, isUploading } = useSupaBaseUploader({
+    draftId,
     maxSize: 10 * 1024 * 1024,
     onError: (m) =>
       toast.error({
@@ -131,7 +134,6 @@ export default function StudyIntroMarkdown({
               title: '이미지 파일만 업로드',
               content: 'PNG, JPG, GIF, WEBP 등을 지원해요.',
             })
-            // 텍스트 붙여넣기는 방해하지 않으므로 여기선 preventDefault 안 함
           }
         }
       }
@@ -174,7 +176,7 @@ export default function StudyIntroMarkdown({
         {views[tab]}
 
         <MdFooter>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 text-[12px]">
             <span>마크다운 문법을 사용할 수 있습니다.</span>
             <strong>**굵게**</strong>
             <em>*기울임*</em>
