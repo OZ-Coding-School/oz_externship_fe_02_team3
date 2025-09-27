@@ -2,7 +2,7 @@ import JobPostCard from '@components/commons/JobPostCard'
 import { EmptyState } from '@src/components/commons/EmptyState'
 import { EMPTY_MESSAGES } from '@src/constants/ui'
 import { useEffect, useRef, useState } from 'react'
-import type { RecruitmentMeItem } from '@src/api/recManage'
+import type { RecruitmentMeItem } from '@src/api/supabase/recManage.type'
 import MobileJobPostCard from './MobileJobPostCard'
 import ManageApplicantsModal from './ManageApplicantsModal'
 
