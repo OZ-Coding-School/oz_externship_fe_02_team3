@@ -5,6 +5,7 @@ import {
   UsersRound as UsersRoundIcon,
   FileText as FileTextIcon,
   Pencil as PencilIcon,
+  X as XIcon,
 } from 'lucide-react'
 import Badge from './Badge'
 import Icon from './Icon'
@@ -15,12 +16,33 @@ import {
   makeEditDraftFromPost,
   type JobPostForEdit,
 } from '@src/utils/makeEditDraftFromPost'
+import { useState } from 'react'
+import { supa } from '@src/lib/supabase'
+import { useToast } from '@components/commons/toast'
+
+interface ErrWithMsg {
+  message?: unknown
+  error_description?: unknown
+}
+
+const toErrorMessage = (e: unknown): string => {
+  if (typeof e === 'string') return e
+  if (e && typeof e === 'object') {
+    const { message, error_description } = e as ErrWithMsg
+    if (typeof message === 'string') return message
+    if (typeof error_description === 'string') return error_description
+  }
+  return '알 수 없는 오류'
+}
 
 interface JobPostCardProps {
   post: JobPost
   applyLabel?: string
   onClickApply?: () => void
   editTo?: string
+
+  canDelete?: boolean
+  onDeleted?: (uuid: string) => void
 }
 
 export default function JobPostCard({
@@ -28,8 +50,12 @@ export default function JobPostCard({
   applyLabel,
   onClickApply,
   editTo,
+  canDelete = false,
+  onDeleted,
 }: JobPostCardProps) {
   const NAVIGATE = useNavigate()
+  const toast = useToast()
+  const [deleting, setDeleting] = useState(false)
 
   if (!post) return null
 
@@ -45,6 +71,57 @@ export default function JobPostCard({
     image,
   } = post
 
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (deleting) return
+
+    const ok = window.confirm(
+      '정말 이 공고를 삭제할까요?\n삭제 후에는 되돌릴 수 없어요.'
+    )
+    if (!ok) return
+
+    try {
+      setDeleting(true)
+      const { data: rec, error: e1 } = await supa
+        .from('recruitments')
+        .select('id')
+        .eq('uuid', uuid)
+        .single()
+      if (e1) throw e1
+      const recId = rec?.id as number
+
+      const delChild = async (table: string) => {
+        const { error } = await supa
+          .from(table)
+          .delete()
+          .eq('recruitment_id', recId)
+        if (error) throw error
+      }
+      await delChild('recruitment_attachments')
+      await delChild('recruitment_images')
+      await delChild('recruitment_tags')
+      await delChild('recruitment_bookmarks')
+      await delChild('applications')
+
+      const { error: eDel } = await supa
+        .from('recruitments')
+        .delete()
+        .eq('id', recId)
+      if (eDel) throw eDel
+
+      toast.success({ title: '삭제 완료', content: '공고가 삭제되었습니다.' })
+      onDeleted?.(uuid)
+    } catch (err: unknown) {
+      toast.error({
+        title: '삭제 실패',
+        content: toErrorMessage(err),
+      })
+    } finally {
+      setDeleting(false)
+    }
+  }
+
   return (
     <Link to={ROUTES.RECRUITMENT_UUID(uuid)}>
       <div className="hover:bg-primary-50/60 flex h-full gap-4 rounded-lg border border-solid border-gray-200 bg-white p-[25px] transition-colors duration-300">
@@ -55,11 +132,11 @@ export default function JobPostCard({
         />
 
         <div className="flex w-full flex-col">
-          {/* 제목과 조회수/댓글 + (옵션) 편집 버튼 */}
+          {/* 제목과 조회수/북마크 + 편집/삭제 버튼 */}
           <div className="flex w-full items-center justify-between pb-3">
             <p className="line-clamp-2 text-lg font-semibold">{title}</p>
 
-            <div className="ml-2 flex gap-2">
+            <div className="ml-2 flex items-center gap-4">
               <div className="flex items-center gap-1">
                 <Icon
                   icon={ViewCountIcon}
@@ -68,6 +145,7 @@ export default function JobPostCard({
                 />
                 <p className="text-sm text-gray-500">{viewCount}</p>
               </div>
+
               <div className="flex items-center gap-1">
                 <Icon
                   icon={BookmarkIcon}
@@ -75,6 +153,8 @@ export default function JobPostCard({
                   className="stroke-gray-500"
                 />
                 <p className="text-sm text-gray-500">{bookmarkCount}</p>
+
+                {/* 편집 버튼 (옵션) */}
                 {editTo && (
                   <button
                     type="button"
@@ -90,6 +170,19 @@ export default function JobPostCard({
                     className="inline-flex h-7 w-7 items-center justify-center rounded-full hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
                   >
                     <PencilIcon size={16} className="stroke-gray-500" />
+                  </button>
+                )}
+
+                {canDelete && (
+                  <button
+                    type="button"
+                    aria-label="스터디 공고 삭제"
+                    onClick={handleDelete}
+                    disabled={deleting}
+                    className="inline-flex h-7 w-7 items-center justify-center rounded-full hover:bg-red-50 focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:outline-none disabled:opacity-60"
+                    title="삭제"
+                  >
+                    <XIcon size={16} className="stroke-gray-500" />
                   </button>
                 )}
               </div>
@@ -138,7 +231,7 @@ export default function JobPostCard({
               ))}
             </div>
 
-            {/* (옵션) 하단 우측 신청 버튼 */}
+            {/* 하단 우측 신청 버튼 (옵션) */}
             {applyLabel && (
               <div className="flex justify-end">
                 <button

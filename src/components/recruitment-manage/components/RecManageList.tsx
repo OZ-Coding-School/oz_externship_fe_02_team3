@@ -48,6 +48,8 @@ export default function RecManageList({
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
   // 지원자 관리 모달 제어
+  const [removedUuids, setRemovedUuids] = useState<Set<string>>(new Set())
+
   const [openManage, setOpenManage] = useState(false)
   const [selectedTitle, setSelectedTitle] = useState<string>('')
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null)
@@ -65,16 +67,29 @@ export default function RecManageList({
     setOpenApplicationDetail(true)
   }
 
+  const visibleItems = useMemo(
+    () => items.filter((it) => !removedUuids.has(it.uuid)),
+    [items, removedUuids]
+  )
+
   const cards = useMemo(() => {
-    return items.map((it) => {
+    return visibleItems.map((it) => {
       const base = toCardItem(it)
       return {
         ...base,
         applyLabel: '지원 내역',
         onClickApply: () => openApplicantsModal(it.title),
+
+        canDelete: true,
+        onDeleted: (uuid: string) =>
+          setRemovedUuids((prev) => {
+            const next = new Set(prev)
+            next.add(uuid)
+            return next
+          }),
       }
     })
-  }, [items])
+  }, [visibleItems])
 
   useEffect(() => {
     const el = sentinelRef.current
@@ -152,7 +167,7 @@ export default function RecManageList({
         </div>
       )}
 
-      {!hasNextPage && items.length > 0 && (
+      {!hasNextPage && visibleItems.length > 0 && (
         <div className="py-6 text-center text-sm text-gray-400">
           마지막 페이지
         </div>
