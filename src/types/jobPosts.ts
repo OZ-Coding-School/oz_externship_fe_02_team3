@@ -1,5 +1,6 @@
 export interface JobPost {
-  id: number
+  uuid: string
+  id?: number
   title: string
   viewCount: number
   commentCount: number

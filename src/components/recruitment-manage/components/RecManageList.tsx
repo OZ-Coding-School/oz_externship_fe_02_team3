@@ -22,6 +22,7 @@ function toCardItem(it: RecruitmentMeItem) {
   return {
     post: {
       id: it.id,
+      uuid: it.uuid,
       title: it.title,
       viewCount: it.views_count ?? 0,
       bookmarkCount: it.bookmarks_count ?? 0,
@@ -32,7 +33,7 @@ function toCardItem(it: RecruitmentMeItem) {
       tags: it.tags ?? [],
       image: it.img ?? PLACEHOLDER,
     },
-    editTo: `/recruitment/${it.id}/edit`,
+    editTo: `/recruitment/${it.uuid}/edit`,
   } as const
 }
 
@@ -122,7 +123,7 @@ export default function RecManageList({
 
       <ul className="flex flex-col gap-2">
         {cards.map((item) => (
-          <li key={item.post.id}>
+          <li key={item.post.uuid}>
             <div className="sm:hidden">
               <MobileJobPostCard {...item} />
             </div>
