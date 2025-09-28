@@ -1,7 +1,7 @@
 import JobPostCard from '@components/commons/JobPostCard'
 import { EmptyState } from '@src/components/commons/EmptyState'
 import { EMPTY_MESSAGES } from '@src/constants/ui'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { RecruitmentMeItem } from '@src/api/supabase/recManage.type'
 import MobileJobPostCard from './MobileJobPostCard'
 import ManageApplicantsModal from './ManageApplicantsModal'
@@ -16,6 +16,25 @@ interface Props {
 }
 
 const PLACEHOLDER = 'https://placehold.co/128x96'
+const fmtDate = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'medium' })
+
+function toCardItem(it: RecruitmentMeItem) {
+  return {
+    post: {
+      id: it.id,
+      title: it.title,
+      viewCount: it.views_count ?? 0,
+      bookmarkCount: it.bookmarks_count ?? 0,
+      commentCount: 0,
+      memberLimit: it.expected_headcount ?? 0,
+      deadline: fmtDate.format(new Date(it.close_at)),
+      courses: (it.lectures ?? []).map((l) => `${l.title} - ${l.instructor}`),
+      tags: it.tags ?? [],
+      image: it.img ?? PLACEHOLDER,
+    },
+    editTo: `/recruitment/${it.id}/edit`,
+  } as const
+}
 
 export default function RecManageList({
   items,
@@ -38,9 +57,27 @@ export default function RecManageList({
     setOpenManage(true)
   }
 
+  const openApplicantDetail = (applicant: Applicant) => {
+    const detail = dummyApplicants2.find((d) => d.id === applicant.id)
+    if (!detail) return
+    setSelectedApplicant(detail)
+    setOpenApplicationDetail(true)
+  }
+
+  const cards = useMemo(() => {
+    return items.map((it) => {
+      const base = toCardItem(it)
+      return {
+        ...base,
+        applyLabel: '지원 내역',
+        onClickApply: () => openApplicantsModal(it.title),
+      }
+    })
+  }, [items])
+
   useEffect(() => {
-    if (!sentinelRef.current) return
     const el = sentinelRef.current
+    if (!el) return
     const io = new IntersectionObserver(
       (entries) => {
         const first = entries[0]
@@ -51,7 +88,10 @@ export default function RecManageList({
       { rootMargin: '200px 0px' }
     )
     io.observe(el)
-    return () => io.unobserve(el)
+    return () => {
+      io.unobserve(el)
+      io.disconnect()
+    }
   }, [hasNextPage, isFetchingNextPage, onLoadMore])
 
   const cards = items.map((it) => ({
@@ -81,8 +121,8 @@ export default function RecManageList({
       </p>
 
       <ul className="flex flex-col gap-2">
-        {cards.map((item, i) => (
-          <li key={i}>
+        {cards.map((item) => (
+          <li key={item.post.id}>
             <div className="sm:hidden">
               <MobileJobPostCard {...item} />
             </div>

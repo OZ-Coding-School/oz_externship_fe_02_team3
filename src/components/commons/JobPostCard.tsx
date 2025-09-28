@@ -11,6 +11,10 @@ import Icon from './Icon'
 import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '@src/constants/routes'
 import type { JobPost } from '@src/types/jobPosts'
+import {
+  makeEditDraftFromPost,
+  type JobPostForEdit,
+} from '@src/utils/makeEditDraftFromPost'
 
 interface JobPostCardProps {
   post: JobPost
@@ -33,7 +37,7 @@ export default function JobPostCard({
     id,
     title,
     viewCount,
-    commentCount,
+    bookmarkCount,
     memberLimit,
     deadline,
     courses,
@@ -70,7 +74,7 @@ export default function JobPostCard({
                   size="sm"
                   className="stroke-gray-500"
                 />
-                <p className="text-sm text-gray-500">{commentCount}</p>
+                <p className="text-sm text-gray-500">{bookmarkCount}</p>
                 {editTo && (
                   <button
                     type="button"
@@ -78,7 +82,10 @@ export default function JobPostCard({
                     onClick={(e) => {
                       e.preventDefault()
                       e.stopPropagation()
-                      NAVIGATE(editTo)
+                      const draft = makeEditDraftFromPost(
+                        post as JobPostForEdit
+                      )
+                      NAVIGATE(editTo, { state: { draft } })
                     }}
                     className="inline-flex h-7 w-7 items-center justify-center rounded-full hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-none"
                   >

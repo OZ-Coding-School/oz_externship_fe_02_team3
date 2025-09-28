@@ -1,51 +1,210 @@
-import { useParams, useNavigate } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
+// src/pages/recruitment-edit/RecruitmentEdit.tsx
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+
 import { useToast } from '@components/commons/toast'
-import {
-  getCoursesForGroup,
-  sumCoursePrices,
-} from '@src/mock/studyGroupCourseMap'
-import { patchRecruitment } from '@src/api/recruitments.edit'
 import RecEditHeader from '@src/components/recruitment-edit/RecEditHeader'
 import RecEditBasicInfo from '@src/components/recruitment-edit/RecEditBasicInfo'
 import RecEditContentSection from '@src/components/recruitment-edit/RecEditContentSection'
-import RecEditAdditionalInfo from '@src/components/recruitment-edit/RecEditAdditionalInfo'
+import RecEditAdditionalInfo, {
+  type PresetFileIn,
+} from '@src/components/recruitment-edit/RecEditAdditionalInfo'
 import RecEditFooter from '@src/components/recruitment-edit/RecEditFooter'
-import { recMockDatas } from '@src/mock/recEditData'
+
+import { patchRecruitment } from '@src/api/recruitments.edit'
 import {
   RECRUIT_EDIT_TOAST,
   RECRUIT_EDIT_VALIDATION,
 } from '@src/constants/receditmessage'
 import { parseCapacity, toFinalPrice } from '@src/utils/recEdit'
+import type { EditDraft } from '@src/utils/makeEditDraftFromPost'
+import { supa } from '@src/lib/supabase'
+
+// ────────────────────── Types
+interface RawRec {
+  id: number
+  uuid: string
+  title: string
+  content: string | null
+  expected_headcount: number | null
+  close_at: string | null
+  study_group_id: number | null
+  study_groups?: { name: string | null } | { name: string | null }[] | null
+}
+interface FileLike {
+  id?: string | number
+  name?: string
+  url: string
+  key?: string | number
+}
+interface LectureObj {
+  id: number
+  title: string
+  original_price: number | string | null
+  discount_price: number | string | null
+}
+interface DBGroupCourseRow {
+  lecture_id: number
+  crawled_lectures: LectureObj | null
+}
+interface PreviewCourse {
+  id: number | string
+  title: string
+  price: number
+}
+interface SupaStudyLectureRow {
+  lecture_id: number
+  crawled_lectures: LectureObj | LectureObj[] | null
+}
 
 export default function RecruitmentEdit() {
-  const { recruitment_uuid = 'me-1' } = useParams()
+  const { recruitment_uuid = '' } = useParams()
+  const { state } = useLocation() as { state?: { draft?: EditDraft } }
+  const draft = state?.draft
+
   const navigate = useNavigate()
   const toast = useToast()
-
   const draftId = useMemo(() => uuidv4(), [])
 
-  const MOCKDATA = recMockDatas[0]
-  const [title, setTitle] = useState(MOCKDATA.title)
+  // 1) 그룹 목록
+  const groupsQ = useQuery({
+    queryKey: ['study_groups'],
+    queryFn: async () => {
+      const { data, error } = await supa
+        .from('study_groups')
+        .select('id,name')
+        .order('name')
+      if (error) throw error
+      return (data ?? []) as { id: number; name: string }[]
+    },
+  })
+
+  // 2) 공고 단건
+  const isNumericId = /^\d+$/.test(recruitment_uuid)
+  const recQ = useQuery({
+    queryKey: ['recruitment', recruitment_uuid],
+    enabled: !!recruitment_uuid,
+    queryFn: async () => {
+      const sel = `
+        id, uuid, title, content, expected_headcount, close_at, study_group_id,
+        study_groups:study_group_id ( name )
+      `
+      const base = supa.from('recruitments').select(sel)
+      const { data, error } = isNumericId
+        ? await base.eq('id', Number(recruitment_uuid)).single()
+        : await base.eq('uuid', recruitment_uuid).single()
+      if (error) throw error
+      return data as RawRec
+    },
+  })
+
+  // 3) 폼 상태
+  const [title, setTitle] = useState(draft?.title ?? '')
   const [groupName, setGroupName] = useState<string | undefined>(
-    MOCKDATA.groupName
+    draft?.groupName ?? undefined
   )
   const [capacityName, setCapacityName] = useState<string | undefined>(
-    MOCKDATA.capacityName
+    draft?.capacityName ?? undefined
   )
-  const [deadline, setDeadline] = useState<Date | null>(MOCKDATA.deadline)
-  const [markdown, setMarkdown] = useState<string>(MOCKDATA.content)
-  const [priceRaw, setPriceRaw] = useState<string>('')
+  const [deadline, setDeadline] = useState<Date | null>(draft?.deadline ?? null)
+  const [markdown, setMarkdown] = useState<string>(draft?.markdown ?? '')
+  const [priceRaw, setPriceRaw] = useState<string>(draft?.price ?? '')
 
-  const groupCourses = useMemo(() => getCoursesForGroup(groupName), [groupName])
-  const derivedPrice = useMemo(
-    () => String(sumCoursePrices(groupCourses)),
-    [groupCourses]
+  // 4) 조인 결과로 그룹명 복원
+  const resolvedGroupName = useMemo(() => {
+    const row = recQ.data
+    if (!row) return undefined
+    const sg = row.study_groups
+    const joinedName = Array.isArray(sg) ? sg[0]?.name : sg?.name
+    if (joinedName) return joinedName ?? undefined
+    if (!row.study_group_id) return undefined
+    return groupsQ.data?.find((g) => g.id === row.study_group_id)?.name
+  }, [recQ.data, groupsQ.data])
+
+  // 5) 드롭다운 옵션 (현재 선택 포함)
+  const groupOptions: string[] = useMemo(() => {
+    const names = (groupsQ.data ?? []).map((g) => g.name)
+    const current = groupName ?? resolvedGroupName
+    return Array.from(new Set([...(current ? [current] : []), ...names]))
+  }, [groupsQ.data, groupName, resolvedGroupName])
+
+  // 6) 강의 조회용 그룹 ID
+  const selectedGroupId = useMemo(() => {
+    if (groupName) {
+      const found = groupsQ.data?.find((g) => g.name === groupName)?.id
+      if (found) return found
+    }
+    return recQ.data?.study_group_id ?? undefined
+  }, [groupName, groupsQ.data, recQ.data])
+
+  // 7) 선택 그룹의 강의 목록
+  const groupCoursesQ = useQuery({
+    queryKey: ['group_courses', selectedGroupId],
+    enabled: !!selectedGroupId,
+    queryFn: async (): Promise<DBGroupCourseRow[]> => {
+      const { data, error } = await supa
+        .from('study_lectures')
+        .select(
+          `
+          lecture_id,
+          crawled_lectures ( id, title, original_price, discount_price )
+        `
+        )
+        .eq('study_group_id', selectedGroupId!)
+      if (error) throw error
+      const rows = (data ?? []) as unknown as SupaStudyLectureRow[]
+      return rows.map((r) => ({
+        lecture_id: r.lecture_id,
+        crawled_lectures: Array.isArray(r.crawled_lectures)
+          ? (r.crawled_lectures[0] ?? null)
+          : r.crawled_lectures,
+      }))
+    },
+  })
+
+  // 8) 미리보기 + 합계
+  const coursesPreview: PreviewCourse[] = useMemo(() => {
+    return (groupCoursesQ.data ?? [])
+      .map((r) => {
+        const lec = r.crawled_lectures
+        if (!lec) return null
+        const priceCandidate = lec.discount_price ?? lec.original_price ?? 0
+        const priceNum =
+          typeof priceCandidate === 'string'
+            ? Number(priceCandidate)
+            : (priceCandidate ?? 0)
+        return {
+          id: lec.id,
+          title: lec.title,
+          price: Number.isFinite(priceNum) ? priceNum : 0,
+        } as PreviewCourse
+      })
+      .filter(Boolean) as PreviewCourse[]
+  }, [groupCoursesQ.data])
+
+  const totalPricePreview = useMemo(
+    () => coursesPreview.reduce((sum, c) => sum + (Number(c.price) || 0), 0),
+    [coursesPreview]
   )
+
+  // 9) 첨부파일
+  const defaultFiles: PresetFileIn[] = useMemo(() => {
+    const raw: FileLike[] = (draft?.files as FileLike[] | undefined) ?? []
+    return raw.map((f) => ({
+      id: String(f.id ?? f.key ?? f.url),
+      name: f.name ?? '첨부파일',
+      url: f.url,
+      key: f.key !== undefined ? String(f.key) : undefined,
+    }))
+  }, [draft])
+
+  // 10) 가격
+  const derivedPrice = String(totalPricePreview)
   const finalPrice = toFinalPrice(priceRaw, derivedPrice)
 
+  // 11) 저장
   const validate = () => {
     const messages: string[] = []
     if (!title?.trim()) messages.push(RECRUIT_EDIT_VALIDATION.title)
@@ -62,16 +221,14 @@ export default function RecruitmentEdit() {
         title,
         content: markdown,
         expected_headcount: parseCapacity(capacityName),
-        estimated_fee: finalPrice,
+        estimated_fee: Number(finalPrice),
         close_at: deadline ? deadline.toISOString() : undefined,
       }),
     onSuccess: () => {
       toast.success(RECRUIT_EDIT_TOAST.success)
       navigate('/recruitment/manage')
     },
-    onError: () => {
-      toast.error(RECRUIT_EDIT_TOAST.error)
-    },
+    onError: () => toast.error(RECRUIT_EDIT_TOAST.error),
   })
 
   const handleSubmit = () => {
@@ -90,27 +247,34 @@ export default function RecruitmentEdit() {
     <div className="min-h-dvh w-full">
       <div className="mx-auto mt-8 flex w-full max-w-[1120px] flex-col items-center gap-8 px-6 lg:px-12">
         <RecEditHeader />
+
         <RecEditBasicInfo
           title={title}
-          groupName={groupName}
+          groupName={groupName ?? resolvedGroupName}
           capacityName={capacityName}
           defaultDeadline={deadline}
           onTitleChange={setTitle}
           onGroupChange={setGroupName}
           onCapacityChange={setCapacityName}
           onDeadlineChange={setDeadline}
+          groupOptions={groupOptions}
+          coursesPreview={coursesPreview}
+          totalPricePreview={totalPricePreview}
         />
+
         <RecEditContentSection
           draftId={draftId}
           defaultMarkDown={markdown}
           onChangeMarkDown={setMarkdown}
         />
+
         <RecEditAdditionalInfo
           draftId={draftId}
           defaultPrice={derivedPrice}
           onPriceChange={setPriceRaw}
-          defaultFiles={MOCKDATA.files}
+          defaultFiles={defaultFiles}
         />
+
         <RecEditFooter onSubmit={handleSubmit} submitting={m.isPending} />
       </div>
     </div>

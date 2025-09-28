@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import RecEditPriceInput from './RecEditPriceInput'
 import TagBox from '../recruitment-create/tag-ui/TagBox'
 import { SupabaseFileuploader } from '../recruitment-create/SupabaseFileUploader'
-
-interface PresetFileIn {
-  id: number | string
+export interface PresetFileIn {
+  id: string
   name: string
   url: string
   key?: string
@@ -24,14 +23,20 @@ export default function RecEditAdditionalInfo({
   defaultFiles = [],
 }: RecEditAdditionalInfoProps) {
   const [price, setPrice] = useState('')
+
   useEffect(() => setPrice(defaultPrice ?? ''), [defaultPrice])
 
-  const normalized = useMemo(
-    () => defaultFiles.map((f) => ({ ...f, id: String(f.id) })),
+  const normalized: PresetFileIn[] = useMemo(
+    () =>
+      defaultFiles.map((f) => ({
+        ...f,
+        id: String(f.id),
+        key: f.key !== undefined ? String(f.key) : undefined,
+      })),
     [defaultFiles]
   )
 
-  const [attachments, setAttachments] = useState(normalized)
+  const [attachments, setAttachments] = useState<PresetFileIn[]>(normalized)
   useEffect(() => setAttachments(normalized), [normalized])
 
   return (
