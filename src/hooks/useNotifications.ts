@@ -3,8 +3,8 @@ import axios from 'axios'
 import type { NotificationResponse } from '@src/types/notification'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-const API_BASE_URL = 'http://localhost:5173'
-// const API_BASE_URL = 'https://api.ozcoding.site'
+// const API_BASE_URL = 'http://localhost:5173'
+const API_BASE_URL = 'https://api.ozcoding.site'
 
 const api = axios.create({
   baseURL: API_BASE_URL,

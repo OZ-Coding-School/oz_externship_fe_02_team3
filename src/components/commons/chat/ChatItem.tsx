@@ -52,7 +52,7 @@ export default function ChatItem({ openChatRoom, ...data }: ChatItemProps) {
       onClick={() => openChatRoom(data)}
     >
       <div className="flex justify-between">
-        <h4 className="text-sm text-gray-900">{data.study_group_name}</h4>
+        <h4 className="text-sm text-gray-900">{data.name}</h4>
         <div className="flex items-center gap-1">
           <span className="text-xs text-gray-500">{createdAt}</span>
           {data.unread_count > 0 && (

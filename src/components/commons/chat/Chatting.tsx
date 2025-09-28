@@ -13,6 +13,7 @@ import { participants } from '@src/mock/participants'
 import { useSearchParams } from 'react-router-dom'
 import { chatList } from '@src/mock/chatListData'
 import { Z_INDEX } from '@src/constants/ui'
+import { useCurrentUser } from '@src/hooks/useCurrentUser'
 
 interface ChatProps {
   isOpen: boolean
@@ -28,13 +29,21 @@ interface WebSocketMessage {
   }
   content: string
   created_at: string
-  type?: 'message' | 'user_joined' | 'user_left' | 'typing' | 'system'
+  type?: 'message' | 'user_joined'
 }
 
 const generateUserUuid = () =>
   `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+const getAuthToken = () => {
+  const token = localStorage.getItem('access_token')
+  if (!import.meta.env.DEV) {
+    return token
+  }
+  return token || 'dev-token'
+}
 
 export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
+  const { currentUser } = useCurrentUser()
   const [searchParams] = useSearchParams()
 
   // 기존 state들 아래에 WebSocket 관련 state 추가
@@ -51,7 +60,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   const [selectedChatRoom, setSelectedChatRoom] = useState<Chat | null>(null)
   const studyGroupUuid = searchParams.get('study_group_uuid')
   const { chatMessages, isLoading: isMessagesLoading } = useChatMessages(
-    selectedChatRoom?.study_group_uuid
+    selectedChatRoom?.uuid
   )
 
   // 1. 채팅방 입장 함수
@@ -64,7 +73,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   // 3. selectedChatRoom이 변경될 때만 함수가 재생성됨
   const connectWebSocket = useCallback(() => {
     // 조건 검사 1: 선택된 채팅방이 없거나 채팅방 UUID가 없으면 연결하지 않음
-    if (!selectedChatRoom?.study_group_uuid) return
+    if (!selectedChatRoom?.uuid) return
 
     // 조건 검사 2: 이미 WebSocket이 열린 상태(OPEN)라면 중복 연결 방지
     // WebSocket.OPEN은 상수값 1을 의미
@@ -75,13 +84,16 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
     // UI에 연결 시도 중 상태 표시
     // setConnectionStatus('connecting')
 
+    const token = getAuthToken()
     // MSW가 가로챌 수 있는 WebSocket URL 생성
     // 실제 서버: ws://서버주소/ws/chat/채팅방UUID/?token=토큰
     // MSW 테스트: ws://localhost:3000/ws/chat/채팅방UUID
     // const wsUrl = `wss://echo.websocket.org`
     // const wsUrl = `ws://localhost:3000/ws/chat/${selectedChatRoom.study_group_uuid}`
     // const wsUrl = `ws://localhost:5173/test`
-    const wsUrl = `ws://localhost:5173/ws/chat/${selectedChatRoom.study_group_uuid}`
+    // const wsUrl = `ws://localhost:5173/ws/chat/${selectedChatRoom.uuid}`
+    const wsUrl = `ws://api.ozcoding.site/ws/chat/${selectedChatRoom.uuid}/?token=${token}`
+
     const ws = new WebSocket(wsUrl)
 
     // WebSocket 연결이 성공적으로 완료되었을 때 실행되는 이벤트 핸들러
@@ -91,15 +103,22 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
       // setConnectionStatus('connected') // ← 상태 변경
       // setSocket(ws) // ← 상태 변경
       socketRef.current = ws // ← useRef 값 설정
+      const currentUserNickname = currentUser?.nickname || '사용자'
 
-      const joinMessage = {
-        type: 'join',
-        room_id: selectedChatRoom.study_group_uuid,
-        user_uuid: currentUserUuid,
-        nickname: '현재사용자',
+      const joinMessage: WebSocketMessage = {
+        message_id: Date.now(),
+        sender: {
+          user_uuid: 'system',
+          nickname: '시스템',
+          profile_img_url: '',
+        },
+        content: `${currentUserNickname}님이 입장했습니다!`,
+        created_at: new Date().toISOString(),
+        type: 'user_joined',
       }
+      setRealTimeMessages((prev) => [...prev, joinMessage])
+
       console.log('방 입장 메시지 전송:', joinMessage)
-      ws.send(JSON.stringify(joinMessage))
     }
 
     // 서버(MSW)로부터 메시지를 받았을 때 실행되는 이벤트 핸들러
@@ -108,31 +127,62 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
 
       try {
         if (typeof event.data !== 'string') return
-        // event.data는 서버에서 보낸 메시지 문자열
-        const data = JSON.parse(event.data)
-        // JSON.parse()로 문자열을 WebSocketMessage 객체로 변환
-        // 내가 보낸 메시지는 이미 UI에 추가했으므로 무시
-        if (data.sender?.user_uuid === currentUserUuid) {
-          return
-        }
-        const convertedMessage: WebSocketMessage = {
-          message_id: Date.now(),
-          sender: {
-            user_uuid: data.user_uuid ?? 'server',
-            nickname: data.sender?.nickname ?? 'Unknown',
-            profile_img_url: '',
-          },
-          content: data.content ?? '',
-          created_at: data.created_at ?? new Date().toISOString(),
-          type: data.type === 'system' ? 'system' : 'message',
+        const message = JSON.parse(event.data)
+
+        console.log('[APP][WS] 파싱된 메시지:', message)
+
+        // 새 메시지 수신 처리
+        if (message.type === 'chat_message') {
+          const newMessage: WebSocketMessage = {
+            message_id: message.data.message_id,
+            sender: {
+              user_uuid: message.data.sender.user_uuid,
+              nickname: message.data.sender.nickname,
+              profile_img_url: message.data.sender.profile_img_url || '',
+            },
+            content: message.data.content,
+            created_at: message.data.created_at,
+            type: 'message',
+          }
+
+          // 내가 보낸 메시지는 이미 UI에 추가했으므로 무시
+          if (newMessage.sender.nickname === currentUser?.nickname) {
+            return
+          }
+          // 파싱된 메시지를 realTimeMessages 상태 배열에 추가
+          // prev => [...prev, message]: 기존 배열을 복사하고 새 메시지를 맨 끝에 추가
+          // 이렇게 하면 React가 상태 변경을 감지하고 UI를 업데이트함
+          setRealTimeMessages((prev) => [...prev, newMessage])
         }
 
-        // 파싱된 메시지를 realTimeMessages 상태 배열에 추가
-        // prev => [...prev, message]: 기존 배열을 복사하고 새 메시지를 맨 끝에 추가
-        // 이렇게 하면 React가 상태 변경을 감지하고 UI를 업데이트함
-        setRealTimeMessages((prev) => [...prev, convertedMessage]) // ← 상태에 추가
+        // 사용자 입장/퇴장 이벤트 처리
+        else if (message.type === 'user_event') {
+          const eventData = message.data
+          let systemMessage = ''
+
+          if (eventData.event === 'join') {
+            systemMessage = `${eventData.nickname}님이 입장했습니다.`
+          } else if (eventData.event === 'leave') {
+            systemMessage = `${eventData.nickname}님이 퇴장했습니다.`
+          }
+
+          if (systemMessage) {
+            const userEventMessage: WebSocketMessage = {
+              message_id: Date.now(),
+              sender: {
+                user_uuid: 'system',
+                nickname: '시스템',
+                profile_img_url: '',
+              },
+              content: systemMessage,
+              created_at: new Date().toISOString(),
+              type: 'user_joined',
+            }
+            setRealTimeMessages((prev) => [...prev, userEventMessage])
+          }
+        }
       } catch (error) {
-        console.log('JSON 파싱 실패, Echo 서버 응답 처리:', event.data)
+        console.error('WebSocket 메시지 파싱 에러:', error, event.data)
       }
     }
 
@@ -154,17 +204,16 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   const sendMessage = (content: string) => {
     if (socketRef.current?.readyState === WebSocket.OPEN && content.trim()) {
       // 방 정보 없으면 전송하지 않음(안전 가드)
-      if (!selectedChatRoom?.study_group_uuid) {
+      if (!selectedChatRoom?.uuid) {
         console.warn('[APP][WS] room_id 없음: 전송 취소')
         return false
       }
 
       const message = {
-        type: 'message',
-        room_id: selectedChatRoom.study_group_uuid,
-        content: content.trim(),
-        user_uuid: currentUserUuid,
-        nickname: '현재사용자',
+        type: 'send_message',
+        data: {
+          content: content.trim(),
+        },
       }
 
       console.log('메시지 전송:', message)
@@ -246,7 +295,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
     selectedChatRoom && (
       <div className="flex h-full flex-col">
         <ChatRoomHeader
-          title={selectedChatRoom.study_group_name}
+          title={selectedChatRoom.name}
           // onlineCount={getOnlineCount()}
           onBack={handleBack}
           toggleChat={toggleChat}
@@ -273,9 +322,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
       return
     }
 
-    const targetChatRoom = chatList.find(
-      (chat) => chat.study_group_uuid === studyGroupUuid
-    )
+    const targetChatRoom = chatList.find((chat) => chat.uuid === studyGroupUuid)
     if (targetChatRoom) {
       setIsOpen(true) // 채팅창을 열어줌
       openChatRoom(targetChatRoom)

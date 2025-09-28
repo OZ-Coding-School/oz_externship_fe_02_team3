@@ -3,7 +3,7 @@ import { http, HttpResponse, passthrough } from 'msw'
 import type { Chat } from '@src/types/chat'
 import chatMessagesData, { chatList } from '../chatListData'
 const API_STATUS = {
-  chatRoomsGet: false,
+  chatRoomsGet: true,
   unReadCountGet: false,
 }
 const mutableChatListData: Chat[] = [...chatList]

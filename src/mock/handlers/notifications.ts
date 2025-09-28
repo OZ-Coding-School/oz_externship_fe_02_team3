@@ -6,8 +6,8 @@ import type {
 } from '@src/types/notification'
 
 const API_STATUS = {
-  notificationGet: false,
-  unReadCountGet: false,
+  notificationGet: true,
+  unReadCountGet: true,
 }
 // 변경 가능한 데이터 선언
 let mutableNotificationsData: NotificationItem[] = [...notificationsData]
