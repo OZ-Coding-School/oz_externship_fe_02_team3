@@ -11,7 +11,7 @@ interface Props {
   creating: boolean
   justCreatedId?: number | null
   isSelected: (id: number) => boolean
-  toggle: (tag: Tag) => void
+  toggle: (tag: Tag, nextChecked?: boolean) => void
   atMax: boolean
   onCreate: (name: string) => Promise<void>
 }
@@ -52,11 +52,12 @@ export default function TagResultSection({
       {!loading && items.length > 0 && (
         <ul className="space-y-2" aria-label="검색 결과 태그">
           {items.map((t) => {
-            const selected = isSelected(t.id)
+            const tid = typeof t.id === 'number' ? t.id : undefined
+            const selected = tid !== undefined ? isSelected(tid) : false
             const disabled = atMax && !selected
 
             return (
-              <li key={t.id}>
+              <li key={tid ?? `name:${t.name}`}>
                 <button
                   type="button"
                   onClick={() => {
@@ -82,7 +83,7 @@ export default function TagResultSection({
                   />
                 </button>
 
-                {justCreatedId === t.id && (
+                {justCreatedId === tid && (
                   <div className="mt-1 text-[11px] text-yellow-800">
                     방금 등록된 태그
                   </div>

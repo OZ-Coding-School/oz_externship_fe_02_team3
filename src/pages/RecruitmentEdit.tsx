@@ -21,30 +21,21 @@ import type { EditDraft } from '@src/utils/makeEditDraftFromPost'
 import { supa } from '@src/lib/supabase'
 import type { Tag } from '@src/types/tag'
 
-const normalizeTags = (list: Tag[], max = 5): Tag[] => {
+const normalizeTags = (list: Tag[] = [], max = 5): Tag[] => {
   const out: Tag[] = []
   const seen = new Set<string>()
-
   for (const t of list) {
+    const id = (t as { id?: number })?.id
     const name = (t.name ?? '').trim()
     if (!name) continue
-
-    const id = t.id
-    const hasValidId = typeof id === 'number' && Number.isFinite(id)
-
-    const key = hasValidId ? `id:${id}` : `name:${name.toLowerCase()}`
+    const key = Number.isFinite(id as number)
+      ? `id:${id}`
+      : `name:${name.toLowerCase()}`
     if (seen.has(key)) continue
-
     seen.add(key)
-    if (hasValidId) {
-      out.push({ id, name })
-    } else {
-      // 상태관리X
-    }
-
+    out.push({ id: id as number, name })
     if (out.length >= max) break
   }
-
   return out
 }
 
@@ -352,6 +343,7 @@ export default function RecruitmentEdit() {
   // 12) 저장
   const m = useMutation({
     mutationFn: async () => {
+      const normTags = normalizeTags(tags, 5)
       const rec = recQ.data
       if (!rec?.id) throw new Error('공고를 찾을 수 없습니다.')
 
@@ -364,6 +356,7 @@ export default function RecruitmentEdit() {
         close_at: deadline ? deadline.toISOString() : null,
         study_group_id: selectedGroupIdForSave,
         updated_at: new Date().toISOString(),
+        tags: normTags.map((t) => t.name),
       }
       const { error: updErr } = await supa
         .from('recruitments')
