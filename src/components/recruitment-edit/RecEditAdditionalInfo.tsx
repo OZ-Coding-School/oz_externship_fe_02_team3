@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import RecEditPriceInput from './RecEditPriceInput'
-import TagBox from '../recruitment-create/tag-ui/TagBox'
 import { SupabaseFileuploader } from '../recruitment-create/SupabaseFileUploader'
+import TagSection from '../recruitment-create/tag-ui/TagSection'
 export interface PresetFileIn {
   id: string
   name: string
@@ -55,7 +55,7 @@ export default function RecEditAdditionalInfo({
       />
 
       <div className="mt-6">
-        <TagBox />
+        <TagSection />
       </div>
 
       <div className="mt-6">
