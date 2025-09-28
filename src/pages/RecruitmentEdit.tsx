@@ -1,7 +1,6 @@
-// src/pages/recruitment-edit/RecruitmentEdit.tsx
 import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import { useMutation, useQuery } from '@tanstack/react-query'
-import { useMemo, useState } from 'react'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { useToast } from '@components/commons/toast'
@@ -13,7 +12,6 @@ import RecEditAdditionalInfo, {
 } from '@src/components/recruitment-edit/RecEditAdditionalInfo'
 import RecEditFooter from '@src/components/recruitment-edit/RecEditFooter'
 
-import { patchRecruitment } from '@src/api/recruitments.edit'
 import {
   RECRUIT_EDIT_TOAST,
   RECRUIT_EDIT_VALIDATION,
@@ -31,6 +29,7 @@ interface RawRec {
   expected_headcount: number | null
   close_at: string | null
   study_group_id: number | null
+  estimated_fee: number | null
   study_groups?: { name: string | null } | { name: string | null }[] | null
 }
 interface FileLike {
@@ -60,13 +59,14 @@ interface SupaStudyLectureRow {
 }
 
 export default function RecruitmentEdit() {
-  const { recruitment_uuid = '' } = useParams()
+  const { uuid = '' } = useParams<{ uuid: string }>()
   const { state } = useLocation() as { state?: { draft?: EditDraft } }
   const draft = state?.draft
 
   const navigate = useNavigate()
   const toast = useToast()
   const draftId = useMemo(() => uuidv4(), [])
+  const qc = useQueryClient()
 
   // 1) 그룹 목록
   const groupsQ = useQuery({
@@ -81,26 +81,27 @@ export default function RecruitmentEdit() {
     },
   })
 
-  // 2) 공고 단건
-  const isNumericId = /^\d+$/.test(recruitment_uuid)
+  // 2) 공고 단건 (uuid로 조회)
   const recQ = useQuery({
-    queryKey: ['recruitment', recruitment_uuid],
-    enabled: !!recruitment_uuid,
+    queryKey: ['recruitment', uuid],
+    enabled: !!uuid,
     queryFn: async () => {
       const sel = `
         id, uuid, title, content, expected_headcount, close_at, study_group_id,
+        estimated_fee,
         study_groups:study_group_id ( name )
       `
-      const base = supa.from('recruitments').select(sel)
-      const { data, error } = isNumericId
-        ? await base.eq('id', Number(recruitment_uuid)).single()
-        : await base.eq('uuid', recruitment_uuid).single()
+      const { data, error } = await supa
+        .from('recruitments')
+        .select(sel)
+        .eq('uuid', uuid)
+        .single()
       if (error) throw error
       return data as RawRec
     },
   })
 
-  // 3) 폼 상태
+  // 3) 폼 상태 (초기값은 draft 기준)
   const [title, setTitle] = useState(draft?.title ?? '')
   const [groupName, setGroupName] = useState<string | undefined>(
     draft?.groupName ?? undefined
@@ -112,7 +113,30 @@ export default function RecruitmentEdit() {
   const [markdown, setMarkdown] = useState<string>(draft?.markdown ?? '')
   const [priceRaw, setPriceRaw] = useState<string>(draft?.price ?? '')
 
-  // 4) 조인 결과로 그룹명 복원
+  const hydratedRef = useRef(false)
+  useEffect(() => {
+    const r = recQ.data
+    if (!r || hydratedRef.current) return
+
+    setTitle((prev) => prev || r.title || '')
+    setDeadline((prev) => prev ?? (r.close_at ? new Date(r.close_at) : null))
+    setCapacityName(
+      (prev) =>
+        prev ?? (r.expected_headcount ? `${r.expected_headcount}명` : undefined)
+    )
+    setMarkdown((prev) => (prev !== '' ? prev : (r.content ?? '')))
+    setPriceRaw((prev) =>
+      prev !== ''
+        ? prev
+        : r.estimated_fee != null
+          ? String(r.estimated_fee)
+          : ''
+    )
+
+    hydratedRef.current = true
+  }, [recQ.data])
+
+  // 4) 표시용 그룹명 복원
   const resolvedGroupName = useMemo(() => {
     const row = recQ.data
     if (!row) return undefined
@@ -123,26 +147,30 @@ export default function RecruitmentEdit() {
     return groupsQ.data?.find((g) => g.id === row.study_group_id)?.name
   }, [recQ.data, groupsQ.data])
 
-  // 5) 드롭다운 옵션 (현재 선택 포함)
+  useEffect(() => {
+    if (!groupName && resolvedGroupName) setGroupName(resolvedGroupName)
+  }, [resolvedGroupName, groupName])
+
+  // 5) 드롭다운 옵션
   const groupOptions: string[] = useMemo(() => {
     const names = (groupsQ.data ?? []).map((g) => g.name)
     const current = groupName ?? resolvedGroupName
     return Array.from(new Set([...(current ? [current] : []), ...names]))
   }, [groupsQ.data, groupName, resolvedGroupName])
 
-  // 6) 강의 조회용 그룹 ID
-  const selectedGroupId = useMemo(() => {
+  // 6) 저장/프리뷰용 그룹 ID
+  const selectedGroupIdForSave = useMemo(() => {
     if (groupName) {
       const found = groupsQ.data?.find((g) => g.name === groupName)?.id
       if (found) return found
     }
-    return recQ.data?.study_group_id ?? undefined
+    return recQ.data?.study_group_id ?? null
   }, [groupName, groupsQ.data, recQ.data])
 
-  // 7) 선택 그룹의 강의 목록
+  // 7) 선택 그룹의 강의 목록 (미리보기)
   const groupCoursesQ = useQuery({
-    queryKey: ['group_courses', selectedGroupId],
-    enabled: !!selectedGroupId,
+    queryKey: ['group_courses', selectedGroupIdForSave],
+    enabled: !!selectedGroupIdForSave,
     queryFn: async (): Promise<DBGroupCourseRow[]> => {
       const { data, error } = await supa
         .from('study_lectures')
@@ -152,7 +180,7 @@ export default function RecruitmentEdit() {
           crawled_lectures ( id, title, original_price, discount_price )
         `
         )
-        .eq('study_group_id', selectedGroupId!)
+        .eq('study_group_id', selectedGroupIdForSave!)
       if (error) throw error
       const rows = (data ?? []) as unknown as SupaStudyLectureRow[]
       return rows.map((r) => ({
@@ -204,31 +232,52 @@ export default function RecruitmentEdit() {
   const derivedPrice = String(totalPricePreview)
   const finalPrice = toFinalPrice(priceRaw, derivedPrice)
 
-  // 11) 저장
+  // 11) 검증
   const validate = () => {
     const messages: string[] = []
     if (!title?.trim()) messages.push(RECRUIT_EDIT_VALIDATION.title)
-    if (!groupName) messages.push(RECRUIT_EDIT_VALIDATION.group)
+    if (!selectedGroupIdForSave) messages.push(RECRUIT_EDIT_VALIDATION.group)
     if (!capacityName) messages.push(RECRUIT_EDIT_VALIDATION.capacity)
     if (!deadline) messages.push(RECRUIT_EDIT_VALIDATION.deadline)
     if (!markdown?.trim()) messages.push(RECRUIT_EDIT_VALIDATION.content)
     return messages
   }
 
+  // 12) 저장
   const m = useMutation({
-    mutationFn: () =>
-      patchRecruitment(recruitment_uuid, {
+    mutationFn: async () => {
+      const payload = {
         title,
         content: markdown,
         expected_headcount: parseCapacity(capacityName),
         estimated_fee: Number(finalPrice),
-        close_at: deadline ? deadline.toISOString() : undefined,
-      }),
+        close_at: deadline ? deadline.toISOString() : null,
+        study_group_id: selectedGroupIdForSave,
+        updated_at: new Date().toISOString(),
+      }
+      const { data, error } = await supa
+        .from('recruitments')
+        .update(payload)
+        .eq('uuid', uuid)
+        .select('id, uuid, title, estimated_fee, updated_at')
+        .single()
+      if (error) throw error
+      if (!data) throw new Error('수정된 행이 없습니다.')
+      return data
+    },
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['myRecruitments'] })
+      qc.invalidateQueries({ queryKey: ['recruitments'] })
+      qc.invalidateQueries({ queryKey: ['recruitment', uuid] })
       toast.success(RECRUIT_EDIT_TOAST.success)
       navigate('/recruitment/manage')
     },
-    onError: () => toast.error(RECRUIT_EDIT_TOAST.error),
+    onError: (err: unknown) => {
+      const e = err as { message?: string; error_description?: string }
+      const message =
+        e?.message || e?.error_description || '알 수 없는 오류가 발생했습니다.'
+      toast.error({ title: RECRUIT_EDIT_TOAST.error.title, content: message })
+    },
   })
 
   const handleSubmit = () => {
@@ -268,9 +317,10 @@ export default function RecruitmentEdit() {
           onChangeMarkDown={setMarkdown}
         />
 
+        {/* 가격 입력엔 DB가격(priceRaw) 우선, 없으면 강의 합계(derivedPrice) */}
         <RecEditAdditionalInfo
           draftId={draftId}
-          defaultPrice={derivedPrice}
+          defaultPrice={priceRaw || derivedPrice}
           onPriceChange={setPriceRaw}
           defaultFiles={defaultFiles}
         />
