@@ -19,8 +19,82 @@ import {
 import { parseCapacity, toFinalPrice } from '@src/utils/recEdit'
 import type { EditDraft } from '@src/utils/makeEditDraftFromPost'
 import { supa } from '@src/lib/supabase'
+import type { Tag } from '@src/types/tag'
 
-// ────────────────────── Types
+const normalizeTags = (list: Tag[], max = 5): Tag[] => {
+  const out: Tag[] = []
+  const seen = new Set<string>()
+
+  for (const t of list) {
+    const name = (t.name ?? '').trim()
+    if (!name) continue
+
+    const id = t.id
+    const hasValidId = typeof id === 'number' && Number.isFinite(id)
+
+    const key = hasValidId ? `id:${id}` : `name:${name.toLowerCase()}`
+    if (seen.has(key)) continue
+
+    seen.add(key)
+    if (hasValidId) {
+      out.push({ id, name })
+    } else {
+      // 상태관리X
+    }
+
+    if (out.length >= max) break
+  }
+
+  return out
+}
+
+const uniqTags = (list: Tag[]): Tag[] => {
+  const map = new Map<string, Tag>()
+  for (const t of list) {
+    const name = (t.name ?? '').trim()
+    const id = t.id
+    const hasValidId = typeof id === 'number' && Number.isFinite(id)
+    const key = hasValidId ? `id:${id}` : `name:${name.toLowerCase()}`
+    if (!map.has(key)) map.set(key, { id, name })
+  }
+  return Array.from(map.values())
+}
+
+const resolveTagIdsByName = async (list: Tag[]): Promise<number[]> => {
+  const unique = uniqTags(list)
+  const names = unique
+    .map((t) => (t.name ?? '').trim())
+    .filter((n) => n.length > 0)
+
+  if (names.length === 0) return []
+
+  const { data: found, error: sErr } = await supa
+    .from('tags')
+    .select('id,name')
+    .in('name', names)
+  if (sErr) throw sErr
+
+  const foundMap = new Map((found ?? []).map((r) => [r.name, r.id]))
+
+  const toCreate = names.filter((n) => !foundMap.has(n))
+  if (toCreate.length > 0) {
+    const { data: created, error: iErr } = await supa
+      .from('tags')
+      .insert(toCreate.map((n) => ({ name: n })))
+      .select('id,name')
+    if (iErr) throw iErr
+    for (const r of created ?? []) foundMap.set(r.name, r.id)
+  }
+
+  return Array.from(
+    new Set(
+      names
+        .map((n) => Number(foundMap.get(n)))
+        .filter((x): x is number => Number.isFinite(x))
+    )
+  )
+}
+
 interface RawRec {
   id: number
   uuid: string
@@ -31,12 +105,6 @@ interface RawRec {
   study_group_id: number | null
   estimated_fee: number | null
   study_groups?: { name: string | null } | { name: string | null }[] | null
-}
-interface FileLike {
-  id?: string | number
-  name?: string
-  url: string
-  key?: string | number
 }
 interface LectureObj {
   id: number
@@ -56,6 +124,15 @@ interface PreviewCourse {
 interface SupaStudyLectureRow {
   lecture_id: number
   crawled_lectures: LectureObj | LectureObj[] | null
+}
+interface TagRow {
+  tag_id: number
+  tags: { id: number; name: string } | { id: number; name: string }[] | null
+}
+interface AttachmentRow {
+  id: number
+  file_url: string
+  file_name: string
 }
 
 export default function RecruitmentEdit() {
@@ -81,7 +158,7 @@ export default function RecruitmentEdit() {
     },
   })
 
-  // 2) 공고 단건 (uuid로 조회)
+  // 2) 공고 단건
   const recQ = useQuery({
     queryKey: ['recruitment', uuid],
     enabled: !!uuid,
@@ -101,7 +178,7 @@ export default function RecruitmentEdit() {
     },
   })
 
-  // 3) 폼 상태 (초기값은 draft 기준)
+  // 3) 폼 상태
   const [title, setTitle] = useState(draft?.title ?? '')
   const [groupName, setGroupName] = useState<string | undefined>(
     draft?.groupName ?? undefined
@@ -113,6 +190,11 @@ export default function RecruitmentEdit() {
   const [markdown, setMarkdown] = useState<string>(draft?.markdown ?? '')
   const [priceRaw, setPriceRaw] = useState<string>(draft?.price ?? '')
 
+  // 태그/첨부 상태
+  const [tags, setTags] = useState<Tag[]>([])
+  const [files, setFiles] = useState<PresetFileIn[]>([])
+
+  // 최초 하이드레이션
   const hydratedRef = useRef(false)
   useEffect(() => {
     const r = recQ.data
@@ -217,16 +299,40 @@ export default function RecruitmentEdit() {
     [coursesPreview]
   )
 
-  // 9) 첨부파일
-  const defaultFiles: PresetFileIn[] = useMemo(() => {
-    const raw: FileLike[] = (draft?.files as FileLike[] | undefined) ?? []
-    return raw.map((f) => ({
-      id: String(f.id ?? f.key ?? f.url),
-      name: f.name ?? '첨부파일',
-      url: f.url,
-      key: f.key !== undefined ? String(f.key) : undefined,
-    }))
-  }, [draft])
+  // 9) 기존 태그/첨부 로드
+  useEffect(() => {
+    const recId = recQ.data?.id
+    if (!recId) return
+
+    // 태그
+    supa
+      .from('recruitment_tags')
+      .select('tag_id, tags ( id, name )')
+      .eq('recruitment_id', recId)
+      .then(({ data, error }) => {
+        if (error) return
+        const rows = (data ?? []) as TagRow[]
+        const list = rows
+          .map((r) => (Array.isArray(r.tags) ? r.tags[0] : r.tags))
+          .filter((t): t is { id: number; name: string } => Boolean(t))
+        setTags(normalizeTags(list))
+      })
+
+    // 첨부
+    supa
+      .from('recruitment_attachments')
+      .select('id, file_url, file_name')
+      .eq('recruitment_id', recId)
+      .then(({ data, error }) => {
+        if (error) return
+        const fs = (data ?? []).map((r: AttachmentRow) => ({
+          id: String(r.id),
+          name: r.file_name,
+          url: r.file_url,
+        })) as PresetFileIn[]
+        setFiles(fs)
+      })
+  }, [recQ.data?.id])
 
   // 10) 가격
   const derivedPrice = String(totalPricePreview)
@@ -246,6 +352,10 @@ export default function RecruitmentEdit() {
   // 12) 저장
   const m = useMutation({
     mutationFn: async () => {
+      const rec = recQ.data
+      if (!rec?.id) throw new Error('공고를 찾을 수 없습니다.')
+
+      // 1) 본문 업데이트
       const payload = {
         title,
         content: markdown,
@@ -255,15 +365,66 @@ export default function RecruitmentEdit() {
         study_group_id: selectedGroupIdForSave,
         updated_at: new Date().toISOString(),
       }
-      const { data, error } = await supa
+      const { error: updErr } = await supa
         .from('recruitments')
         .update(payload)
         .eq('uuid', uuid)
-        .select('id, uuid, title, estimated_fee, updated_at')
-        .single()
-      if (error) throw error
-      if (!data) throw new Error('수정된 행이 없습니다.')
-      return data
+      if (updErr) throw updErr
+
+      // 2) 태그 동기화
+      const desiredTags = normalizeTags(tags)
+      const tagIds = await resolveTagIdsByName(desiredTags)
+
+      const { data: curRT } = await supa
+        .from('recruitment_tags')
+        .select('tag_id')
+        .eq('recruitment_id', rec.id)
+      const currentIds = new Set<number>(
+        (curRT ?? []).map((r: { tag_id: number }) => r.tag_id)
+      )
+      const desiredIds = new Set<number>(tagIds)
+
+      const toDelete = Array.from(currentIds).filter(
+        (id) => !desiredIds.has(id)
+      )
+      const toAdd = Array.from(desiredIds).filter((id) => !currentIds.has(id))
+
+      if (toDelete.length) {
+        const { error: delErr } = await supa
+          .from('recruitment_tags')
+          .delete()
+          .eq('recruitment_id', rec.id)
+          .in('tag_id', toDelete)
+        if (delErr) throw delErr
+      }
+
+      if (toAdd.length) {
+        const { error: insErr } = await supa.from('recruitment_tags').upsert(
+          toAdd.map((tid) => ({ recruitment_id: rec.id, tag_id: tid })),
+          { onConflict: 'recruitment_id,tag_id', ignoreDuplicates: true }
+        )
+        if (insErr) throw insErr
+      }
+
+      // 3) 첨부 동기화 (전체 갱신)
+      await supa
+        .from('recruitment_attachments')
+        .delete()
+        .eq('recruitment_id', rec.id)
+      if (files.length) {
+        const { error: faErr } = await supa
+          .from('recruitment_attachments')
+          .insert(
+            files.map((f) => ({
+              recruitment_id: rec.id,
+              file_url: f.url,
+              file_name: f.name,
+            }))
+          )
+        if (faErr) throw faErr
+      }
+
+      return true
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['myRecruitments'] })
@@ -317,12 +478,14 @@ export default function RecruitmentEdit() {
           onChangeMarkDown={setMarkdown}
         />
 
-        {/* 가격 입력엔 DB가격(priceRaw) 우선, 없으면 강의 합계(derivedPrice) */}
         <RecEditAdditionalInfo
           draftId={draftId}
           defaultPrice={priceRaw || derivedPrice}
           onPriceChange={setPriceRaw}
-          defaultFiles={defaultFiles}
+          tags={tags}
+          onTagsChange={(next) => setTags(normalizeTags(next))}
+          files={files}
+          onFilesChange={setFiles}
         />
 
         <RecEditFooter onSubmit={handleSubmit} submitting={m.isPending} />

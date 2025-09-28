@@ -38,10 +38,9 @@ export default function TagSearchModal({
     loading,
     creating,
     justCreatedId,
-    register, // 새 태그 등록
-  } = useTagManager(open, size) // 검색/페이지네이션/등록
+    register,
+  } = useTagManager(open, size)
 
-  // 선택 상태 관리
   const { selected, setSelected, atMax, isSelected, toggle, removeById } =
     useSelectedTags(initialSelected, max)
 
@@ -61,7 +60,7 @@ export default function TagSearchModal({
 
   const handleCreate = useCallback(
     async (name: string) => {
-      await register(name) // 반환된 Tag는 쓰지 않음 => Promise<void>로 취급
+      await register(name)
     },
     [register]
   )
@@ -70,12 +69,21 @@ export default function TagSearchModal({
     if (!open) return
     setSelected(initialSelected)
     setPage(1)
-  }, [open, initialSelected, setPage])
+  }, [open, initialSelected, setPage, setSelected])
 
   const handleClose = () => {
     setQuery('')
     onClose()
   }
+
+  const toggleByClick = useCallback(
+    (tag: Tag) => {
+      const nextChecked = !isSelected(tag.id)
+      if (atMax && nextChecked && !isSelected(tag.id)) return
+      toggle(tag, nextChecked)
+    },
+    [isSelected, toggle, atMax]
+  )
 
   return (
     <Modal open={open} onClose={onClose} size="md" closeOnOutsideClick={false}>
@@ -87,7 +95,8 @@ export default function TagSearchModal({
           공고에 추가할 태그를 선택하세요. (최대 5개)
         </p>
       </Modal.Header>
-      <div className="min-h-0 flex-1 gap-3 overflow-y-auto">
+
+      <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="relative w-full px-6 py-3">
           <SearchBar
             value={query}
@@ -97,14 +106,14 @@ export default function TagSearchModal({
             delay={300}
           />
         </div>
-        {/* 섵택된 태그 리스트 */}
+
         <SelectedTagSection
           selected={selected}
           max={max}
           items={items}
           onRemove={(id) => removeById(Number(id))}
         />
-        {/* 결과 체크박스 리스트 */}
+
         <TagResultSection
           items={items}
           loading={loading}
@@ -112,19 +121,22 @@ export default function TagSearchModal({
           creating={creating}
           justCreatedId={justCreatedId}
           isSelected={isSelected}
-          toggle={toggle}
+          toggle={toggleByClick}
           atMax={atMax}
           onCreate={handleCreate}
         />
-        {/* 페이지네이션 */}
-        <Pagination
-          page={page}
-          totalCount={count}
-          size={size}
-          onPageChange={setPage}
-          className=""
-        />
+
+        <div className="relative z-0 px-6 pt-2 pb-6">
+          <Pagination
+            page={page}
+            totalCount={count}
+            size={size}
+            onPageChange={setPage}
+            className="w-full justify-center"
+          />
+        </div>
       </div>
+
       <Modal.Footer>
         <div className="ml-auto flex gap-2">
           <Button

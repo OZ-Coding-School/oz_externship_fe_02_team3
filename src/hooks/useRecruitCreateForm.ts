@@ -1,28 +1,23 @@
 import { useCallback, useMemo, useState } from 'react'
 import { supa } from '@src/lib/supabase'
+import type { Tag } from '@src/types/tag'
 
 interface Notify {
   success: (title: string, content?: string) => void
   error: (title: string, content?: string) => void
 }
 
-interface SubmitTag {
-  id?: number | string | null
-  name: string
-}
-interface SubmitFile {
-  url: string
-  name: string
+export interface SubmitFile {
   id?: string
+  name: string
+  url: string
   key?: string
 }
-
 interface SubmitArgs {
   estimatedFee: number | null
-  tags?: SubmitTag[]
+  tags?: Tag[]
   files?: SubmitFile[]
 }
-
 interface Options {
   notify: Notify
   onSuccess?: (uuid?: string) => void
@@ -42,51 +37,55 @@ const extractErrorMessage = (e: unknown): string => {
   return '알 수 없는 오류가 발생했어요.'
 }
 
-const normalizeTags = (tags: SubmitTag[] = []) => {
-  const ids: number[] = []
-  const names: string[] = []
-  for (const t of tags) {
-    const name = String(t.name ?? '').trim()
-    const num = t.id === 0 || t.id ? Number(t.id) : NaN
-    if (Number.isFinite(num)) ids.push(num)
-    if (name) names.push(name)
+const normalizeTags = (list: Tag[] = [], max = 5): Tag[] => {
+  const out: Tag[] = []
+  const seen = new Set<string>()
+  for (const t of list) {
+    const idVal = typeof t.id === 'number' ? t.id : undefined
+    const nameVal = (t.name ?? '').trim()
+    if (!nameVal) continue
+    const key =
+      idVal !== undefined ? `id:${idVal}` : `name:${nameVal.toLowerCase()}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.push({ id: idVal as number, name: nameVal })
+    if (out.length >= max) break
   }
-  return { ids, names }
+  return out
 }
 
-const ensureTagIds = async (rawTags: SubmitTag[]): Promise<number[]> => {
-  const { ids: incomingIds, names } = normalizeTags(rawTags)
-  const nameSet = Array.from(new Set(names))
-  let existing: { id: number; name: string }[] = []
+const resolveTagIdsByName = async (list: Tag[]): Promise<number[]> => {
+  const unique = normalizeTags(list)
+  const names = unique.map((t) => t.name)
+  if (names.length === 0) return []
 
-  if (nameSet.length > 0) {
-    const { data, error } = await supa
-      .from('tags')
-      .select('id, name')
-      .in('name', nameSet)
-    if (error) throw error
-    existing = data ?? []
-  }
+  // 1) 기존 태그 조회
+  const { data: found, error: selErr } = await supa
+    .from('tags')
+    .select('id,name')
+    .in('name', names)
+  if (selErr) throw selErr
 
-  const existingNameSet = new Set(existing.map((r) => r.name))
-  const toCreateNames = nameSet.filter((n) => !existingNameSet.has(n))
-  let created: { id: number; name: string }[] = []
-  if (toCreateNames.length > 0) {
-    const { data: createdRows, error: insErr } = await supa
+  const map = new Map<string, number>(
+    (found ?? []).map((r) => [r.name, Number(r.id)])
+  )
+
+  // 2) 없는 이름들 생성
+  const toCreate = names.filter((n) => !map.has(n))
+  if (toCreate.length > 0) {
+    const { data: created, error: insErr } = await supa
       .from('tags')
-      .insert(toCreateNames.map((name) => ({ name })))
-      .select('id, name')
+      .insert(toCreate.map((n) => ({ name: n })))
+      .select('id,name')
     if (insErr) throw insErr
-    created = createdRows ?? []
+    for (const r of created ?? []) map.set(r.name, Number(r.id))
   }
 
-  const allIds = [
-    ...incomingIds,
-    ...existing.map((r) => Number(r.id)),
-    ...created.map((r) => Number(r.id)),
-  ].filter((n, i, arr) => Number.isFinite(n) && arr.indexOf(n) === i)
-
-  return allIds
+  // 3) 최종 id 배열
+  const ids = names
+    .map((n) => map.get(n))
+    .filter((v): v is number => typeof v === 'number' && Number.isFinite(v))
+  return Array.from(new Set(ids))
 }
 
 export function useRecruitCreateForm({ notify, onSuccess }: Options) {
@@ -133,7 +132,7 @@ export function useRecruitCreateForm({ notify, onSuccess }: Options) {
           return
         }
 
-        // 1) 본문 저장
+        // 1) 공고 본문 생성
         const payload = {
           uuid: crypto.randomUUID(),
           author_id: Number(import.meta.env.VITE_FAKE_USER_ID ?? '20'),
@@ -143,9 +142,6 @@ export function useRecruitCreateForm({ notify, onSuccess }: Options) {
           estimated_fee: estimatedFee ?? 0,
           close_at: deadline ? deadline.toISOString() : null,
           study_group_id: studyGroupId,
-          tags: Array.from(
-            new Set(tags.map((t) => String(t.name ?? '').trim()))
-          ).filter(Boolean),
         }
 
         const { data: rec, error: recErr } = await supa
@@ -154,41 +150,35 @@ export function useRecruitCreateForm({ notify, onSuccess }: Options) {
           .select('id, uuid')
           .single()
         if (recErr) throw recErr
+        const recId = Number(rec.id)
 
-        const recruitmentId = Number(rec.id)
-        const recruitmentUuid = String(rec.uuid)
-
-        // 2) 태그 연결 (없으면 생성 → id 전부 확보 후 조인 저장)
-        const tagIds = await ensureTagIds(tags)
+        // 2) 태그 매핑 (이름→id 보정 후 upsert)
+        const tagIds = await resolveTagIdsByName(tags)
         if (tagIds.length > 0) {
-          const linkRows = tagIds.map((tag_id) => ({
-            recruitment_id: recruitmentId,
-            tag_id,
-          }))
-          const { error: linkErr } = await supa
-            .from('recruitment_tags')
-            .insert(linkRows)
-          if (linkErr) throw linkErr
+          const { error: rtErr } = await supa.from('recruitment_tags').upsert(
+            tagIds.map((tid) => ({ recruitment_id: recId, tag_id: tid })),
+            { onConflict: 'recruitment_id,tag_id', ignoreDuplicates: true }
+          )
+          if (rtErr) throw rtErr
         }
 
-        // 3) 첨부파일 메타 저장 (file_url UNIQUE)
-        if (files.length > 0) {
-          const dedup = Array.from(
-            new Map(files.map((f) => [f.url, f])).values()
-          )
-          const rows = dedup.map((f) => ({
-            recruitment_id: recruitmentId,
-            file_url: f.url,
-            file_name: f.name,
-          }))
-          const { error: fileErr } = await supa
+        // 3) 첨부 파일 저장
+        const cleanFiles = (files ?? []).filter((f) => f?.url && f?.name)
+        if (cleanFiles.length > 0) {
+          const { error: faErr } = await supa
             .from('recruitment_attachments')
-            .insert(rows)
-          if (fileErr) throw fileErr
+            .insert(
+              cleanFiles.map((f) => ({
+                recruitment_id: recId,
+                file_url: f.url,
+                file_name: f.name,
+              }))
+            )
+          if (faErr) throw faErr
         }
 
         notify.success('공고 등록 완료', '성공적으로 등록되었어요.')
-        onSuccess?.(recruitmentUuid)
+        onSuccess?.(rec.uuid)
       } catch (e: unknown) {
         notify.error('공고 등록 실패', extractErrorMessage(e))
       }

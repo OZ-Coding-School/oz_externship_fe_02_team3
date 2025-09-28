@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import RecEditPriceInput from './RecEditPriceInput'
 import { SupabaseFileuploader } from '../recruitment-create/SupabaseFileUploader'
 import TagSection from '../recruitment-create/tag-ui/TagSection'
+import type { Tag } from '@src/types/tag'
+
 export interface PresetFileIn {
   id: string
   name: string
@@ -13,31 +15,44 @@ interface RecEditAdditionalInfoProps {
   draftId: string
   defaultPrice?: string
   onPriceChange: (raw: string) => void
-  defaultFiles?: PresetFileIn[]
+
+  tags: Tag[]
+  onTagsChange: (tags: Tag[]) => void
+  files: PresetFileIn[]
+  onFilesChange: (files: PresetFileIn[]) => void
 }
 
 export default function RecEditAdditionalInfo({
   draftId,
   defaultPrice,
   onPriceChange,
-  defaultFiles = [],
+  tags,
+  onTagsChange,
+  files,
+  onFilesChange,
 }: RecEditAdditionalInfoProps) {
   const [price, setPrice] = useState('')
-
   useEffect(() => setPrice(defaultPrice ?? ''), [defaultPrice])
 
-  const normalized: PresetFileIn[] = useMemo(
+  const normalizedFiles = useMemo(
     () =>
-      defaultFiles.map((f) => ({
+      files.map((f) => ({
         ...f,
         id: String(f.id),
         key: f.key !== undefined ? String(f.key) : undefined,
       })),
-    [defaultFiles]
+    [files]
   )
 
-  const [attachments, setAttachments] = useState<PresetFileIn[]>(normalized)
-  useEffect(() => setAttachments(normalized), [normalized])
+  const relayTagsChange: React.Dispatch<React.SetStateAction<Tag[]>> = (
+    updater
+  ) => {
+    const next =
+      typeof updater === 'function'
+        ? (updater as (p: Tag[]) => Tag[])(tags)
+        : updater
+    onTagsChange(next)
+  }
 
   return (
     <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-gray-900">
@@ -55,7 +70,7 @@ export default function RecEditAdditionalInfo({
       />
 
       <div className="mt-6">
-        <TagSection />
+        <TagSection value={tags} onChange={relayTagsChange} />
       </div>
 
       <div className="mt-6">
@@ -64,8 +79,8 @@ export default function RecEditAdditionalInfo({
         </label>
         <SupabaseFileuploader
           draftId={draftId}
-          defaultFiles={attachments}
-          onChange={setAttachments}
+          defaultFiles={normalizedFiles}
+          onChange={onFilesChange}
         />
       </div>
     </div>
