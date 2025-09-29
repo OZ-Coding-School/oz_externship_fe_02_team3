@@ -3,12 +3,16 @@ import Modal from '@components/commons/modal'
 import { FormField, TextareaWithCounter } from '@components/commons/form'
 import { MousePointer2 as MousePointer2Icon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { useToast } from '@src/components/commons/toast'
+import { submitApplication } from '@src/api/application'
+import type { AxiosError } from 'axios'
 
 interface Props {
   open: boolean
   onClose: () => void
   title?: string
+  recruitmentUuid: string
 }
 
 interface Form {
@@ -56,7 +60,11 @@ export default function ApplicationModal({
   open,
   onClose,
   title = '공고 제목',
+  recruitmentUuid,
 }: Props) {
+  const toast = useToast()
+  const [submitting, setSubmitting] = useState(false)
+
   const {
     register,
     handleSubmit,
@@ -70,10 +78,35 @@ export default function ApplicationModal({
 
   const hasExp = watch('hasExp') ?? false
 
-  const onSubmit = (data: Form) => {
-    console.log(data)
-    reset()
-    onClose()
+  const onSubmit = async (f: Form) => {
+    setSubmitting(true)
+    try {
+      await submitApplication(recruitmentUuid, {
+        self_introduction: f.intro.trim(),
+        motivation: f.motive.trim(),
+        objective: f.goal.trim(),
+        available_time: f.availability.trim(),
+        has_study_experience: !!f.hasExp,
+        study_experience: f.hasExp ? f.expDetail?.trim() : undefined,
+      })
+
+      toast.success({ title: '제출 완료', content: '지원서가 제출되었습니다.' })
+      reset()
+      onClose()
+    } catch (e) {
+      const err = e as AxiosError<{
+        detail?: string
+        error_code?: string
+        error?: string
+      }>
+      const msg =
+        err.response?.data?.detail ??
+        err.response?.data?.error ??
+        '제출에 실패했습니다. 잠시 후 다시 시도해 주세요.'
+      toast.error({ title: '제출 실패', content: msg })
+    } finally {
+      setSubmitting(false)
+    }
   }
   const onInvalid = () => {
     const firstErrorName = Object.keys(errors)[0] as keyof Form | undefined
@@ -94,9 +127,9 @@ export default function ApplicationModal({
   useEffect(() => {
     if (!hasExp) {
       clearErrors('expDetail')
-      setValue('expDetail', '') // 내용도 초기화
+      setValue('expDetail', '') // 내용 초기화
     }
-  }, [hasExp, clearErrors])
+  }, [hasExp, clearErrors, setValue])
 
   return (
     <Modal
@@ -184,14 +217,15 @@ export default function ApplicationModal({
             onClick={handleClose}
           />
           <Button
-            buttonInnerText="지원서 제출"
+            buttonInnerText={submitting ? '제출 중…' : '지원서 제출'}
             icon={MousePointer2Icon}
             variant="primary"
             size="base"
             fontWeight="medium"
             iconClassName="rotate-[90deg]"
-            onClick={handleSubmit(onSubmit, onInvalid)}
             iconSize="sm"
+            onClick={handleSubmit(onSubmit, onInvalid)}
+            disabled={submitting}
           />
         </div>
       </Modal.Footer>

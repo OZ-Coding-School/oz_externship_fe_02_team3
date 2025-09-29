@@ -19,6 +19,7 @@ export default function TestApplicationModalPage() {
         open={openApplication}
         onClose={() => setOpenApplication(false)}
         title="Unity 게임 개발 프로젝트 팀원 모집"
+        recruitmentUuid="1"
       />
     </div>
   )

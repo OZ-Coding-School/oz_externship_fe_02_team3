@@ -1,8 +1,11 @@
 import type {
   ApplicationDetail,
   ApplicationsResponse,
+  SubmitApplicationPayload,
+  SubmitApplicationResponse,
 } from '@src/types/applicant'
 import axios from 'axios'
+import { api } from './api'
 
 export interface UpdateApplicationResponse {
   message: string
@@ -23,7 +26,7 @@ export async function getApplications(
 
 // 지원자 상세 조회
 export async function getApplicationDetail(applicationId: number) {
-  const { data } = await axios.get<ApplicationDetail>(
+  const { data } = await api.get<ApplicationDetail>(
     `/api/v1/applications/${applicationId}`
   )
   return data
@@ -31,7 +34,7 @@ export async function getApplicationDetail(applicationId: number) {
 
 // 승인
 export async function approveApplication(applicationId: number) {
-  const { data } = await axios.post<UpdateApplicationResponse>(
+  const { data } = await api.post<UpdateApplicationResponse>(
     `/api/v1/applications/${applicationId}/approve`
   )
   return data
@@ -39,8 +42,20 @@ export async function approveApplication(applicationId: number) {
 
 // 거절
 export async function rejectApplication(applicationId: number) {
-  const { data } = await axios.post<UpdateApplicationResponse>(
+  const { data } = await api.post<UpdateApplicationResponse>(
     `/api/v1/applications/${applicationId}/reject`
+  )
+  return data
+}
+
+// 지원서 제출
+export async function submitApplication(
+  recruitmentId: string,
+  payload: SubmitApplicationPayload
+) {
+  const { data } = await api.post<SubmitApplicationResponse>(
+    `/api/v1/recruitments/${recruitmentId}/applications`,
+    payload
   )
   return data
 }

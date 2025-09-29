@@ -1,4 +1,3 @@
-// msw/handlers/applicationHandlers.ts
 import { http, HttpResponse } from 'msw'
 import {
   dummyApplicationsPage1,
@@ -69,7 +68,7 @@ const nextCursor = (offset: number, total: number) => {
 export const applicationHandlers = [
   // 목록
   http.get(
-    '/api/v1/recruitments/:recruitmentUuid/applications',
+    'https://ozcoding.site/api/v1/recruitments/:recruitmentUuid/applications',
     ({ request }) => {
       const url = new URL(request.url)
       const offset = readCursor(url.searchParams)
@@ -83,42 +82,73 @@ export const applicationHandlers = [
   ),
 
   // 상세
-  http.get('/api/v1/applications/:applicationId', ({ params }) => {
-    const id = Number(params.applicationId)
-    const detail = detailStore[id]
-    if (!detail) {
-      return HttpResponse.json({ detail: '찾을 수 없습니다.' }, { status: 404 })
+  http.get(
+    'https://ozcoding.site/api/v1/applications/:applicationId',
+    ({ params }) => {
+      const id = Number(params.applicationId)
+      const detail = detailStore[id]
+      if (!detail) {
+        return HttpResponse.json(
+          { detail: '찾을 수 없습니다.' },
+          { status: 404 }
+        )
+      }
+      return HttpResponse.json(detail)
     }
-    return HttpResponse.json(detail)
-  }),
+  ),
 
   // 승인
-  http.post('/api/v1/applications/:applicationId/approve', ({ params }) => {
-    const id = Number(params.applicationId)
-    const t = listStore.find((a) => a.application_id === id)
-    if (!t || !detailStore[id]) {
-      return HttpResponse.json({ detail: '찾을 수 없습니다.' }, { status: 404 })
+  http.post(
+    'https://ozcoding.site/api/v1/applications/:applicationId/approve',
+    ({ params }) => {
+      const id = Number(params.applicationId)
+      const t = listStore.find((a) => a.application_id === id)
+      if (!t || !detailStore[id]) {
+        return HttpResponse.json(
+          { detail: '찾을 수 없습니다.' },
+          { status: 404 }
+        )
+      }
+      t.status = 'APPROVED'
+      detailStore[id] = { ...detailStore[id], status: 'APPROVED' }
+      return HttpResponse.json({
+        message: '지원이 승인되었습니다.',
+        status: 'APPROVED',
+      })
     }
-    t.status = 'APPROVED'
-    detailStore[id] = { ...detailStore[id], status: 'APPROVED' }
-    return HttpResponse.json({
-      message: '지원이 승인되었습니다.',
-      status: 'APPROVED',
-    })
-  }),
+  ),
 
   // 거절
-  http.post('/api/v1/applications/:applicationId/reject', ({ params }) => {
-    const id = Number(params.applicationId)
-    const t = listStore.find((a) => a.application_id === id)
-    if (!t || !detailStore[id]) {
-      return HttpResponse.json({ detail: '찾을 수 없습니다.' }, { status: 404 })
+  http.post(
+    'https://ozcoding.site/api/v1/applications/:applicationId/reject',
+    ({ params }) => {
+      const id = Number(params.applicationId)
+      const t = listStore.find((a) => a.application_id === id)
+      if (!t || !detailStore[id]) {
+        return HttpResponse.json(
+          { detail: '찾을 수 없습니다.' },
+          { status: 404 }
+        )
+      }
+      t.status = 'REJECTED'
+      detailStore[id] = { ...detailStore[id], status: 'REJECTED' }
+      return HttpResponse.json({
+        message: '지원이 거절되었습니다.',
+        status: 'REJECTED',
+      })
     }
-    t.status = 'REJECTED'
-    detailStore[id] = { ...detailStore[id], status: 'REJECTED' }
-    return HttpResponse.json({
-      message: '지원이 거절되었습니다.',
-      status: 'REJECTED',
-    })
-  }),
+  ),
+]
+
+//지원서 제출 핸들러
+export const applicationSubmitHandlers = [
+  http.post(
+    'https://ozcoding.site/api/v1/recruitments/:recruitmentId/applications',
+    async () => {
+      return HttpResponse.json({
+        application_id: 1000,
+        message: '스터디 공고 참여 신청 성공',
+      })
+    }
+  ),
 ]

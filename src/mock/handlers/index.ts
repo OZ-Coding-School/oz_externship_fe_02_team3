@@ -3,7 +3,7 @@ import { tagHandlers } from './tags'
 import { chatHandlers } from './chatHandlers'
 import { recruitManageHandlers } from '../recruitManageHandlers'
 import { recruitmentEditHandlers } from '../recruitmentEditHandlers'
-import { applicationHandlers } from './applications'
+import { applicationHandlers, applicationSubmitHandlers } from './applications'
 
 export const handlers = [
   ...notificationHandlers,
@@ -12,4 +12,5 @@ export const handlers = [
   ...recruitManageHandlers,
   ...recruitmentEditHandlers,
   ...applicationHandlers,
+  ...applicationSubmitHandlers,
 ]
