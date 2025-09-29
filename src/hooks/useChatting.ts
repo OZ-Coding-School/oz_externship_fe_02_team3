@@ -2,13 +2,15 @@
 import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import type { Chat, MessagesResponse } from '@src/types/chat'
-const API_BASE_URL = 'https://api.ozcoding.site'
+import { api } from '@api/api' // ✅ 수정: 팀원의 api import
+// const API_BASE_URL = 'https://api.ozcoding.site'
 // const API_BASE_URL = 'http://localhost:5173'
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  withCredentials: true,
-})
+// const api = axios.create({
+//   baseURL: API_BASE_URL,
+//   withCredentials: true,
+// })
+
 const getAuthToken = () => {
   const token = localStorage.getItem('access_token')
 
@@ -26,10 +28,13 @@ export function useChatting() {
   const query = useQuery<Chat[]>({
     queryKey: ['chat'],
     queryFn: async () => {
-      const token = getAuthToken()
-      const response = await api.get('/api/v1/chat/rooms', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      // const token = getAuthToken()
+      const response = await api.get(
+        '/api/v1/chat/rooms'
+        // , {
+        // headers: { Authorization: `Bearer ${token}` },
+        // }
+      )
       return response.data
     },
   })
@@ -45,10 +50,14 @@ export function useChatMessages(id: string | undefined) {
   const query = useQuery<MessagesResponse>({
     queryKey: ['chatMessages', id],
     queryFn: async () => {
-      const token = getAuthToken()
-      const response = await axios.get(`/api/v1/chat/rooms/${id}/messages`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      // const token = getAuthToken()
+      const response = await axios.get(
+        `/api/v1/chat/rooms/${id}/messages`
+        //   , {
+        //   headers: { Authorization: `Bearer ${token}` },
+        // }
+      )
+
       return response.data
     },
     enabled: !!id, // id가 있을 때만 쿼리 실행

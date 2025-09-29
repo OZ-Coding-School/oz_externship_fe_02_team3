@@ -2,6 +2,7 @@ import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 
 const API_BASE_URL = 'https://api.ozcoding.site'
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,

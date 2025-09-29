@@ -27,10 +27,10 @@ export function useNotifications() {
   const query = useQuery<NotificationResponse>({
     queryKey: ['notifications'],
     queryFn: async () => {
-      const token = getAuthToken()
+      // const token = getAuthToken()
       const response = await api.get('/api/v1/notifications', {
         params: { status: 'all', limit: 50, offset: 0 },
-        headers: { Authorization: `Bearer ${token}` },
+        // headers: { Authorization: `Bearer ${token}` },
       })
       return response.data
     },
@@ -51,10 +51,14 @@ export function useUnreadCountQuery() {
   const query = useQuery({
     queryKey: ['notifications', 'unread-count'],
     queryFn: async () => {
-      const token = getAuthToken()
-      const response = await api.get('/api/v1/notifications/unread-count', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      // const token = getAuthToken()
+      const response = await api.get(
+        '/api/v1/notifications/unread-count'
+        // , {
+        // headers: { Authorization: `Bearer ${token}` },
+        // }
+      )
+
       return response.data
     },
     refetchInterval: 60000, // 1분마다 자동 새로고침
@@ -79,11 +83,12 @@ export function useMarkAllAsRead() {
   return useMutation({
     // mutationFn: 실제로 서버에 요청을 보내는 함수
     mutationFn: async () => {
-      const token = getAuthToken()
+      // const token = getAuthToken()
       const response = await axios.post(
-        '/api/v1/notifications/read-all',
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        '/api/v1/notifications/read-all'
+        // ,
+        // {},
+        // { headers: { Authorization: `Bearer ${token}` } }
       )
       return response.data
     },
