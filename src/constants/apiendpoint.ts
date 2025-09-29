@@ -1,6 +1,6 @@
 export const API_END_POINTS = {
   // 유저 상태관리용 상수
-  ME: '/users/me',
+  ME: 'api/v1/info/',
   REFRESH: '/auth/refresh',
   LOGOUT: '/auth/logout',
 

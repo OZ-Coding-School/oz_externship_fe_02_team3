@@ -14,6 +14,8 @@ import RecruitmentDetailPage from './pages/RecruitmentDetailPage'
 import RecruitmentEdit from './pages/RecruitmentEdit'
 import ScrollLayout from './layouts/ScrollLayout'
 import NotFoundPage from './pages/NotFoundPage'
+import { useAuth } from './store/auth'
+import { useEffect } from 'react'
 
 const routes = [
   { path: ROUTES.HOME, element: <TestHub /> },
@@ -30,6 +32,12 @@ const scrollRoutes = [
 ]
 
 export default function App() {
+  const bootstrap = useAuth((state) => state.bootstrap)
+
+  useEffect(() => {
+    // 앱 시작시 사용자 정보 로드
+    bootstrap('public')
+  }, [bootstrap])
   return (
     <ToastPorvider max={5}>
       <Routes>
