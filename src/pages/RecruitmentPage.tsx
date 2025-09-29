@@ -11,7 +11,6 @@ export default function RecruitmentPage() {
 
   return (
     <div className="flex w-full flex-col justify-center gap-8 px-4 sm:px-16">
-      {/* 로그인, 로그아웃 확인용 임시 버튼 */}
       <button
         onClick={toggleAuth}
         className="mb-6 max-w-[200px] rounded-lg bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
