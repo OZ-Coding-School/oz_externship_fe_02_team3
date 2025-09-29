@@ -11,7 +11,7 @@ interface UserMenuProps {
   setIsNotificationOpen: (isNotificationOpen: boolean) => void
   isUserMenuOpen: boolean
   setIsUserMenuOpen: (isUserMenuOpen: boolean) => void
-  userName: string
+  userNickname: string
 }
 
 export default function UserMenu({
@@ -19,7 +19,7 @@ export default function UserMenu({
   setIsNotificationOpen,
   isUserMenuOpen,
   setIsUserMenuOpen,
-  userName,
+  userNickname,
 }: UserMenuProps) {
   const userMenuButtonRef = useRef<HTMLDivElement>(null)
   const userMenuPanelRef = useRef<HTMLDivElement>(null)
@@ -46,7 +46,7 @@ export default function UserMenu({
         <Icon icon={UserRoundIcon} size="sm" className={`stroke-primary-600`} />
       </div>
 
-      <p className="text-base text-gray-700">{userName}</p>
+      <p className="text-base text-gray-700">{userNickname}</p>
       {isUserMenuOpen && (
         <div
           ref={userMenuPanelRef}

@@ -6,8 +6,11 @@ import { api, setAccessToken } from '@src/api/api'
 
 export interface User {
   id: number
-  name: string
+  nickname: string
+  profile_img_url: string | null
   email: string
+  phone_number: string
+  birthday: string
 }
 
 export type RouteType = 'protected' | 'public'
@@ -45,7 +48,7 @@ export const useAuth = create<AuthState>()(
             .then(({ data }) => data)
           return me
         } catch {
-          set({ user: null }, false, 'auth/me:absent')
+          set({ user: null }, false, 'info/:absent')
           return null
         }
       },
@@ -61,7 +64,7 @@ export const useAuth = create<AuthState>()(
         try {
           const me = await get().tryFetchMe()
           set(
-            { bootstrapped: true, loading: false },
+            { user: me, bootstrapped: true, loading: false },
             false,
             'auth/bootstrap:done'
           )

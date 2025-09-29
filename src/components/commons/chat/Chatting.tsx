@@ -65,7 +65,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
     const ws = new WebSocket(wsUrl)
 
     ws.onopen = () => {
-      const currentUserNickname = user?.name || '사용자'
+      const currentUserNickname = user?.nickname || '사용자'
       socketRef.current = ws
       const joinMessage: WebSocketMessage = {
         message_id: Date.now(),
@@ -97,7 +97,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
           created_at: message.data.created_at,
           type: 'message',
         }
-        if (newMessage.sender.nickname !== user?.name) {
+        if (newMessage.sender.nickname !== user?.nickname) {
           setRealTimeMessages((prev) => [...prev, newMessage])
         }
       } else if (message.type === 'user_event') {
@@ -145,7 +145,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
       message_id: Date.now(),
       sender: {
         user_uuid: String(user?.id || ''),
-        nickname: user?.name || '현재사용자',
+        nickname: user?.nickname || '현재사용자',
         profile_img_url: '',
       },
       content: content.trim(),
