@@ -1,60 +1,66 @@
-import { http, HttpResponse, type HttpHandler } from 'msw'
-import { recruitmentDB, type RecruitmentDetailDTO } from './recruitments.store'
+import type { JobPost } from '@src/types/jobPosts'
+import { jobPosts } from '@mock/jobPosts'
 
-export type PatchPayload = Partial<
-  Pick<
-    RecruitmentDetailDTO,
-    'title' | 'content' | 'expected_headcount' | 'estimated_fee' | 'close_at'
-  >
-> & { tags?: string[] }
-
-const REL = '/api/v1/recruitments/:recruitment_uuid'
-const ABS = 'https://ozcoding.site/api/v1/recruitments/:recruitment_uuid'
-
-function toTagObjects(names?: string[]) {
-  return (names ?? []).map((name, idx) => ({ id: idx + 1, name }))
+export interface RecruitmentDetailDTO {
+  id: number
+  uuid: string
+  title: string
+  content: string
+  expected_headcount: number
+  estimated_fee: number
+  close_at: string // ISO
+  tags: { id: number; name: string }[]
+  study_lectures: Array<{
+    title: string
+    instructor: string
+    thumbnail_img_url: string | null
+    original_price: number
+    discount_price: number
+  }>
 }
 
-function handleGet(params: { recruitment_uuid?: string }) {
-  const uuid = String(params.recruitment_uuid ?? '')
-  const row = recruitmentDB.get(uuid)
-  if (!row) return HttpResponse.json({ detail: 'not found' }, { status: 404 })
-  return HttpResponse.json(row, { status: 200 })
+const toISOFromDot = (v: string) => {
+  const norm = v.replace(/\./g, '-').replace(/\s+/g, '').replace(/-$/, '')
+  const d = new Date(norm)
+  return isNaN(d.getTime()) ? new Date().toISOString() : d.toISOString()
 }
 
-async function handlePatch(
-  params: { recruitment_uuid?: string },
-  request: Request
-) {
-  const uuid = String(params.recruitment_uuid ?? '')
-  const row = recruitmentDB.get(uuid)
-  if (!row) return HttpResponse.json({ detail: 'not found' }, { status: 404 })
-
-  const body = (await request.json()) as PatchPayload
-
-  const updated: RecruitmentDetailDTO = {
-    ...row,
-    ...('title' in body ? { title: body.title ?? row.title } : {}),
-    ...('content' in body ? { content: body.content ?? row.content } : {}),
-    ...('expected_headcount' in body
-      ? {
-          expected_headcount: body.expected_headcount ?? row.expected_headcount,
-        }
-      : {}),
-    ...('estimated_fee' in body
-      ? { estimated_fee: body.estimated_fee ?? row.estimated_fee }
-      : {}),
-    ...('close_at' in body ? { close_at: body.close_at ?? row.close_at } : {}),
-    ...(Array.isArray(body.tags) ? { tags: toTagObjects(body.tags) } : {}),
+const toISODate = (v: unknown): string => {
+  if (v instanceof Date) {
+    return isNaN(v.getTime()) ? new Date().toISOString() : v.toISOString()
   }
-
-  recruitmentDB.set(uuid, updated)
-  return HttpResponse.json(updated, { status: 200 })
+  if (typeof v === 'string') return toISOFromDot(v)
+  return new Date().toISOString()
 }
 
-export const recruitmentEditHandlers: HttpHandler[] = [
-  http.get(REL, ({ params }) => handleGet(params)),
-  http.get(ABS, ({ params }) => handleGet(params)),
-  http.patch(REL, ({ params, request }) => handlePatch(params, request)),
-  http.patch(ABS, ({ params, request }) => handlePatch(params, request)),
-]
+function extractDeadline(x: unknown): unknown {
+  return (x as { deadline?: unknown })?.deadline
+}
+
+const toDetail = (p: JobPost): RecruitmentDetailDTO => ({
+  id: Number(p.id ?? 0),
+  uuid: p.uuid || `me-${p.id ?? 0}`,
+  title: p.title ?? '',
+  content: '',
+  expected_headcount: Number(p.memberLimit ?? 0),
+  estimated_fee: 0,
+  close_at: toISODate(extractDeadline(p)),
+  tags: (p.tags ?? []).map((name, i) => ({ id: i + 1, name })),
+  study_lectures: (p.courses ?? []).map((c) => {
+    const [title, instructor] = c.split(' - ')
+    return {
+      title: (title ?? c).trim(),
+      instructor: (instructor ?? 'unknown').trim(),
+      thumbnail_img_url: null,
+      original_price: 0,
+      discount_price: 0,
+    }
+  }),
+})
+
+export const recruitmentDB: Map<string, RecruitmentDetailDTO> = new Map(
+  (jobPosts ?? []).map((p) => {
+    const d = toDetail(p)
+    return [d.uuid, d] as const
+  })
+)

@@ -1,76 +1,436 @@
-import { useParams, useNavigate } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
-import { useMemo, useState } from 'react'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { v4 as uuidv4 } from 'uuid'
+
 import { useToast } from '@components/commons/toast'
-import {
-  getCoursesForGroup,
-  sumCoursePrices,
-} from '@src/mock/studyGroupCourseMap'
-import { patchRecruitment } from '@src/api/recruitments.edit'
 import RecEditHeader from '@src/components/recruitment-edit/RecEditHeader'
 import RecEditBasicInfo from '@src/components/recruitment-edit/RecEditBasicInfo'
 import RecEditContentSection from '@src/components/recruitment-edit/RecEditContentSection'
-import RecEditAdditionalInfo from '@src/components/recruitment-edit/RecEditAdditionalInfo'
+import RecEditAdditionalInfo, {
+  type PresetFileIn,
+} from '@src/components/recruitment-edit/RecEditAdditionalInfo'
 import RecEditFooter from '@src/components/recruitment-edit/RecEditFooter'
-import { recMockDatas } from '@src/mock/recEditData'
+
 import {
   RECRUIT_EDIT_TOAST,
   RECRUIT_EDIT_VALIDATION,
 } from '@src/constants/receditmessage'
 import { parseCapacity, toFinalPrice } from '@src/utils/recEdit'
+import type { EditDraft } from '@src/utils/makeEditDraftFromPost'
+import { supa } from '@src/lib/supabase'
+import type { Tag } from '@src/types/tag'
+
+const normalizeTags = (list: Tag[] = [], max = 5): Tag[] => {
+  const out: Tag[] = []
+  const seen = new Set<string>()
+  for (const t of list) {
+    const id = (t as { id?: number })?.id
+    const name = (t.name ?? '').trim()
+    if (!name) continue
+    const key = Number.isFinite(id as number)
+      ? `id:${id}`
+      : `name:${name.toLowerCase()}`
+    if (seen.has(key)) continue
+    seen.add(key)
+    out.push({ id: id as number, name })
+    if (out.length >= max) break
+  }
+  return out
+}
+
+const uniqTags = (list: Tag[]): Tag[] => {
+  const map = new Map<string, Tag>()
+  for (const t of list) {
+    const name = (t.name ?? '').trim()
+    const id = t.id
+    const hasValidId = typeof id === 'number' && Number.isFinite(id)
+    const key = hasValidId ? `id:${id}` : `name:${name.toLowerCase()}`
+    if (!map.has(key)) map.set(key, { id, name })
+  }
+  return Array.from(map.values())
+}
+
+const resolveTagIdsByName = async (list: Tag[]): Promise<number[]> => {
+  const unique = uniqTags(list)
+  const names = unique
+    .map((t) => (t.name ?? '').trim())
+    .filter((n) => n.length > 0)
+
+  if (names.length === 0) return []
+
+  const { data: found, error: sErr } = await supa
+    .from('tags')
+    .select('id,name')
+    .in('name', names)
+  if (sErr) throw sErr
+
+  const foundMap = new Map((found ?? []).map((r) => [r.name, r.id]))
+
+  const toCreate = names.filter((n) => !foundMap.has(n))
+  if (toCreate.length > 0) {
+    const { data: created, error: iErr } = await supa
+      .from('tags')
+      .insert(toCreate.map((n) => ({ name: n })))
+      .select('id,name')
+    if (iErr) throw iErr
+    for (const r of created ?? []) foundMap.set(r.name, r.id)
+  }
+
+  return Array.from(
+    new Set(
+      names
+        .map((n) => Number(foundMap.get(n)))
+        .filter((x): x is number => Number.isFinite(x))
+    )
+  )
+}
+
+interface RawRec {
+  id: number
+  uuid: string
+  title: string
+  content: string | null
+  expected_headcount: number | null
+  close_at: string | null
+  study_group_id: number | null
+  estimated_fee: number | null
+  study_groups?: { name: string | null } | { name: string | null }[] | null
+}
+interface LectureObj {
+  id: number
+  title: string
+  original_price: number | string | null
+  discount_price: number | string | null
+}
+interface DBGroupCourseRow {
+  lecture_id: number
+  crawled_lectures: LectureObj | null
+}
+interface PreviewCourse {
+  id: number | string
+  title: string
+  price: number
+}
+interface SupaStudyLectureRow {
+  lecture_id: number
+  crawled_lectures: LectureObj | LectureObj[] | null
+}
+interface TagRow {
+  tag_id: number
+  tags: { id: number; name: string } | { id: number; name: string }[] | null
+}
+interface AttachmentRow {
+  id: number
+  file_url: string
+  file_name: string
+}
 
 export default function RecruitmentEdit() {
-  const { recruitment_uuid = 'me-1' } = useParams()
+  const { uuid = '' } = useParams<{ uuid: string }>()
+  const { state } = useLocation() as { state?: { draft?: EditDraft } }
+  const draft = state?.draft
+
   const navigate = useNavigate()
   const toast = useToast()
-
   const draftId = useMemo(() => uuidv4(), [])
+  const qc = useQueryClient()
 
-  const MOCKDATA = recMockDatas[0]
-  const [title, setTitle] = useState(MOCKDATA.title)
+  // 1) 그룹 목록
+  const groupsQ = useQuery({
+    queryKey: ['study_groups'],
+    queryFn: async () => {
+      const { data, error } = await supa
+        .from('study_groups')
+        .select('id,name')
+        .order('name')
+      if (error) throw error
+      return (data ?? []) as { id: number; name: string }[]
+    },
+  })
+
+  // 2) 공고 단건
+  const recQ = useQuery({
+    queryKey: ['recruitment', uuid],
+    enabled: !!uuid,
+    queryFn: async () => {
+      const sel = `
+        id, uuid, title, content, expected_headcount, close_at, study_group_id,
+        estimated_fee,
+        study_groups:study_group_id ( name )
+      `
+      const { data, error } = await supa
+        .from('recruitments')
+        .select(sel)
+        .eq('uuid', uuid)
+        .single()
+      if (error) throw error
+      return data as RawRec
+    },
+  })
+
+  // 3) 폼 상태
+  const [title, setTitle] = useState(draft?.title ?? '')
   const [groupName, setGroupName] = useState<string | undefined>(
-    MOCKDATA.groupName
+    draft?.groupName ?? undefined
   )
   const [capacityName, setCapacityName] = useState<string | undefined>(
-    MOCKDATA.capacityName
+    draft?.capacityName ?? undefined
   )
-  const [deadline, setDeadline] = useState<Date | null>(MOCKDATA.deadline)
-  const [markdown, setMarkdown] = useState<string>(MOCKDATA.content)
-  const [priceRaw, setPriceRaw] = useState<string>('')
+  const [deadline, setDeadline] = useState<Date | null>(draft?.deadline ?? null)
+  const [markdown, setMarkdown] = useState<string>(draft?.markdown ?? '')
+  const [priceRaw, setPriceRaw] = useState<string>(draft?.price ?? '')
 
-  const groupCourses = useMemo(() => getCoursesForGroup(groupName), [groupName])
-  const derivedPrice = useMemo(
-    () => String(sumCoursePrices(groupCourses)),
-    [groupCourses]
+  // 태그/첨부 상태
+  const [tags, setTags] = useState<Tag[]>([])
+  const [files, setFiles] = useState<PresetFileIn[]>([])
+
+  // 최초 하이드레이션
+  const hydratedRef = useRef(false)
+  useEffect(() => {
+    const r = recQ.data
+    if (!r || hydratedRef.current) return
+
+    setTitle((prev) => prev || r.title || '')
+    setDeadline((prev) => prev ?? (r.close_at ? new Date(r.close_at) : null))
+    setCapacityName(
+      (prev) =>
+        prev ?? (r.expected_headcount ? `${r.expected_headcount}명` : undefined)
+    )
+    setMarkdown((prev) => (prev !== '' ? prev : (r.content ?? '')))
+    setPriceRaw((prev) =>
+      prev !== ''
+        ? prev
+        : r.estimated_fee != null
+          ? String(r.estimated_fee)
+          : ''
+    )
+
+    hydratedRef.current = true
+  }, [recQ.data])
+
+  // 4) 표시용 그룹명 복원
+  const resolvedGroupName = useMemo(() => {
+    const row = recQ.data
+    if (!row) return undefined
+    const sg = row.study_groups
+    const joinedName = Array.isArray(sg) ? sg[0]?.name : sg?.name
+    if (joinedName) return joinedName ?? undefined
+    if (!row.study_group_id) return undefined
+    return groupsQ.data?.find((g) => g.id === row.study_group_id)?.name
+  }, [recQ.data, groupsQ.data])
+
+  useEffect(() => {
+    if (!groupName && resolvedGroupName) setGroupName(resolvedGroupName)
+  }, [resolvedGroupName, groupName])
+
+  // 5) 드롭다운 옵션
+  const groupOptions: string[] = useMemo(() => {
+    const names = (groupsQ.data ?? []).map((g) => g.name)
+    const current = groupName ?? resolvedGroupName
+    return Array.from(new Set([...(current ? [current] : []), ...names]))
+  }, [groupsQ.data, groupName, resolvedGroupName])
+
+  // 6) 저장/프리뷰용 그룹 ID
+  const selectedGroupIdForSave = useMemo(() => {
+    if (groupName) {
+      const found = groupsQ.data?.find((g) => g.name === groupName)?.id
+      if (found) return found
+    }
+    return recQ.data?.study_group_id ?? null
+  }, [groupName, groupsQ.data, recQ.data])
+
+  // 7) 선택 그룹의 강의 목록 (미리보기)
+  const groupCoursesQ = useQuery({
+    queryKey: ['group_courses', selectedGroupIdForSave],
+    enabled: !!selectedGroupIdForSave,
+    queryFn: async (): Promise<DBGroupCourseRow[]> => {
+      const { data, error } = await supa
+        .from('study_lectures')
+        .select(
+          `
+          lecture_id,
+          crawled_lectures ( id, title, original_price, discount_price )
+        `
+        )
+        .eq('study_group_id', selectedGroupIdForSave!)
+      if (error) throw error
+      const rows = (data ?? []) as unknown as SupaStudyLectureRow[]
+      return rows.map((r) => ({
+        lecture_id: r.lecture_id,
+        crawled_lectures: Array.isArray(r.crawled_lectures)
+          ? (r.crawled_lectures[0] ?? null)
+          : r.crawled_lectures,
+      }))
+    },
+  })
+
+  // 8) 미리보기 + 합계
+  const coursesPreview: PreviewCourse[] = useMemo(() => {
+    return (groupCoursesQ.data ?? [])
+      .map((r) => {
+        const lec = r.crawled_lectures
+        if (!lec) return null
+        const priceCandidate = lec.discount_price ?? lec.original_price ?? 0
+        const priceNum =
+          typeof priceCandidate === 'string'
+            ? Number(priceCandidate)
+            : (priceCandidate ?? 0)
+        return {
+          id: lec.id,
+          title: lec.title,
+          price: Number.isFinite(priceNum) ? priceNum : 0,
+        } as PreviewCourse
+      })
+      .filter(Boolean) as PreviewCourse[]
+  }, [groupCoursesQ.data])
+
+  const totalPricePreview = useMemo(
+    () => coursesPreview.reduce((sum, c) => sum + (Number(c.price) || 0), 0),
+    [coursesPreview]
   )
+
+  // 9) 기존 태그/첨부 로드
+  useEffect(() => {
+    const recId = recQ.data?.id
+    if (!recId) return
+
+    // 태그
+    supa
+      .from('recruitment_tags')
+      .select('tag_id, tags ( id, name )')
+      .eq('recruitment_id', recId)
+      .then(({ data, error }) => {
+        if (error) return
+        const rows = (data ?? []) as TagRow[]
+        const list = rows
+          .map((r) => (Array.isArray(r.tags) ? r.tags[0] : r.tags))
+          .filter((t): t is { id: number; name: string } => Boolean(t))
+        setTags(normalizeTags(list))
+      })
+
+    // 첨부
+    supa
+      .from('recruitment_attachments')
+      .select('id, file_url, file_name')
+      .eq('recruitment_id', recId)
+      .then(({ data, error }) => {
+        if (error) return
+        const fs = (data ?? []).map((r: AttachmentRow) => ({
+          id: String(r.id),
+          name: r.file_name,
+          url: r.file_url,
+        })) as PresetFileIn[]
+        setFiles(fs)
+      })
+  }, [recQ.data?.id])
+
+  // 10) 가격
+  const derivedPrice = String(totalPricePreview)
   const finalPrice = toFinalPrice(priceRaw, derivedPrice)
 
+  // 11) 검증
   const validate = () => {
     const messages: string[] = []
     if (!title?.trim()) messages.push(RECRUIT_EDIT_VALIDATION.title)
-    if (!groupName) messages.push(RECRUIT_EDIT_VALIDATION.group)
+    if (!selectedGroupIdForSave) messages.push(RECRUIT_EDIT_VALIDATION.group)
     if (!capacityName) messages.push(RECRUIT_EDIT_VALIDATION.capacity)
     if (!deadline) messages.push(RECRUIT_EDIT_VALIDATION.deadline)
     if (!markdown?.trim()) messages.push(RECRUIT_EDIT_VALIDATION.content)
     return messages
   }
 
+  // 12) 저장
   const m = useMutation({
-    mutationFn: () =>
-      patchRecruitment(recruitment_uuid, {
+    mutationFn: async () => {
+      const normTags = normalizeTags(tags, 5)
+      const rec = recQ.data
+      if (!rec?.id) throw new Error('공고를 찾을 수 없습니다.')
+
+      // 1) 본문 업데이트
+      const payload = {
         title,
         content: markdown,
         expected_headcount: parseCapacity(capacityName),
-        estimated_fee: finalPrice,
-        close_at: deadline ? deadline.toISOString() : undefined,
-      }),
+        estimated_fee: Number(finalPrice),
+        close_at: deadline ? deadline.toISOString() : null,
+        study_group_id: selectedGroupIdForSave,
+        updated_at: new Date().toISOString(),
+        tags: normTags.map((t) => t.name),
+      }
+      const { error: updErr } = await supa
+        .from('recruitments')
+        .update(payload)
+        .eq('uuid', uuid)
+      if (updErr) throw updErr
+
+      // 2) 태그 동기화
+      const desiredTags = normalizeTags(tags)
+      const tagIds = await resolveTagIdsByName(desiredTags)
+
+      const { data: curRT } = await supa
+        .from('recruitment_tags')
+        .select('tag_id')
+        .eq('recruitment_id', rec.id)
+      const currentIds = new Set<number>(
+        (curRT ?? []).map((r: { tag_id: number }) => r.tag_id)
+      )
+      const desiredIds = new Set<number>(tagIds)
+
+      const toDelete = Array.from(currentIds).filter(
+        (id) => !desiredIds.has(id)
+      )
+      const toAdd = Array.from(desiredIds).filter((id) => !currentIds.has(id))
+
+      if (toDelete.length) {
+        const { error: delErr } = await supa
+          .from('recruitment_tags')
+          .delete()
+          .eq('recruitment_id', rec.id)
+          .in('tag_id', toDelete)
+        if (delErr) throw delErr
+      }
+
+      if (toAdd.length) {
+        const { error: insErr } = await supa.from('recruitment_tags').upsert(
+          toAdd.map((tid) => ({ recruitment_id: rec.id, tag_id: tid })),
+          { onConflict: 'recruitment_id,tag_id', ignoreDuplicates: true }
+        )
+        if (insErr) throw insErr
+      }
+
+      // 3) 첨부 동기화 (전체 갱신)
+      await supa
+        .from('recruitment_attachments')
+        .delete()
+        .eq('recruitment_id', rec.id)
+      if (files.length) {
+        const { error: faErr } = await supa
+          .from('recruitment_attachments')
+          .insert(
+            files.map((f) => ({
+              recruitment_id: rec.id,
+              file_url: f.url,
+              file_name: f.name,
+            }))
+          )
+        if (faErr) throw faErr
+      }
+
+      return true
+    },
     onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['myRecruitments'] })
+      qc.invalidateQueries({ queryKey: ['recruitments'] })
+      qc.invalidateQueries({ queryKey: ['recruitment', uuid] })
       toast.success(RECRUIT_EDIT_TOAST.success)
       navigate('/recruitment/manage')
     },
-    onError: () => {
-      toast.error(RECRUIT_EDIT_TOAST.error)
+    onError: (err: unknown) => {
+      const e = err as { message?: string; error_description?: string }
+      const message =
+        e?.message || e?.error_description || '알 수 없는 오류가 발생했습니다.'
+      toast.error({ title: RECRUIT_EDIT_TOAST.error.title, content: message })
     },
   })
 
@@ -90,27 +450,37 @@ export default function RecruitmentEdit() {
     <div className="min-h-dvh w-full">
       <div className="mx-auto mt-8 flex w-full max-w-[1120px] flex-col items-center gap-8 px-6 lg:px-12">
         <RecEditHeader />
+
         <RecEditBasicInfo
           title={title}
-          groupName={groupName}
+          groupName={groupName ?? resolvedGroupName}
           capacityName={capacityName}
           defaultDeadline={deadline}
           onTitleChange={setTitle}
           onGroupChange={setGroupName}
           onCapacityChange={setCapacityName}
           onDeadlineChange={setDeadline}
+          groupOptions={groupOptions}
+          coursesPreview={coursesPreview}
+          totalPricePreview={totalPricePreview}
         />
+
         <RecEditContentSection
           draftId={draftId}
           defaultMarkDown={markdown}
           onChangeMarkDown={setMarkdown}
         />
+
         <RecEditAdditionalInfo
           draftId={draftId}
-          defaultPrice={derivedPrice}
+          defaultPrice={priceRaw || derivedPrice}
           onPriceChange={setPriceRaw}
-          defaultFiles={MOCKDATA.files}
+          tags={tags}
+          onTagsChange={(next) => setTags(normalizeTags(next))}
+          files={files}
+          onFilesChange={setFiles}
         />
+
         <RecEditFooter onSubmit={handleSubmit} submitting={m.isPending} />
       </div>
     </div>

@@ -4,13 +4,13 @@ import {
   useQuery,
   type InfiniteData,
 } from '@tanstack/react-query'
-import {
-  fetchMyRecruitments,
-  type RecruitmentMeResponse,
-  type RecruitmentMeItem,
-  type MeParams,
-  fetchRecruitmentsCount,
-} from '@src/api/recManage'
+import * as RecSupa from '@src/api/supabase/recManage.supa'
+import type {
+  RecruitmentMeResponse,
+  RecruitmentMeItem,
+  MeParams,
+} from '@src/api/supabase/recManage.type'
+
 import RecManageFilter from '@src/components/recruitment-manage/components/RecManageFilter'
 import RecManageHeader from '@src/components/recruitment-manage/components/RecManageHeader'
 import RecManageList from '@src/components/recruitment-manage/components/RecManageList'
@@ -18,7 +18,9 @@ import RecManageTotalCard from '@src/components/recruitment-manage/components/Re
 
 type StatusUI = 'ALL' | 'OPEN' | 'CLOSED'
 type OrderingUI = 'latest' | 'views' | 'bookmarks'
-const orderingMap: Record<OrderingUI, string> = {
+
+type OrderingParam = NonNullable<MeParams['ordering']>
+const orderingMap: Record<OrderingUI, OrderingParam> = {
   latest: '-created_at',
   views: '-views_count',
   bookmarks: '-bookmarks_count',
@@ -29,13 +31,13 @@ export default function RecruitmentManage() {
   const [ordering, setOrdering] = useState<OrderingUI>('latest')
   const pageSize = 10
 
-  const baseParams: Omit<MeParams, 'page'> = useMemo(
+  const baseParams = useMemo<Omit<MeParams, 'page'>>(
     () => ({
       size: pageSize,
       ordering: orderingMap[ordering],
       is_closed: status === 'ALL' ? undefined : status === 'CLOSED',
     }),
-    [ordering, status]
+    [ordering, status, pageSize]
   )
 
   const {
@@ -53,8 +55,8 @@ export default function RecruitmentManage() {
     number
   >({
     queryKey: ['myRecruitments', baseParams],
-    queryFn: ({ pageParam }) =>
-      fetchMyRecruitments({ ...baseParams, page: pageParam }),
+    queryFn: ({ pageParam = 1 }) =>
+      RecSupa.fetchMyRecruitments({ ...baseParams, page: pageParam }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
       if (!lastPage.next) return undefined
@@ -77,39 +79,37 @@ export default function RecruitmentManage() {
   }, [status, ordering, refetch])
 
   const { data: totalCnt = 0 } = useQuery({
-    queryKey: ['recCount', 'all'],
-    queryFn: () => fetchRecruitmentsCount({ is_closed: null }),
+    queryKey: ['recCount', 'all', 'supa'],
+    queryFn: () => RecSupa.fetchRecruitmentsCount({ is_closed: null }),
     staleTime: 60_000,
   })
 
   const { data: openCnt = 0 } = useQuery({
-    queryKey: ['recCount', 'open'],
-    queryFn: () => fetchRecruitmentsCount({ is_closed: false }),
+    queryKey: ['recCount', 'open', 'supa'],
+    queryFn: () => RecSupa.fetchRecruitmentsCount({ is_closed: false }),
     staleTime: 60_000,
   })
 
   const { data: closedCnt = 0 } = useQuery({
-    queryKey: ['recCount', 'closed'],
-    queryFn: () => fetchRecruitmentsCount({ is_closed: true }),
+    queryKey: ['recCount', 'closed', 'supa'],
+    queryFn: () => RecSupa.fetchRecruitmentsCount({ is_closed: true }),
     staleTime: 60_000,
   })
 
   const display = useMemo(() => {
     const totalForFilter =
       status === 'ALL' ? totalCnt : status === 'OPEN' ? openCnt : closedCnt
-
     const openForFilter =
       status === 'ALL' ? openCnt : status === 'OPEN' ? openCnt : 0
-
     const closedForFilter =
       status === 'ALL' ? closedCnt : status === 'CLOSED' ? closedCnt : 0
-
     return {
       total: totalForFilter,
       open: openForFilter,
       closed: closedForFilter,
     }
   }, [status, totalCnt, openCnt, closedCnt])
+
   return (
     <div className="min-h-dvh w-full">
       <div className="mx-auto h-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 xl:px-20">
@@ -117,7 +117,6 @@ export default function RecruitmentManage() {
           <div className="rec-manage-section h-[80px]">
             <RecManageHeader />
           </div>
-
           <div className="rec-manage-section">
             <RecManageTotalCard
               total={totalCnt}
@@ -125,7 +124,6 @@ export default function RecruitmentManage() {
               closed={closedCnt}
             />
           </div>
-
           <div className="rec-manage-section">
             <RecManageFilter
               status={status}
@@ -134,7 +132,6 @@ export default function RecruitmentManage() {
               onChangeOrdering={setOrdering}
             />
           </div>
-
           <div className="rec-manage-section">
             <RecManageList
               items={flat}

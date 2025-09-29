@@ -12,11 +12,12 @@ export const ROUTES = {
   // Recruitment
   RECRUITMENT: '/recruitment',
   RECRUITMENT_ID: (id: string | number) => `/recruitment/${id}`,
-  RECRUITMENT_DETAIL: '/recruitment/:id',
+  RECRUITMENT_DETAIL: '/recruitment/:uuid',
   RECRUITMENT_CREATE: '/recruitment/create',
   RECRUITMENT_MANAGE: '/recruitment/manage',
-  RECRUITMENT_EDIT: (id: string | number) => `/recruitment/${id}/edit`,
-  RECRUITMENT_EDIT_PATTERN: '/recruitment/:id/edit',
+  RECRUITMENT_EDIT: (uuid: string | number) => `/recruitment/${uuid}/edit`,
+  RECRUITMENT_UUID: (uuid: string) => `/recruitment/${uuid}`,
+  RECRUITMENT_EDIT_PATTERN: '/recruitment/:uuid/edit',
 
   // Auth
   LOGIN: '/auth/login',

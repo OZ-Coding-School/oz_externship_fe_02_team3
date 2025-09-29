@@ -4,36 +4,26 @@ export const API_BASE_URL = 'https://api.ozcoding.site'
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true,
+  withCredentials: true, // 서브도메인 refresh 쿠키 사용
 })
 
-// 액세스 토큰: 메모리에만 보관
-let accessToken: string | null = null
+// ── Access Token: 메모리 보관 ─────────────────────────────
+let access: string | null = null
+export const getAccessToken = () => access
 export const setAccessToken = (token: string | null) => {
-  accessToken = token
+  access = token
 }
 
-// 요청마다 Authorization 부착
 api.interceptors.request.use((config) => {
-  console.log(accessToken) // accessToken이 null이면 헤더 추가 안 됨
-  // 메모리에 없으면 localStorage에서 읽기
-  const token = accessToken || localStorage.getItem('access_token')
-
-  if (token) {
+  if (access) {
     config.headers = config.headers ?? {}
-    config.headers.Authorization = `Bearer ${token}`
+    config.headers.Authorization = `Bearer ${access}`
   }
   return config
 })
 
-/* Shared Promise refresh
- *  - 만약에 한 페이지에서 여러 401 요청이 오는 경우에 모든 요청에 대한 refresh을 처리하지 않음.
- *  - 첫 번째 401에 대한 요청에만 날리고, 다른 401 요청에 대해서는 같은 Promise를 await으로 기다림.
- *  - token이 발급되면 그 내용으로 다시 api 요청하는 방식
- */
 let refreshPromise: Promise<string | null> | null = null
 
-// 리프래시토큰 재발급 함수
 async function doRefresh(): Promise<string | null> {
   try {
     const res = await axios.post<{ access: string }>(
@@ -50,43 +40,35 @@ async function doRefresh(): Promise<string | null> {
   }
 }
 
-// refreshPromise를 생성/재사용/해체하는 역할을 하는 함수
 async function getOrCreateRefresh(): Promise<string | null> {
   if (!refreshPromise) {
     refreshPromise = doRefresh().finally(() => {
-      refreshPromise = null // 끝나면 초기화를 하여 다음 401 요청에 대하여 새로운 Promise를 생성시킴.
+      refreshPromise = null
     })
   }
   return refreshPromise
 }
 
-// 401 공통 처리
+export async function refreshAccessToken(): Promise<string | null> {
+  if (getAccessToken()) return getAccessToken()
+  return await getOrCreateRefresh()
+}
+
 api.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
-    const originalAPICall = error.config as
+    const original = error.config as
       | (AxiosRequestConfig & { _retry?: boolean })
       | undefined
-    const status = error.response?.status
-
-    if (status === 401 && originalAPICall && !originalAPICall._retry) {
-      originalAPICall._retry = true
-
+    if (error.response?.status === 401 && original && !original._retry) {
+      original._retry = true
       const token = await getOrCreateRefresh()
-
       if (token) {
-        // If 토큰이 발급이 되면, 원래 진행하려던 API 요청 시작.
-        originalAPICall.headers = originalAPICall.headers ?? {}
-        originalAPICall.headers.Authorization = `Bearer ${token}`
-        return api(originalAPICall)
-      } else {
-        // If refresh token 사용 실패: 완전 로그아웃(쿠키 제거 + 상태 초기화 + 로그인 이동)
-        const { logoutHard } = await import('../store/auth')
-        await logoutHard()
-        return Promise.reject(error)
+        original.headers = original.headers ?? {}
+        original.headers.Authorization = `Bearer ${token}`
+        return api(original)
       }
     }
-
     return Promise.reject(error)
   }
 )

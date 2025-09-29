@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import SearchFilter from '@src/components/course/course-filter-bar/SearchFilter'
 import UserCourse from '@src/components/course/user-course/UserCourse'
 import { LOADING_MESSAGES, ERROR_MESSAGES } from '@src/constants/ui'
@@ -13,15 +12,15 @@ import ErrorMessage from '@src/components/course/ErrorMessage'
 import { CourseHeader } from '@src/components/course/course-header/CourseHeader'
 import EmptyCourses from '@src/components/course/course-content/EmptyCourses'
 import CourseContent from '@src/components/course/course-content/CourseContent'
+import { useLoggedIn, useAuthReady } from '@src/store/authLight'
 
 interface CoursesPageProps {
   className?: string
 }
 
 export default function CoursesPage({ className }: CoursesPageProps) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-
-  const toggleAuth = () => setIsAuthenticated((prev) => !prev)
+  const loggedIn = useLoggedIn()
+  const authReady = useAuthReady()
 
   const { courses, loading, error, refetch } = useCourses()
   const { filteredCourses, searchQuery } = useCourseFilters(courses)
@@ -35,6 +34,14 @@ export default function CoursesPage({ className }: CoursesPageProps) {
     onIntersect: loadMore,
     threshold: 1,
   })
+
+  if (!authReady) {
+    return (
+      <div className="h-screen w-full">
+        <LoadingSpinner message="로그인 상태 확인 중..." />
+      </div>
+    )
+  }
 
   if (loading) {
     return (
@@ -55,26 +62,19 @@ export default function CoursesPage({ className }: CoursesPageProps) {
     )
   }
 
-  if (courses.length === 0 && isAuthenticated) {
+  if (courses.length === 0 && loggedIn) {
     return <EmptyCourses className={className} />
   }
 
-  // 메인 렌더링
   return (
     <div
       className={cn(
-        'justify-center8 mx-auto flex min-h-screen w-full max-w-7xl flex-col items-center'
+        'justify-center8 mx-auto flex min-h-screen w-full max-w-7xl flex-col items-center',
+        className
       )}
     >
-      <button
-        onClick={toggleAuth}
-        className="mb-6 rounded-lg bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
-      >
-        {isAuthenticated ? '로그아웃 상태로 전환' : '로그인 상태로 전환'}
-      </button>
-
       <CourseHeader />
-      <UserCourse isAuthenticated={isAuthenticated} />
+      <UserCourse isAuthenticated={loggedIn} />
       <SearchFilter />
       <CourseContent
         courses={courses}

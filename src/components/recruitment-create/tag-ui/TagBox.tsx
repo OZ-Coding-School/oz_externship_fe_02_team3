@@ -7,11 +7,19 @@ import { Plus } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 
 export interface TagBoxProps {
-  value?: Tag[] // 선택된 태그 목록
-  onChange?: React.Dispatch<React.SetStateAction<Tag[]>> // 변경 콜백
-  max?: number // 최대 선택 가능 개수 기본 5
-  title?: string // 기본 '사용자 정의 태그'
-  onOpenSearch?: () => void // 모달 연결
+  value?: Tag[]
+  onChange?: React.Dispatch<React.SetStateAction<Tag[]>>
+  max?: number
+  title?: string
+  onOpenSearch?: () => void
+}
+
+type TagWithIdName = Tag & { id: number; name: string }
+
+function hasIdName(t: Tag): t is TagWithIdName {
+  return (
+    typeof (t as Tag).id === 'number' && typeof (t as Tag).name === 'string'
+  )
 }
 
 export default function TagBox({
@@ -22,20 +30,31 @@ export default function TagBox({
   onOpenSearch,
 }: TagBoxProps) {
   const [inner, setInner] = useState<Tag[]>([])
-  const tags = value ?? inner //현재 TagBox가 관리할 실제 태그 목록
-  const setTags = onChange ?? setInner //태그 목록을 변경
+  const tags = value ?? inner
+  const setTags = onChange ?? setInner
 
   const removeById = useCallback(
     (id: number) => {
       const targetId = Number(id)
-      setTags((prev) => prev.filter((tag) => tag.id !== targetId))
+      setTags((prev) =>
+        prev.filter((tag) =>
+          typeof tag.id === 'number' ? tag.id !== targetId : true
+        )
+      )
     },
     [setTags]
   )
 
-  const selectedIds = useMemo(() => tags.map((t) => t.id), [tags])
+  const selectedIds = useMemo(
+    () =>
+      tags
+        .map((t) => t.id)
+        .filter((id): id is number => typeof id === 'number'),
+    [tags]
+  )
+
   const options = useMemo(
-    () => tags.map((t) => ({ id: t.id, label: t.name })),
+    () => tags.filter(hasIdName).map((t) => ({ id: t.id, label: t.name })),
     [tags]
   )
 
@@ -48,9 +67,10 @@ export default function TagBox({
           buttonInnerText="태그 검색"
           icon={Plus}
           iconSize="sm"
-          onClick={onOpenSearch} //모달연결
-        ></Button>
+          onClick={onOpenSearch}
+        />
       </div>
+
       <div
         className={cn(
           'rounded-xl border-2 px-4 py-6',
@@ -84,6 +104,7 @@ export default function TagBox({
           )}
         </div>
       </div>
+
       <p className="text-xs text-gray-500">
         태그는 최대 {max}개까지 선택할 수 있습니다 ({tags.length}/{max})
       </p>

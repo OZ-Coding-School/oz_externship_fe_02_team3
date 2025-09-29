@@ -1,9 +1,10 @@
 import RecEditPriceInput from '../recruitment-edit/RecEditPriceInput'
 import { SupabaseFileuploader } from './SupabaseFileUploader'
 import TagSection from './tag-ui/TagSection'
-import { useState } from 'react'
+import { useMemo } from 'react'
+import type { Tag } from '@src/types/tag'
 
-interface PresetFile {
+export interface PresetFile {
   id: string
   name: string
   url: string
@@ -15,7 +16,11 @@ interface Props {
   derivedPrice?: string
   override: string | null
   onChangeOverride: (raw: string) => void
-  defaultFiles?: PresetFile[]
+
+  tags: Tag[]
+  onTagsChange: React.Dispatch<React.SetStateAction<Tag[]>>
+  files: PresetFile[]
+  onFilesChange: (files: PresetFile[]) => void
 }
 
 const formatPrice = (s?: string) =>
@@ -26,17 +31,19 @@ export default function RecCreateAdditionalInfo({
   derivedPrice = '',
   override,
   onChangeOverride,
-  defaultFiles = [],
+
+  tags,
+  onTagsChange,
+  files,
+  onFilesChange,
 }: Props) {
   const inputValue = override === null ? derivedPrice : override
   const valueForInput = override === '' ? '' : inputValue
 
-  let placeholder = '미입력시 스터디 그룹 비용 자동 계산'
-  if (override === '') {
-    placeholder = formatPrice(derivedPrice) || '금액 입력'
-  }
-
-  const [attachments, setAttachments] = useState<PresetFile[]>(defaultFiles)
+  const placeholder = useMemo(() => {
+    if (override === '') return formatPrice(derivedPrice) || '금액 입력'
+    return '미입력시 스터디 그룹 비용 자동 계산'
+  }, [override, derivedPrice])
 
   return (
     <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-gray-900">
@@ -52,7 +59,7 @@ export default function RecCreateAdditionalInfo({
       />
 
       <div className="mt-6">
-        <TagSection />
+        <TagSection value={tags} onChange={onTagsChange} />
       </div>
 
       <div className="mt-6">
@@ -61,8 +68,8 @@ export default function RecCreateAdditionalInfo({
         </label>
         <SupabaseFileuploader
           draftId={draftId}
-          defaultFiles={attachments}
-          onChange={(files) => setAttachments(files)}
+          defaultFiles={files}
+          onChange={onFilesChange}
         />
       </div>
     </div>
