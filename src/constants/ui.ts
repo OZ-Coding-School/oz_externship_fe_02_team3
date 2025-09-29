@@ -10,6 +10,7 @@ import {
   type LucideIcon,
   Tag,
   Book as BookIcon,
+  UserRoundXIcon,
 } from 'lucide-react'
 
 // 페이지네이션 설정
@@ -139,6 +140,7 @@ export const EMPTY_MESSAGES = {
   NoData: '공고가 없습니다',
   FALLBACK: '데이터가 없습니다.',
   TAG: '선택된 태그가 없습니다.',
+  APPLICATION: '지원자가 없습니다.',
 } as const
 
 export const EMPTY_STATE_ICONS: Record<
@@ -152,6 +154,7 @@ export const EMPTY_STATE_ICONS: Record<
   NoData: NoDataIcon,
   FALLBACK: AlertCircle,
   TAG: Tag,
+  APPLICATION: UserRoundXIcon,
 } as const
 
 // 에러 메시지와 아이콘
