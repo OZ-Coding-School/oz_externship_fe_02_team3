@@ -38,6 +38,18 @@ function isFileItemArray(v: unknown): v is FileItem[] {
   return Array.isArray(v)
 }
 
+const parseMaybeDate = (v: unknown): Date | null => {
+  if (!v) return null
+  if (v instanceof Date) return isNaN(v.getTime()) ? null : v
+  if (typeof v === 'string') {
+    // '2025. 12. 30.' 같은 포맷도 대비
+    const norm = v.replace(/\./g, '-').replace(/\s+/g, '').replace(/-$/, '')
+    const d = new Date(norm)
+    return isNaN(d.getTime()) ? null : d
+  }
+  return null
+}
+
 export function makeEditDraftFromPost(post: JobPostForEdit): EditDraft {
   const priceRaw =
     typeof post.price === 'number' ? String(post.price) : (post.price ?? '')
@@ -52,11 +64,14 @@ export function makeEditDraftFromPost(post: JobPostForEdit): EditDraft {
     : []
 
   return {
-    id: post.id,
-    title: post.title,
+    id: Number(post.id ?? 0),
+    title: post.title ?? '',
     groupName: post.groupName,
-    capacityName: post.memberLimit ? `${post.memberLimit}명` : undefined,
-    deadline: post.deadline ? new Date(post.deadline) : null,
+    capacityName:
+      typeof post.memberLimit === 'number' && !Number.isNaN(post.memberLimit)
+        ? `${post.memberLimit}명`
+        : undefined,
+    deadline: parseMaybeDate(post.deadline),
     price: priceRaw,
     tags: post.tags ?? [],
     courses: post.courses ?? [],

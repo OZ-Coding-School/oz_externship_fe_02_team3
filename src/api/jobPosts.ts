@@ -1,9 +1,9 @@
 import { supa } from '@src/lib/supabase'
 import type { JobPost, JobPostsResponse } from '@src/types/jobPosts'
-import { extractFirstImageFromMarkdown } from '@src/utils/extractFirstImage' // ✅ 추가
+import { extractFirstImageFromMarkdown } from '@src/utils/extractFirstImage'
 
-const PAGE_SIZE = 10
 export type JobPostSort = 'latest' | 'oldest' | 'popular'
+const PAGE_SIZE = 10
 
 interface FetchParams {
   pageParam?: number
@@ -43,8 +43,11 @@ interface RecruitmentRow {
   study_groups?: StudyGroupRow | StudyGroupRow[] | null
 }
 
-const fmtDate = (iso?: string | null) =>
-  iso ? new Date(iso).toLocaleDateString('ko-KR') : ''
+const fmtDate = (iso?: string | null) => {
+  if (!iso) return ''
+  const d = new Date(iso)
+  return isNaN(d.getTime()) ? '' : d.toLocaleDateString('ko-KR')
+}
 
 export async function fetchJobPosts({
   pageParam = 1,
@@ -57,7 +60,7 @@ export async function fetchJobPosts({
 
   let q = supa.from('recruitments').select(
     `
-      id, uuid, title, content,                    
+      id, uuid, title, content,
       expected_headcount, close_at,
       views_count, bookmarks_count, created_at, tags,
       recruitment_images:recruitment_images ( img_url ),
@@ -121,3 +124,5 @@ export async function fetchJobPosts({
   const total = count ?? items.length
   return { items, totalCount: total, hasNext: total > to + 1 }
 }
+
+export type { FetchParams }

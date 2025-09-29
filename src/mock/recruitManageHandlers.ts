@@ -5,10 +5,10 @@ import { jobPosts as baseJobPosts } from '@mock/jobPosts'
 const ABS = 'https://ozcoding.site/api/v1/recruitments/me'
 const REL = '/api/v1/recruitments/me'
 
-//  '2025. 12. 30.' → Date
 const parseDotDate = (str: string) => {
   const isoish = str.replace(/\./g, '-').replace(/\s+/g, '').replace(/-$/, '')
-  return new Date(isoish)
+  const d = new Date(isoish)
+  return isNaN(d.getTime()) ? new Date() : d
 }
 
 interface LectureDTO {
@@ -56,17 +56,16 @@ function toDto(p: JobPost): RecruitmentMeItem {
     : d.toISOString()
 
   return {
-    id: p.id,
-    uuid: `me-${p.id}`,
-    title: p.title,
+    id: Number(p.id ?? 0),
+    uuid: p.uuid || `me-${p.id ?? 0}`,
+    title: p.title ?? '',
     img: p.image || null,
-    expected_headcount: p.memberLimit,
+    expected_headcount: Number(p.memberLimit ?? 0),
     lectures,
     tags: p.tags ?? [],
     close_at: closeISO,
-    views_count: p.viewCount,
-    bookmarks_count:
-      (p as unknown as { bookmarkCount?: number }).bookmarkCount ?? 0,
+    views_count: Number(p.viewCount ?? 0),
+    bookmarks_count: Number(p.bookmarkCount ?? 0),
     created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString(),
     updated_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 7).toISOString(),
   }
@@ -77,7 +76,7 @@ interface OrderKey {
   dir: 'asc' | 'desc'
 }
 function parseOrdering(orderingRaw: string | null): OrderKey[] {
-  if (!orderingRaw) return [{ key: 'created_at', dir: 'desc' }] // 기본: 최신순
+  if (!orderingRaw) return [{ key: 'created_at', dir: 'desc' }]
   return orderingRaw
     .split(',')
     .map((token) => token.trim())
@@ -85,7 +84,6 @@ function parseOrdering(orderingRaw: string | null): OrderKey[] {
     .map<OrderKey>((token) => {
       const desc = token.startsWith('-')
       const key = (desc ? token.slice(1) : token) as OrderKey['key']
-      // 허용 키만 필터
       if (!['views_count', 'bookmarks_count', 'created_at'].includes(key)) {
         return { key: 'created_at', dir: 'desc' }
       }
@@ -93,7 +91,6 @@ function parseOrdering(orderingRaw: string | null): OrderKey[] {
     })
 }
 
-// 정렬 적용
 function sortDtos(items: RecruitmentMeItem[], orders: OrderKey[]) {
   const arr = [...items]
   arr.sort((a, b) => {
@@ -105,7 +102,6 @@ function sortDtos(items: RecruitmentMeItem[], orders: OrderKey[]) {
       else if (o.key === 'created_at')
         diff =
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-
       if (diff !== 0) return o.dir === 'asc' ? diff : -diff
     }
     return 0
@@ -113,7 +109,6 @@ function sortDtos(items: RecruitmentMeItem[], orders: OrderKey[]) {
   return arr
 }
 
-// is_closed 필터
 function filterByClosed(items: RecruitmentMeItem[], isClosed: boolean | null) {
   if (isClosed === null) return items
   const now = Date.now()
