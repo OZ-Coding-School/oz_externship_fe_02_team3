@@ -65,7 +65,7 @@ const paginate = <T>(arr: T[], page: number, size: number) => {
 
 // 검색 + 페이지네이션
 export const tagHandlers = [
-  http.get('/api/v1/recruitments/tags', ({ request }) => {
+  http.get('https://ozcoding.site/api/v1/recruitments/tags', ({ request }) => {
     const url = new URL(request.url)
     const search = (url.searchParams.get('search') || '').trim().toLowerCase()
     const page = parseInt(url.searchParams.get('page') || '1', 10)
@@ -82,25 +82,31 @@ export const tagHandlers = [
   }),
 
   // 새 태그 등록 (중복시 409)
-  http.post('/api/v1/recruitments/tags', async ({ request }) => {
-    const body = await request.json().catch(() => ({}) as any)
-    const name = (body?.name ?? '').trim()
-    if (!name) {
-      return HttpResponse.json({ detail: 'name is required' }, { status: 400 })
-    }
+  http.post(
+    'https://ozcoding.site/api/v1/recruitments/tags',
+    async ({ request }) => {
+      const body = await request.json().catch(() => ({}) as any)
+      const name = (body?.name ?? '').trim()
+      if (!name) {
+        return HttpResponse.json(
+          { detail: 'name is required' },
+          { status: 400 }
+        )
+      }
 
-    const exists = tagsDb.some(
-      (t) => t.name.toLowerCase() === name.toLowerCase()
-    )
-    if (exists) {
-      return HttpResponse.json(
-        { detail: 'Tag already exists' },
-        { status: 409 }
+      const exists = tagsDb.some(
+        (t) => t.name.toLowerCase() === name.toLowerCase()
       )
-    }
+      if (exists) {
+        return HttpResponse.json(
+          { detail: 'Tag already exists' },
+          { status: 409 }
+        )
+      }
 
-    const tag: Tag = { id: ++seq, name }
-    tagsDb.unshift(tag) // 최신 우선
-    return HttpResponse.json(tag, { status: 201 })
-  }),
+      const tag: Tag = { id: ++seq, name }
+      tagsDb.unshift(tag) // 최신 우선
+      return HttpResponse.json(tag, { status: 201 })
+    }
+  ),
 ]
