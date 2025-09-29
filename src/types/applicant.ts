@@ -35,3 +35,18 @@ export interface ApplicationDetail {
   status: ApplicantStatus
   applied_at: string
 }
+
+// 제출 관련 타입 정의
+export interface SubmitApplicationPayload {
+  self_introduction: string
+  motivation: string
+  objective: string
+  available_time: string
+  has_study_experience: boolean
+  study_experience?: string
+}
+
+export interface SubmitApplicationResponse {
+  application_id: number
+  message: string
+}
