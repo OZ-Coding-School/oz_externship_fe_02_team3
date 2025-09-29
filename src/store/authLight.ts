@@ -17,3 +17,6 @@ export const useAuthLight = create<AuthLightState>((set) => ({
 export const syncLoggedInFromToken = (token?: string | null) => {
   useAuthLight.setState({ loggedIn: !!token })
 }
+
+export const useAuthReady = () => useAuthLight((s) => s.ready)
+export const useLoggedIn = () => useAuthLight((s) => s.loggedIn)
