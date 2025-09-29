@@ -1,23 +1,24 @@
-import { useState } from 'react'
 import UserRecruitment from '@components/recruitment/user-recruitment/UserRecruitment'
 import RecruitmentList from '@src/components/recruitment/recruitment-list/RecruitmentList'
 import RecruitmentHeader from '@src/components/recruitment/recruitment-header/RecruitmentHeader'
 import SearchFilterBar from '@src/components/recruitment/srearch-filter-bar/SearchFilterBar'
+import { useAuthLight } from '@src/store/authLight'
 
 export default function RecruitmentPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const ready = useAuthLight((s) => s.ready)
+  const isAuthenticated = useAuthLight((s) => s.loggedIn)
 
-  const toggleAuth = () => setIsAuthenticated((prev) => !prev)
+  if (!ready) {
+    return (
+      <div className="flex w-full flex-col gap-8 px-4 sm:px-16">
+        <div className="h-24 animate-pulse rounded-xl bg-gray-100" />
+        <div className="h-40 animate-pulse rounded-xl bg-gray-100" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex w-full flex-col justify-center gap-8 px-4 sm:px-16">
-      {/* 로그인, 로그아웃 확인용 임시 버튼 */}
-      <button
-        onClick={toggleAuth}
-        className="mb-6 max-w-[200px] rounded-lg bg-blue-500 px-6 py-2 text-white transition hover:bg-blue-600"
-      >
-        {isAuthenticated ? '로그아웃 상태로 전환' : '로그인 상태로 전환'}
-      </button>
       <RecruitmentHeader isAuthenticated={isAuthenticated} />
       <UserRecruitment isAuthenticated={isAuthenticated} />
       <SearchFilterBar />

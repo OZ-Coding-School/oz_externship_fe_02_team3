@@ -1,8 +1,10 @@
 export interface JobPost {
-  id: number
+  uuid: string
+  id?: number
   title: string
   viewCount: number
   commentCount: number
+  bookmarkCount?: number
   memberLimit: number
   deadline: string
   courses: string[]

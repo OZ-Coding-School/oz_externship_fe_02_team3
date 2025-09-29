@@ -1,29 +1,34 @@
+// src/components/recruitment-edit/RecEditBasicInfo.tsx
 import { useEffect, useMemo, useState } from 'react'
 import DropDown from '../commons/dropdown/DropDown'
 import Calendar from '../commons/calendar/Calendar'
-import {
-  getCoursesForGroup,
-  sumCoursePrices,
-} from '@src/mock/studyGroupCourseMap'
+
+interface CoursePreview {
+  id: string | number
+  title: string
+  price: number
+}
 
 interface RecEditBasicInfoProps {
+  // 값
   title?: string
   groupName?: string
   capacityName?: string
   defaultDeadline?: Date | null
+
+  // 변경 콜백
   onGroupChange?: (name: string | undefined) => void
   onTitleChange?: (v: string) => void
   onCapacityChange?: (v: string | undefined) => void
   onDeadlineChange?: (d: Date | null) => void
+
+  // 부모에서 내려주는 옵션/프리뷰
+  groupOptions?: string[]
+  coursesPreview?: CoursePreview[]
+  totalPricePreview?: number
 }
 
-const studyGroup = [
-  { id: 1, name: '스터디 그룹1' },
-  { id: 2, name: '스터디 그룹2' },
-  { id: 3, name: '스터디 그룹3' },
-  { id: 4, name: '스터디 그룹4' },
-]
-
+// 정원 드롭다운(고정)
 const capacityGroup = [
   { id: 1, name: '1명' },
   { id: 2, name: '2명' },
@@ -37,49 +42,46 @@ const capacityGroup = [
   { id: 10, name: '10명' },
 ]
 
-const formatPrice = (n: number) => new Intl.NumberFormat('ko-KR').format(n)
+const fmtPrice = (n: number) => new Intl.NumberFormat('ko-KR').format(n)
 
 export default function RecEditBasicInfo({
   title: defaultTitle,
-  groupName: defaultGroupName,
+  groupName, // ← 부모 값 그대로 사용(완전 제어)
   capacityName: defaultCapacityName,
   defaultDeadline = null,
   onGroupChange,
   onTitleChange,
   onCapacityChange,
   onDeadlineChange,
+  groupOptions = [],
+  coursesPreview = [],
+  totalPricePreview = 0,
 }: RecEditBasicInfoProps) {
+  // 제목만 로컬 state로 두고 나머지는 제어형으로 처리
   const [title, setTitle] = useState<string>(defaultTitle ?? '')
-  const [selectedGroup, setSelectedGroup] = useState<string | undefined>(
-    defaultGroupName
-  )
+  useEffect(() => setTitle(defaultTitle ?? ''), [defaultTitle])
+
+  // 캘린더/정원은 기존처럼 로컬 state + 콜백
   const [selectedCapacity, setSelectedCapacity] = useState<string | undefined>(
     defaultCapacityName
   )
   const [deadline, setDeadline] = useState<Date | null>(defaultDeadline)
-
-  useEffect(() => {
-    onGroupChange?.(selectedGroup)
-  }, [selectedGroup, onGroupChange])
-
-  const courses = useMemo(
-    () => getCoursesForGroup(selectedGroup),
-    [selectedGroup]
+  useEffect(
+    () => setSelectedCapacity(defaultCapacityName),
+    [defaultCapacityName]
   )
-  const total = useMemo(() => sumCoursePrices(courses), [courses])
+  useEffect(() => setDeadline(defaultDeadline ?? null), [defaultDeadline])
 
-  useEffect(() => {
-    onGroupChange?.(selectedGroup)
-  }, [selectedGroup, onGroupChange])
-  useEffect(() => {
-    onTitleChange?.(title)
-  }, [title, onTitleChange])
-  useEffect(() => {
-    onCapacityChange?.(selectedCapacity)
-  }, [selectedCapacity, onCapacityChange])
-  useEffect(() => {
-    onDeadlineChange?.(deadline)
-  }, [deadline, onDeadlineChange])
+  // 옵션 정규화 + 현재 선택값이 목록에 없으면 포함(초기표시 보장)
+  const dropDownOptions: string[] = useMemo(() => {
+    const base = (groupOptions ?? []).filter(Boolean)
+    if (groupName && !base.includes(groupName)) base.unshift(groupName)
+    return Array.from(new Set(base))
+  }, [groupOptions, groupName])
+
+  const courses = coursesPreview
+  const total = totalPricePreview
+
   return (
     <div className="w-full max-w-[832px] rounded-xl border border-gray-200 bg-white p-6 text-gray-900">
       <p className="text-[20px] leading-7 font-semibold">기본 정보</p>
@@ -95,7 +97,10 @@ export default function RecEditBasicInfo({
         id="title"
         type="text"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => {
+          setTitle(e.target.value)
+          onTitleChange?.(e.target.value)
+        }}
         className="h-[50px] w-full rounded-lg border border-gray-300 px-4 text-gray-900 placeholder:text-gray-400 focus:outline-none"
         placeholder="예: React 스터디 함께하실 분을 찾습니다!"
       />
@@ -105,29 +110,24 @@ export default function RecEditBasicInfo({
         대상 스터디 그룹 <span className="text-danger-500">*</span>
       </label>
       <DropDown
-        selected={selectedGroup}
-        options={studyGroup}
-        onSelect={setSelectedGroup}
+        selected={groupName} // ← 제어형: 부모 값 사용
+        options={dropDownOptions}
+        onSelect={(name) => onGroupChange?.(name)} // ← 바로 부모에 전달
         placeholder="스터디 그룹을 선택해주세요"
       />
 
-      {/* 선택된 그룹의 강의 정보 패널 */}
+      {/* 선택 그룹의 강의 미리보기 (있을 때만) */}
       {courses.length > 0 && (
         <div className="mt-3 rounded-lg border border-yellow-200 bg-yellow-50 p-4">
           <p className="text-primary-800 mb-2 text-sm">
             선택된 그룹의 강의 정보
           </p>
           <ul className="space-y-1">
-            {courses.map((cource) => (
-              <li
-                key={cource.id}
-                className="flex items-center justify-between py-1"
-              >
-                <span className="text-primary-700 text-[14px]">
-                  {cource.title}
-                </span>
+            {courses.map((c) => (
+              <li key={c.id} className="flex items-center justify-between py-1">
+                <span className="text-primary-700 text-[14px]">{c.title}</span>
                 <span className="text-primary-700 text-[14px] font-medium">
-                  {formatPrice(cource.price)}원
+                  {fmtPrice(c.price)}원
                 </span>
               </li>
             ))}
@@ -136,14 +136,14 @@ export default function RecEditBasicInfo({
                 총 강의 비용
               </span>
               <span className="text-primary-800 text-[14px] font-medium">
-                {formatPrice(total)}원
+                {fmtPrice(total)}원
               </span>
             </li>
           </ul>
         </div>
       )}
 
-      {/* 공고 마감 기한 & 예상 모집 인원 */}
+      {/* 마감일 & 예상 인원 */}
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -151,7 +151,10 @@ export default function RecEditBasicInfo({
           </label>
           <Calendar
             value={deadline}
-            onChange={setDeadline}
+            onChange={(d) => {
+              setDeadline(d)
+              onDeadlineChange?.(d)
+            }}
             fullWidth
             placeholder="-/-/-"
           />
@@ -164,7 +167,10 @@ export default function RecEditBasicInfo({
           <DropDown
             selected={selectedCapacity}
             options={capacityGroup}
-            onSelect={setSelectedCapacity}
+            onSelect={(name) => {
+              setSelectedCapacity(name)
+              onCapacityChange?.(name)
+            }}
             placeholder="1명"
           />
         </div>

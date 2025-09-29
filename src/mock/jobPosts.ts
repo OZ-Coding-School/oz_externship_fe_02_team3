@@ -1,7 +1,9 @@
+import { v5 as uuidv5 } from 'uuid'
 import type { JobPost } from '@src/types/jobPosts'
 
-// 스터디 공고 더미데이터
-export const jobPosts: JobPost[] = [
+const UUID_NS = '6f1e1b94-5c7e-4f36-928a-1b7d9f8a9b77'
+
+const rawJobPosts: Omit<JobPost, 'uuid'>[] = [
   {
     id: 1,
     title: 'Unity 게임 개발 프로젝트 팀원 모집',
@@ -349,8 +351,7 @@ export const jobPosts: JobPost[] = [
   },
 ]
 
-// 맞춤 스터디 공고 더미데이터
-export const RecruitmentJobPosts: JobPost[] = [
+const rawRecruitmentJobPosts: Omit<JobPost, 'uuid'>[] = [
   {
     id: 1,
     title: 'React 실무 프로젝트',
@@ -385,3 +386,15 @@ export const RecruitmentJobPosts: JobPost[] = [
     image: 'https://placehold.co/128x96?text=AWS',
   },
 ]
+
+export const jobPosts: JobPost[] = rawJobPosts.map((j) => ({
+  ...j,
+  uuid: uuidv5(String(j.id), UUID_NS),
+}))
+
+export const RecruitmentJobPosts: JobPost[] = rawRecruitmentJobPosts.map(
+  (j) => ({
+    ...j,
+    uuid: uuidv5(`rec-${j.id}`, UUID_NS),
+  })
+)

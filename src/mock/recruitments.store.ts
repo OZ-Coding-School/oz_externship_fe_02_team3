@@ -1,51 +1,82 @@
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 import type { JobPost } from '@src/types/jobPosts'
-import { jobPosts } from '@mock/jobPosts'
 
-export interface RecruitmentDetailDTO {
-  id: number
-  uuid: string
-  title: string
-  content: string
-  expected_headcount: number
-  estimated_fee: number
-  close_at: string // ISO
-  tags: { id: number; name: string }[]
-  study_lectures: Array<{
-    title: string
-    instructor: string
-    thumbnail_img_url: string | null
-    original_price: number
-    discount_price: number
-  }>
+interface FilterState {
+  searchTerm: string
+  selectedTag: string
+  selectedSort: string
+  setSearchTerm: (term: string) => void
+  setSelectedTag: (tag: string) => void
+  setSelectedSort: (sort: string) => void
+  resetFilters: () => void
+  applyFilters: (jobs: JobPost[]) => JobPost[]
+  hasActiveFilters: () => boolean
+  getFilteredCount: (totalJobs: JobPost[]) => number
 }
 
-const toDetail = (p: JobPost): RecruitmentDetailDTO => ({
-  id: p.id,
-  uuid: `me-${p.id}`,
-  title: p.title,
-  content: '',
-  expected_headcount: p.memberLimit,
-  estimated_fee: 0,
-  close_at:
-    typeof p.deadline === 'string'
-      ? new Date(p.deadline.replace(/\./g, '-')).toISOString()
-      : new Date(p.deadline as Date).toISOString(),
-  tags: (p.tags ?? []).map((name, i) => ({ id: i + 1, name })),
-  study_lectures: (p.courses ?? []).map((c) => {
-    const [title, instructor] = c.split(' - ')
-    return {
-      title: title?.trim() || c,
-      instructor: (instructor ?? 'unknown').trim(),
-      thumbnail_img_url: null,
-      original_price: 0,
-      discount_price: 0,
-    }
-  }),
-})
+export const useFilterStore = create<FilterState>()(
+  persist(
+    (set, get) => ({
+      searchTerm: '',
+      selectedTag: '전체 태그',
+      selectedSort: '최신순',
 
-export const recruitmentDB: Map<string, RecruitmentDetailDTO> = new Map(
-  jobPosts.map((p) => {
-    const d = toDetail(p)
-    return [d.uuid, d]
-  })
+      setSearchTerm: (term: string) => set({ searchTerm: term }),
+      setSelectedTag: (tag: string) => set({ selectedTag: tag }),
+      setSelectedSort: (sort: string) => set({ selectedSort: sort }),
+
+      resetFilters: () =>
+        set({
+          searchTerm: '',
+          selectedTag: '전체 태그',
+          selectedSort: '최신순',
+        }),
+
+      hasActiveFilters: () => {
+        const { searchTerm, selectedTag } = get()
+        return searchTerm !== '' || selectedTag !== '전체 태그'
+      },
+
+      getFilteredCount: (totalJobs: JobPost[]) =>
+        get().applyFilters(totalJobs).length,
+
+      applyFilters: (jobs: JobPost[]) => {
+        const { searchTerm, selectedTag, selectedSort } = get()
+        let filtered = jobs
+
+        if (searchTerm) {
+          filtered = filtered.filter((job) =>
+            (job.title ?? '').toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        }
+        if (selectedTag !== '전체 태그') {
+          filtered = filtered.filter((job) =>
+            (job.tags ?? []).includes(selectedTag)
+          )
+        }
+
+        const keyFor = (j: JobPost) => Number(j.id ?? Number.MIN_SAFE_INTEGER)
+
+        if (selectedSort === '최신순') {
+          filtered = [...filtered].sort((a, b) => keyFor(b) - keyFor(a))
+        } else if (selectedSort === '오래된순') {
+          filtered = [...filtered].sort((a, b) => keyFor(a) - keyFor(b))
+        } else if (selectedSort === '인기순') {
+          filtered = [...filtered].sort(
+            (a, b) => Number(b.viewCount ?? 0) - Number(a.viewCount ?? 0)
+          )
+        }
+
+        return filtered
+      },
+    }),
+    {
+      name: 'recruitment-filters',
+      partialize: (state) => ({
+        selectedTag: state.selectedTag,
+        selectedSort: state.selectedSort,
+      }),
+    }
+  )
 )
