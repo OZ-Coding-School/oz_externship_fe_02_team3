@@ -8,14 +8,9 @@ export default function HeaderUserSection() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
 
-  // 개발단계에선 해당 값을 true 와 false 로 합니다.
-  // 개발단계에선 유저 이름을 '김스터디' 로 합니다.
-  // const user = true
-  // const userName = '김스터디'
-
   const isLoggedIn = useAuth((state) => state.isLoggedIn())
   const userNickname = useAuth((state) => state.user?.nickname ?? '사용자')
-  console.log(userNickname)
+  console.log(userNickname) // joo
 
   return (
     <div className="flex items-center gap-4">
