@@ -14,6 +14,7 @@ import RecruitmentDetailPage from './pages/RecruitmentDetailPage'
 import RecruitmentEdit from './pages/RecruitmentEdit'
 import ScrollLayout from './layouts/ScrollLayout'
 import NotFoundPage from './pages/NotFoundPage'
+import AuthWarmup from './components/commons/AuthWarmup'
 
 const routes = [
   { path: ROUTES.HOME, element: <TestHub /> },
@@ -32,26 +33,32 @@ const scrollRoutes = [
 export default function App() {
   return (
     <ToastPorvider max={5}>
-      <Routes>
-        <Route element={<MainLayout />}>
-          {routes.map((route) => (
-            <Route key={route.path} path={route.path} element={route.element} />
-          ))}
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-
-        <Route element={<MainLayout />}>
-          <Route element={<ScrollLayout />}>
-            {scrollRoutes.map((route) => (
+      <AuthWarmup>
+        <Routes>
+          <Route element={<MainLayout />}>
+            {routes.map((route) => (
               <Route
                 key={route.path}
                 path={route.path}
                 element={route.element}
               />
             ))}
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
-        </Route>
-      </Routes>
+
+          <Route element={<MainLayout />}>
+            <Route element={<ScrollLayout />}>
+              {scrollRoutes.map((route) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.element}
+                />
+              ))}
+            </Route>
+          </Route>
+        </Routes>
+      </AuthWarmup>
     </ToastPorvider>
   )
 }
