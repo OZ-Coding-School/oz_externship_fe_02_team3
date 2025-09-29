@@ -2,7 +2,7 @@ export const API_END_POINTS = {
   // 유저 상태관리용 상수
   ME: 'api/v1/info/',
   REFRESH: 'api/v1/auth/refresh',
-  LOGOUT: '/auth/logout',
+  LOGOUT: 'api/v1/auth/logout',
 
   // 구인공고 관련 상수
   RECRUITMENTS_LIST: '/recruitments', // 구인 공고 목록 조회

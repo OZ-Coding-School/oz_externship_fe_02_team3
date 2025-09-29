@@ -1,5 +1,6 @@
 import PageLink from '@components/commons/page-link/PageLink'
-
+const ACCOUNT = 'https://account.ozcoding.site'
+const returnTo = encodeURIComponent(window.location.href)
 export default function AuthMenu() {
   return (
     <>
@@ -7,7 +8,7 @@ export default function AuthMenu() {
         pageLinkInnerText="로그인"
         variant="text"
         fontWeight="normal"
-        link="/login"
+        link={`${ACCOUNT}/auth/login?return_to=${returnTo}`}
         size="lg"
         className="p-0"
       />

@@ -10,7 +10,16 @@ export default function HeaderUserSection() {
 
   const isLoggedIn = useAuth((state) => state.isLoggedIn())
   const userNickname = useAuth((state) => state.user?.nickname ?? '사용자')
-  console.log(userNickname) // joo
+  const bootstrapped = useAuth((state) => state.bootstrapped)
+
+  if (!bootstrapped) {
+    return (
+      <div className="flex items-center gap-4">
+        <div className="h-10 w-10 animate-pulse rounded-full bg-gray-200" />
+        <div className="h-6 w-20 animate-pulse rounded bg-gray-200" />
+      </div>
+    )
+  }
 
   return (
     <div className="flex items-center gap-4">
