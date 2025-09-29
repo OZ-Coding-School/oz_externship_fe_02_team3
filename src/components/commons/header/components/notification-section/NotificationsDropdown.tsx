@@ -73,7 +73,7 @@ export default function NotificationsDropdown({
           type="button"
           disabled={unreadCount === 0 || markAllAsReadMutation.isPending}
           onClick={handleMarkAllAsRead}
-          className="text-primary-600 flex items-center justify-center text-center text-sm"
+          className="text-primary-600 flex cursor-pointer items-center justify-center text-center text-sm"
         >
           {markAllAsReadMutation.isPending ? '처리 중…' : '모두 읽음'}
         </button>

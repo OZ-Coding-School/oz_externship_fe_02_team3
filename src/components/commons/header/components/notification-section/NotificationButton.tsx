@@ -39,17 +39,19 @@ export default function NotificationButton({
   )
 
   return (
-    <div
-      ref={notificationButtonRef}
-      className="relative flex size-10 cursor-pointer items-center justify-center rounded-full hover:bg-gray-100"
-      onClick={handleNotificationToggle}
-    >
-      <Icon icon={BellIcon} size="md" className={`stroke-gray-600`} />
-      {unreadCount > 0 && (
-        <span className="bg-danger-500 absolute -top-1 left-6 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-semibold text-white">
-          {unreadCount > 99 ? '99+' : unreadCount}
-        </span>
-      )}
+    <div className="relative">
+      <div
+        ref={notificationButtonRef}
+        className="relative flex size-10 cursor-pointer items-center justify-center rounded-full hover:bg-gray-100"
+        onClick={handleNotificationToggle}
+      >
+        <Icon icon={BellIcon} size="md" className={`stroke-gray-600`} />
+        {unreadCount > 0 && (
+          <span className="bg-danger-500 absolute -top-1 left-6 flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-xs font-semibold text-white">
+            {unreadCount > 99 ? '99+' : unreadCount}
+          </span>
+        )}
+      </div>
       {isNotificationOpen && (
         <NotificationsDropdown
           notificationsDropdownRef={notificationsDropdownRef}
