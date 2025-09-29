@@ -1,6 +1,6 @@
 import { Eye, Bookmark, Pencil, X } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { supa } from '@src/lib/supabase'
 import { useToast } from '@components/commons/toast'
 
@@ -38,6 +38,74 @@ const toErrorMessage = (e: unknown): string => {
   return '알 수 없는 오류'
 }
 
+function ConfirmModal({
+  open,
+  title,
+  description,
+  confirmText = '삭제',
+  cancelText = '취소',
+  onConfirm,
+  onClose,
+  loading,
+}: {
+  open: boolean
+  title: string
+  description?: string
+  confirmText?: string
+  cancelText?: string
+  onConfirm: () => void
+  onClose: () => void
+  loading?: boolean
+}) {
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open, onClose])
+
+  if (!open) return null
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-end justify-center sm:items-center"
+      onClick={onClose}
+      aria-modal="true"
+      role="dialog"
+    >
+      <div className="absolute inset-0 bg-black/40" />
+      <div
+        className="relative m-3 w-full max-w-md rounded-xl bg-white p-5 shadow-lg"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <h3 className="text-base font-semibold">{title}</h3>
+        {description && (
+          <p className="mt-2 text-sm text-gray-600">{description}</p>
+        )}
+        <div className="mt-5 flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            disabled={loading}
+            className="inline-flex h-9 items-center rounded-md border border-gray-300 px-4 text-sm hover:bg-gray-50 disabled:opacity-60"
+          >
+            {cancelText}
+          </button>
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={loading}
+            className="inline-flex h-9 items-center rounded-md bg-red-600 px-4 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-60"
+          >
+            {loading ? '삭제 중…' : confirmText}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function MobileJobPostCard({
   post,
   editTo,
@@ -57,19 +125,26 @@ export default function MobileJobPostCard({
     tags,
     image,
   } = post
+
   const toast = useToast()
   const [deleting, setDeleting] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   const top3Courses = useMemo(() => courses.slice(0, 3), [courses])
   const remainCnt = Math.max(0, courses.length - top3Courses.length)
 
-  const handleDelete = async (e: React.MouseEvent) => {
+  const askDelete = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    if (!uuid) return
+    setConfirmOpen(true)
+  }
+
+  const handleDelete = async () => {
     if (!uuid || deleting) return
-    if (!window.confirm('공고를 삭제할까요?')) return
     try {
       setDeleting(true)
+
       const { data: rec, error: e1 } = await supa
         .from('recruitments')
         .select('id')
@@ -77,6 +152,7 @@ export default function MobileJobPostCard({
         .single()
       if (e1) throw e1
       const recId = rec?.id as number
+
       const delChild = async (table: string) => {
         const { error } = await supa
           .from(table)
@@ -89,11 +165,14 @@ export default function MobileJobPostCard({
       await delChild('recruitment_tags')
       await delChild('recruitment_bookmarks')
       await delChild('applications')
+
       const { error: eDel } = await supa
         .from('recruitments')
         .delete()
         .eq('id', recId)
       if (eDel) throw eDel
+
+      setConfirmOpen(false)
       toast.success({ title: '삭제 완료', content: '공고가 삭제되었습니다.' })
       onDeleted?.(uuid)
     } catch (err: unknown) {
@@ -103,9 +182,9 @@ export default function MobileJobPostCard({
     }
   }
 
-  return (
+  const detailTo = uuid ? `/recruitment/${uuid}` : undefined
+  const Card = (
     <article className="rounded-xl bg-white p-3 ring-1 ring-gray-200">
-      {/* 제목 + 액션(수정/삭제) */}
       <div className="mb-1 flex items-start justify-between gap-2">
         <h3 className="line-clamp-2 flex-1 pr-2 text-[15px] font-semibold text-gray-900">
           {title}
@@ -115,6 +194,7 @@ export default function MobileJobPostCard({
           {editTo && (
             <Link
               to={editTo}
+              onClick={(e) => e.stopPropagation()}
               className="inline-flex h-8 w-8 items-center justify-center rounded-full text-gray-500 hover:bg-gray-50"
               aria-label="공고 수정"
               title="수정"
@@ -125,7 +205,7 @@ export default function MobileJobPostCard({
           {canDelete && uuid && (
             <button
               type="button"
-              onClick={handleDelete}
+              onClick={askDelete}
               disabled={deleting}
               aria-label="공고 삭제"
               title="삭제"
@@ -137,7 +217,6 @@ export default function MobileJobPostCard({
         </div>
       </div>
 
-      {/* 통계 */}
       <div className="mb-2 flex items-center gap-3 text-[12px] text-gray-600">
         <span className="inline-flex items-center gap-1">
           <Eye className="h-4 w-4" /> {viewCount}
@@ -147,7 +226,6 @@ export default function MobileJobPostCard({
         </span>
       </div>
 
-      {/* 이미지 (높이 축소) */}
       <div className="overflow-hidden rounded-lg">
         <img
           src={image}
@@ -157,7 +235,6 @@ export default function MobileJobPostCard({
         />
       </div>
 
-      {/* 메타 2열 카드 (패딩 축소) */}
       <div className="mt-2 grid grid-cols-2 gap-2 text-[13px] text-gray-800">
         <div className="rounded-md bg-gray-50 px-2.5 py-1.5">
           <p className="text-[11px] text-gray-500">모집 인원</p>
@@ -169,7 +246,6 @@ export default function MobileJobPostCard({
         </div>
       </div>
 
-      {/* 강의 목록 (3개만, 나머지 개수 표시) */}
       {top3Courses.length > 0 && (
         <div className="mt-2">
           <p className="mb-1 text-[12px] font-medium text-gray-700">
@@ -188,7 +264,6 @@ export default function MobileJobPostCard({
         </div>
       )}
 
-      {/* 태그 (간격 축소) */}
       {tags?.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
           {tags.map((t, i) => (
@@ -202,12 +277,14 @@ export default function MobileJobPostCard({
         </div>
       )}
 
-      {/* 지원 버튼 (높이/패딩 축소) */}
       {onClickApply && (
         <div className="mt-3">
           <button
             type="button"
-            onClick={onClickApply}
+            onClick={(e) => {
+              e.stopPropagation()
+              onClickApply()
+            }}
             className="inline-flex h-9 w-full items-center justify-center rounded-lg bg-blue-500 px-3 text-[13px] font-semibold text-white hover:bg-blue-700 active:bg-blue-900"
           >
             {applyLabel}
@@ -215,5 +292,29 @@ export default function MobileJobPostCard({
         </div>
       )}
     </article>
+  )
+
+  return (
+    <>
+      {detailTo ? (
+        <Link to={detailTo} className="block">
+          {Card}
+        </Link>
+      ) : (
+        Card
+      )}
+
+      {/* 삭제 확인 모달 */}
+      <ConfirmModal
+        open={confirmOpen}
+        title="정말 삭제할까요?"
+        description="삭제 후에는 되돌릴 수 없어요."
+        confirmText="삭제"
+        cancelText="취소"
+        onConfirm={handleDelete}
+        onClose={() => (!deleting ? setConfirmOpen(false) : null)}
+        loading={deleting}
+      />
+    </>
   )
 }
