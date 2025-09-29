@@ -77,6 +77,7 @@ export default function RecruitmentBanner() {
         open={openApplication}
         onClose={() => setOpenApplication(false)}
         title="Unity 게임 개발 프로젝트 팀원 모집"
+        recruitmentUuid={String(post.uuid ?? post.id)}
       />
     </div>
   )
