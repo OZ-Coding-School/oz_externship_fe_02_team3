@@ -1,5 +1,6 @@
 import { supa } from '@src/lib/supabase'
 import type { JobPost, JobPostsResponse } from '@src/types/jobPosts'
+import { extractFirstImageFromMarkdown } from '@src/utils/extractFirstImage' // ✅ 추가
 
 const PAGE_SIZE = 10
 export type JobPostSort = 'latest' | 'oldest' | 'popular'
@@ -12,21 +13,16 @@ interface FetchParams {
 }
 
 type Maybe<T> = T | null | undefined
-
-function toArr<T>(v: Maybe<T | T[]>): T[] {
-  if (v == null) return []
-  return Array.isArray(v) ? v : [v]
-}
+const toArr = <T>(v: Maybe<T | T[]>): T[] =>
+  v == null ? [] : Array.isArray(v) ? v : [v]
 
 interface CrawledLectureRow {
   title: string | null
   instructor: string | null
 }
-
 interface StudyLectureRow {
   crawled_lectures?: CrawledLectureRow | CrawledLectureRow[] | null
 }
-
 interface StudyGroupRow {
   id: number
   study_lectures?: StudyLectureRow | StudyLectureRow[] | null
@@ -36,6 +32,7 @@ interface RecruitmentRow {
   id: number
   uuid: string
   title: string | null
+  content: string | null
   expected_headcount: number | null
   close_at: string | null
   views_count: number | null
@@ -60,7 +57,8 @@ export async function fetchJobPosts({
 
   let q = supa.from('recruitments').select(
     `
-      id, uuid, title, expected_headcount, close_at,
+      id, uuid, title, content,                    
+      expected_headcount, close_at,
       views_count, bookmarks_count, created_at, tags,
       recruitment_images:recruitment_images ( img_url ),
       study_groups:study_groups (
@@ -100,6 +98,11 @@ export async function fetchJobPosts({
         )
         .filter((s) => s.length > 0) ?? []
 
+    const fromMd = extractFirstImageFromMarkdown(r.content)
+    const fromRel = r.recruitment_images?.[0]?.img_url ?? null
+    const image =
+      fromMd || fromRel || 'https://placehold.co/320x240/e5e7eb/e5e7eb.png'
+
     return {
       id: r.id,
       uuid: r.uuid,
@@ -111,9 +114,7 @@ export async function fetchJobPosts({
       deadline: fmtDate(r.close_at),
       courses,
       tags: r.tags ?? [],
-      image:
-        (r.recruitment_images && r.recruitment_images[0]?.img_url) ||
-        'https://placehold.co/320x240/e5e7eb/e5e7eb.png',
+      image,
     }
   })
 

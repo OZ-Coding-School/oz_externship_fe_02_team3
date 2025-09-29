@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { useToast } from '@src/components/commons/toast'
+import { supa } from '@src/lib/supabase'
 import { BannerInfoList } from './BannerInfoList'
 import { BannerTags } from './BannerTags'
 import { BannerButtons } from './BannerButtons'
@@ -16,11 +17,25 @@ import type { Tag } from '@src/types/tag'
 
 interface Props {
   post: RecruitmentDetail
-  onBookmark: () => void
+  onBookmark?: () => void
+}
+
+const toErrorMessage = (e: unknown): string => {
+  if (typeof e === 'string') return e
+  if (e && typeof e === 'object') {
+    const obj = e as Record<string, unknown>
+    const msg = obj['message']
+    const desc = obj['error_description']
+    if (typeof msg === 'string') return msg
+    if (typeof desc === 'string') return desc
+  }
+  return '알 수 없는 오류'
 }
 
 export default function RecruitmentBanner({ post, onBookmark }: Props) {
   const [openApplication, setOpenApplication] = useState(false)
+  const [bmCount, setBmCount] = useState<number>(post.bookmarks_count ?? 0)
+  const [bookmarking, setBookmarking] = useState(false)
   const toast = useToast()
 
   const createdAtText =
@@ -33,13 +48,6 @@ export default function RecruitmentBanner({ post, onBookmark }: Props) {
       minute: '2-digit',
       hour12: true,
     }).format(new Date(post.created_at))
-
-  const jobInfo = [
-    { icon: UserIcon, label: '작성자', value: '-' }, // author 닉네임 확장 시 채우기
-    { icon: CalendarIcon, label: '등록일', value: createdAtText ?? '-' },
-    { icon: ViewIcon, label: '조회', value: post.views_count ?? 0 },
-    { icon: BookmarkIcon, label: '북마크', value: post.bookmarks_count ?? 0 },
-  ]
 
   const handleShare = () => {
     const url = window.location.href
@@ -59,6 +67,24 @@ export default function RecruitmentBanner({ post, onBookmark }: Props) {
       )
   }
 
+  const handleBookmark = async () => {
+    if (bookmarking) return
+    try {
+      setBookmarking(true)
+      const { error } = await supa.rpc('inc_recruitment_bookmarks', {
+        p_uuid: post.uuid,
+      })
+      if (error) throw error
+      setBmCount((c) => c + 1)
+      toast.success({ title: '북마크에 추가되었습니다' })
+      onBookmark?.()
+    } catch (err) {
+      toast.error({ title: '북마크 실패', content: toErrorMessage(err) })
+    } finally {
+      setBookmarking(false)
+    }
+  }
+
   const tagObjs: Tag[] = (post.tags ?? []).map((name, i) => ({
     id: -1000 - i,
     name,
@@ -70,6 +96,13 @@ export default function RecruitmentBanner({ post, onBookmark }: Props) {
     close_at: post.close_at ?? null,
     study_group_name: post.study_group_name ?? null,
   }
+
+  const jobInfo = [
+    { icon: UserIcon, label: '작성자', value: '-' }, // author 닉네임 확장 시 채우기
+    { icon: CalendarIcon, label: '등록일', value: createdAtText ?? '-' },
+    { icon: ViewIcon, label: '조회', value: post.views_count ?? 0 },
+    { icon: BookmarkIcon, label: '북마크', value: bmCount },
+  ]
 
   const recruitmentUuid = String(post.uuid)
 
@@ -84,7 +117,7 @@ export default function RecruitmentBanner({ post, onBookmark }: Props) {
 
         <BannerButtons
           onShare={handleShare}
-          onBookmark={onBookmark}
+          onBookmark={handleBookmark}
           onClick={() => setOpenApplication(true)}
         />
       </div>

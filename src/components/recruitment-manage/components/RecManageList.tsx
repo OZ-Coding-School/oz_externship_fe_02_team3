@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import type { RecruitmentMeItem } from '@src/api/supabase/recManage.type'
 import MobileJobPostCard from './MobileJobPostCard'
 import ManageApplicantsModal from './ManageApplicantsModal'
+import { extractFirstImageFromMarkdown } from '@src/utils/extractFirstImage'
 
 interface Props {
   items: RecruitmentMeItem[]
@@ -18,7 +19,21 @@ interface Props {
 const PLACEHOLDER = 'https://placehold.co/128x96'
 const fmtDate = new Intl.DateTimeFormat('ko-KR', { dateStyle: 'medium' })
 
+type RecMeWithExtras = RecruitmentMeItem & {
+  content?: string | null
+  img?: string | null
+  recruitment_images?: { img_url: string }[] | null
+}
+
+function pickCoverImage(it: RecMeWithExtras) {
+  const fromMd = extractFirstImageFromMarkdown(it.content ?? '') || null
+  const fromRel = it.img ?? it.recruitment_images?.[0]?.img_url ?? null
+  return fromMd || fromRel || PLACEHOLDER
+}
+
 function toCardItem(it: RecruitmentMeItem) {
+  const postImage = pickCoverImage(it as RecMeWithExtras)
+
   return {
     post: {
       id: it.id,
@@ -31,7 +46,7 @@ function toCardItem(it: RecruitmentMeItem) {
       deadline: fmtDate.format(new Date(it.close_at)),
       courses: (it.lectures ?? []).map((l) => `${l.title} - ${l.instructor}`),
       tags: it.tags ?? [],
-      image: it.img ?? PLACEHOLDER,
+      image: postImage,
     },
     editTo: `/recruitment/${it.uuid}/edit`,
   } as const
@@ -47,24 +62,15 @@ export default function RecManageList({
 }: Props) {
   const sentinelRef = useRef<HTMLDivElement | null>(null)
 
-  // 지원자 관리 모달 제어
   const [removedUuids, setRemovedUuids] = useState<Set<string>>(new Set())
-
   const [openManage, setOpenManage] = useState(false)
   const [selectedTitle, setSelectedTitle] = useState<string>('')
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null)
+  const [selectedUuid, setSelectedUuid] = useState<string | null>(null)
 
-  const openApplicantsModal = (id: number, title: string) => {
-    setSelectedPostId(id)
+  const openApplicantsModal = (uuid: string, title: string) => {
+    setSelectedUuid(uuid)
     setSelectedTitle(title)
     setOpenManage(true)
-  }
-
-  const openApplicantDetail = (applicant: Applicant) => {
-    const detail = dummyApplicants2.find((d) => d.id === applicant.id)
-    if (!detail) return
-    setSelectedApplicant(detail)
-    setOpenApplicationDetail(true)
   }
 
   const visibleItems = useMemo(
@@ -78,8 +84,7 @@ export default function RecManageList({
       return {
         ...base,
         applyLabel: '지원 내역',
-        onClickApply: () => openApplicantsModal(it.title),
-
+        onClickApply: () => openApplicantsModal(it.uuid, it.title),
         canDelete: true,
         onDeleted: (uuid: string) =>
           setRemovedUuids((prev) => {
@@ -110,25 +115,7 @@ export default function RecManageList({
     }
   }, [hasNextPage, isFetchingNextPage, onLoadMore])
 
-  const cards = items.map((it) => ({
-    post: {
-      id: it.id,
-      title: it.title,
-      viewCount: it.views_count,
-      commentCount: 0,
-      bookmarkCount: it.bookmarks_count ?? 0,
-      memberLimit: it.expected_headcount,
-      deadline: new Date(it.close_at).toLocaleDateString('ko-KR'),
-      courses: it.lectures.map((l) => `${l.title} - ${l.instructor}`),
-      tags: it.tags,
-      image: it.img ?? PLACEHOLDER,
-    },
-    editTo: `/recruitment/${it.id}/edit`,
-    applyLabel: '지원 내역',
-    onClickApply: () => openApplicantsModal(it.id, it.title),
-  }))
-
-  const isEmpty = !loading && items.length === 0
+  const isEmpty = !loading && visibleItems.length === 0
 
   return (
     <section>
@@ -173,12 +160,12 @@ export default function RecManageList({
         </div>
       )}
 
-      {selectedPostId !== null && (
+      {selectedUuid && (
         <ManageApplicantsModal
           open={openManage}
           onClose={() => setOpenManage(false)}
           title={selectedTitle}
-          recruitmentUuid={String(selectedPostId)}
+          recruitmentUuid={selectedUuid}
         />
       )}
     </section>
