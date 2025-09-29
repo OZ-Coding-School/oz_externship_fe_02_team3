@@ -111,7 +111,6 @@ export default function NotificationItem({
       } else if (notification.back_url_link.includes('study-group')) {
         window.location.href = `${STUDY_GROUP}${notification.back_url_link}`
       } else {
-        // 그 외의 경우 일반 navigate
         navigate(ACCOUNT)
       }
     }
@@ -124,16 +123,13 @@ export default function NotificationItem({
 
     readNotificationMutation.mutate(notification_id, {
       onError: (error) => {
-        console.error('읽음 처리 실패:', error)
+        alert(`Error: ${error}`)
       },
       onSuccess: () => {
-        console.log('읽음 처리 성공!')
         setIsNotificationOpen(false)
         navigateToLink()
       },
     })
-
-    // setIsNotificationOpen(false)
   }
   return (
     <div

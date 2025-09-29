@@ -11,7 +11,6 @@ import ParticipantsList from './ParticipantsList'
 import { useChatMessages, useChatting } from '@src/hooks/useChatting'
 import { participants } from '@src/mock/participants'
 import { useSearchParams } from 'react-router-dom'
-// import { chatList } from '@src/mock/chatListData'
 import { Z_INDEX } from '@src/constants/ui'
 import { useAuth } from '@src/store/auth'
 
