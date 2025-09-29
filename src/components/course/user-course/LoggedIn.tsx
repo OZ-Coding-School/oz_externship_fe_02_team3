@@ -2,11 +2,14 @@ import { mockCoursesData } from '@src/mock/coursesData'
 import type { Course } from '@src/types/course'
 import { cn } from '@src/utils/cn'
 import CourseCard from '../course-content/CourseCard'
+import { SCROLLBAR_STYLES } from '@src/constants/ui'
+import { useHorizontalScroll } from '@src/hooks/useHorizontalScroll'
 interface LoggedInProps {
   userStyle: string
 }
 
 export default function LoggedIn({ userStyle }: LoggedInProps) {
+  const { ref } = useHorizontalScroll()
   const userName = '김개발'
 
   const recommendedCourses: Course[] = mockCoursesData
@@ -25,15 +28,25 @@ export default function LoggedIn({ userStyle }: LoggedInProps) {
           개인화 추천
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {recommendedCourses.map((course) => (
-          <article
-            key={course.id}
-            className={cn('relative w-full cursor-pointer overflow-hidden')}
-          >
-            <CourseCard {...course} />
-          </article>
-        ))}
+      <div
+        ref={ref}
+        className={cn(
+          'overflow-x-auto overflow-y-hidden pt-2 pb-4',
+          SCROLLBAR_STYLES
+        )}
+      >
+        <div className="flex gap-6">
+          {recommendedCourses.map((course) => (
+            <article
+              key={course.id}
+              className={cn(
+                'relative w-full min-w-[330px] cursor-pointer overflow-hidden'
+              )}
+            >
+              <CourseCard {...course} />
+            </article>
+          ))}
+        </div>
       </div>
     </div>
   )
