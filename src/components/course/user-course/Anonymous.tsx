@@ -45,20 +45,25 @@ export default function Anonymous({ userStyle }: AnonymousProps) {
           로그인 후 이런 맞춤 추천을 받을 수 있어요
         </p>
         <div className="flex gap-4">
-          {/* 기본 플레이스홀더 카드들을 항상 표시 */}
-          {Array.from({ length: 3 }).map((_, index) => (
-            <CourseSkeleton key={index} />
-          ))}
+          <CourseSkeleton />
+          <CourseSkeleton className="hidden lg:block" />
+          <CourseSkeleton className="hidden xl:block" />
         </div>
       </div>
     </div>
   )
 }
 
+interface CourseSkeletonProps {
+  className?: string
+}
+
 // 강의 미리보기 카드
-function CourseSkeleton() {
+function CourseSkeleton({ className }: CourseSkeletonProps) {
   return (
-    <div className="relative w-[370px] rounded-lg border border-gray-200 bg-white p-4">
+    <div
+      className={`relative w-[370px] rounded-lg border border-gray-200 bg-white p-4 ${className}`}
+    >
       {/* 썸네일 영역 */}
       <div className="mb-3 h-24 w-full rounded bg-gray-100"></div>
 
