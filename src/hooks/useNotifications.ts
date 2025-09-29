@@ -1,26 +1,26 @@
 // src/hooks/useNotifications.ts
-import axios from 'axios'
+// import axios from 'axios'
 import type { NotificationResponse } from '@src/types/notification'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-
+import { api } from '@api/api'
 // const API_BASE_URL = 'http://localhost:5173'
-const API_BASE_URL = 'https://api.ozcoding.site'
+// const API_BASE_URL = 'https://api.ozcoding.site'
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  withCredentials: true,
-})
+// const api = axios.create({
+//   baseURL: API_BASE_URL,
+//   withCredentials: true,
+// })
 
-const getAuthToken = () => {
-  const token = localStorage.getItem('access_token')
+// const getAuthToken = () => {
+//   const token = localStorage.getItem('access_token')
 
-  if (!import.meta.env.DEV) {
-    return token // 프로덕션에서는 localStorage 토큰만 반환
-  }
+//   if (!import.meta.env.DEV) {
+//     return token // 프로덕션에서는 localStorage 토큰만 반환
+//   }
 
-  // 개발 환경에서는 기본 토큰 제공
-  return token || 'dev-token'
-}
+//   // 개발 환경에서는 기본 토큰 제공
+//   return token || 'dev-token'
+// }
 
 // 알림 목록 조회
 export function useNotifications() {
@@ -28,10 +28,14 @@ export function useNotifications() {
     queryKey: ['notifications'],
     queryFn: async () => {
       // const token = getAuthToken()
-      const response = await api.get('/api/v1/notifications', {
-        params: { status: 'all', limit: 50, offset: 0 },
-        // headers: { Authorization: `Bearer ${token}` },
-      })
+      const response = await api.get(
+        '/api/v1/notifications'
+        //   {
+        //   params: { status: 'all', limit: 50, offset: 0 },
+        //   headers: { Authorization: `Bearer ${token}` },
+        // }
+      )
+
       return response.data
     },
     refetchOnWindowFocus: true, // 창 포커스 시에만 확인
@@ -54,8 +58,8 @@ export function useUnreadCountQuery() {
       // const token = getAuthToken()
       const response = await api.get(
         '/api/v1/notifications/unread-count'
-        // , {
-        // headers: { Authorization: `Bearer ${token}` },
+        //   , {
+        //   headers: { Authorization: `Bearer ${token}` },
         // }
       )
 
@@ -84,9 +88,8 @@ export function useMarkAllAsRead() {
     // mutationFn: 실제로 서버에 요청을 보내는 함수
     mutationFn: async () => {
       // const token = getAuthToken()
-      const response = await axios.post(
+      const response = await api.post(
         '/api/v1/notifications/read-all'
-        // ,
         // {},
         // { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -116,11 +119,11 @@ export function useReadNotification() {
     mutationFn: async (id: number) => {
       // const token = localStorage.getItem('access_token')
 
-      const token = getAuthToken()
-      const response = await axios.post(
-        `/api/v1/notifications/${id}/read`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
+      // const token = getAuthToken()
+      const response = await api.post(
+        `/api/v1/notifications/${id}/read`
+        // {},
+        // { headers: { Authorization: `Bearer ${token}` } }
       )
       return response.data
     },

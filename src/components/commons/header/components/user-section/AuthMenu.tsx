@@ -7,7 +7,7 @@ export default function AuthMenu() {
         pageLinkInnerText="로그인"
         variant="text"
         fontWeight="normal"
-        link="/login"
+        link="/auth/login"
         size="lg"
         className="p-0"
       />

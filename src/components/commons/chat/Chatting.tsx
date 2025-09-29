@@ -13,7 +13,7 @@ import { participants } from '@src/mock/participants'
 import { useSearchParams } from 'react-router-dom'
 import { chatList } from '@src/mock/chatListData'
 import { Z_INDEX } from '@src/constants/ui'
-import { useCurrentUser } from '@src/hooks/useCurrentUser'
+import { useAuth } from '@src/store/auth'
 
 interface ChatProps {
   isOpen: boolean
@@ -32,18 +32,9 @@ interface WebSocketMessage {
   type?: 'message' | 'user_joined'
 }
 
-const generateUserUuid = () =>
-  `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-const getAuthToken = () => {
-  const token = localStorage.getItem('access_token')
-  if (!import.meta.env.DEV) {
-    return token
-  }
-  return token || 'dev-token'
-}
-
 export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
-  const { currentUser } = useCurrentUser()
+  // const { currentUser } = useCurrentUser()
+  const { user } = useAuth()
   const [searchParams] = useSearchParams()
 
   // 기존 state들 아래에 WebSocket 관련 state 추가
@@ -54,14 +45,15 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   const socketRef = useRef<WebSocket | null>(null)
 
   // 탭별 고유 user_uuid 생성 (컴포넌트 생명주기 동안 유지)
-  const currentUserUuid = useRef(generateUserUuid()).current
 
   const [currentView, setCurrentView] = useState<'list' | 'chat'>('list')
   const [selectedChatRoom, setSelectedChatRoom] = useState<Chat | null>(null)
   const studyGroupUuid = searchParams.get('study_group_uuid')
-  const { chatMessages, isLoading: isMessagesLoading } = useChatMessages(
-    selectedChatRoom?.uuid
-  )
+  const {
+    chatMessages,
+    isLoading: isMessagesLoading,
+    isError,
+  } = useChatMessages(selectedChatRoom?.uuid)
 
   // 1. 채팅방 입장 함수
   const openChatRoom = (chatData: Chat) => {
@@ -84,7 +76,13 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
     // UI에 연결 시도 중 상태 표시
     // setConnectionStatus('connecting')
 
-    const token = getAuthToken()
+    // const token = getAuthToken()
+    const token = localStorage.getItem('access_token')
+
+    if (!token) {
+      console.warn('토큰이 없어 WebSocket 연결 불가')
+      return
+    }
     // MSW가 가로챌 수 있는 WebSocket URL 생성
     // 실제 서버: ws://서버주소/ws/chat/채팅방UUID/?token=토큰
     // MSW 테스트: ws://localhost:3000/ws/chat/채팅방UUID
@@ -93,7 +91,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
     // const wsUrl = `ws://localhost:5173/test`
     // const wsUrl = `ws://localhost:5173/ws/chat/${selectedChatRoom.uuid}`
     const wsUrl = `ws://api.ozcoding.site/ws/chat/${selectedChatRoom.uuid}/?token=${token}`
-
+    console.log('🔌 WebSocket URL:', wsUrl)
     const ws = new WebSocket(wsUrl)
 
     // WebSocket 연결이 성공적으로 완료되었을 때 실행되는 이벤트 핸들러
@@ -103,7 +101,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
       // setConnectionStatus('connected') // ← 상태 변경
       // setSocket(ws) // ← 상태 변경
       socketRef.current = ws // ← useRef 값 설정
-      const currentUserNickname = currentUser?.nickname || '사용자'
+      const currentUserNickname = user?.name || '사용자'
 
       const joinMessage: WebSocketMessage = {
         message_id: Date.now(),
@@ -146,7 +144,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
           }
 
           // 내가 보낸 메시지는 이미 UI에 추가했으므로 무시
-          if (newMessage.sender.nickname === currentUser?.nickname) {
+          if (newMessage.sender.nickname === user?.name) {
             return
           }
           // 파싱된 메시지를 realTimeMessages 상태 배열에 추가
@@ -198,7 +196,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
       // useRef에서도 WebSocket 객체 제거
       socketRef.current = null
     }
-  }, [selectedChatRoom, currentUserUuid])
+  }, [selectedChatRoom, user])
 
   // 4. 사용자가 메시지를 보낼 때 호출되는 함수
   const sendMessage = (content: string) => {
@@ -220,7 +218,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
       const myMessage: WebSocketMessage = {
         message_id: Date.now(),
         sender: {
-          user_uuid: currentUserUuid,
+          user_uuid: String(user?.id || ''),
           nickname: '현재사용자',
           profile_img_url: '',
         },
@@ -309,7 +307,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
           ) : (
             <MessageList
               messages={[...chatMessages, ...realTimeMessages]}
-              currentUserUuid={currentUserUuid}
+              currentUserUuid={String(user?.id || '')}
             />
           )}
         </div>

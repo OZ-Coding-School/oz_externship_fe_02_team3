@@ -89,6 +89,8 @@ export default function NotificationItem({
   const readNotificationMutation = useReadNotification()
 
   const handleNotificationClick = () => {
+    console.log(notification_id)
+
     console.log(notification.back_url_link)
 
     if (notification.is_read || readNotificationMutation.isPending) {

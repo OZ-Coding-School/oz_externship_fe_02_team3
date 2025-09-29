@@ -4,7 +4,7 @@ import type { Chat } from '@src/types/chat'
 import chatMessagesData, { chatList } from '../chatListData'
 const API_STATUS = {
   chatRoomsGet: true,
-  unReadCountGet: false,
+  unReadCountGet: true,
 }
 const mutableChatListData: Chat[] = [...chatList]
 // JWT 토큰 검증 헬퍼 함수
