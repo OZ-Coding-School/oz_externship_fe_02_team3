@@ -2,7 +2,6 @@ import { supa } from '@src/lib/supabase'
 import type { JobPost, JobPostsResponse } from '@src/types/jobPosts'
 
 const PAGE_SIZE = 10
-
 export type JobPostSort = 'latest' | 'oldest' | 'popular'
 
 interface FetchParams {
@@ -10,6 +9,27 @@ interface FetchParams {
   search?: string
   tag?: string
   sort?: JobPostSort
+}
+
+type Maybe<T> = T | null | undefined
+
+function toArr<T>(v: Maybe<T | T[]>): T[] {
+  if (v == null) return []
+  return Array.isArray(v) ? v : [v]
+}
+
+interface CrawledLectureRow {
+  title: string | null
+  instructor: string | null
+}
+
+interface StudyLectureRow {
+  crawled_lectures?: CrawledLectureRow | CrawledLectureRow[] | null
+}
+
+interface StudyGroupRow {
+  id: number
+  study_lectures?: StudyLectureRow | StudyLectureRow[] | null
 }
 
 interface RecruitmentRow {
@@ -23,6 +43,7 @@ interface RecruitmentRow {
   created_at: string | null
   tags: string[] | null
   recruitment_images?: { img_url: string }[] | null
+  study_groups?: StudyGroupRow | StudyGroupRow[] | null
 }
 
 const fmtDate = (iso?: string | null) =>
@@ -41,52 +62,61 @@ export async function fetchJobPosts({
     `
       id, uuid, title, expected_headcount, close_at,
       views_count, bookmarks_count, created_at, tags,
-      recruitment_images:recruitment_images ( img_url )
+      recruitment_images:recruitment_images ( img_url ),
+      study_groups:study_groups (
+        id,
+        study_lectures:study_lectures (
+          crawled_lectures:crawled_lectures ( title, instructor )
+        )
+      )
     `,
     { count: 'exact' }
   )
 
-  if (sort === 'latest') {
-    q = q.order('created_at', { ascending: false })
-  } else if (sort === 'oldest') {
-    q = q.order('created_at', { ascending: true })
-  } else {
-    q = q.order('views_count', { ascending: false })
-  }
+  if (sort === 'latest') q = q.order('created_at', { ascending: false })
+  else if (sort === 'oldest') q = q.order('created_at', { ascending: true })
+  else q = q.order('views_count', { ascending: false })
 
-  if (search && search.trim()) {
-    q = q.ilike('title', `%${search.trim()}%`)
-  }
-
-  if (tag && tag !== '전체 태그') {
-    q = q.contains('tags', [tag])
-  }
+  if (search && search.trim()) q = q.ilike('title', `%${search.trim()}%`)
+  if (tag && tag !== '전체 태그') q = q.contains('tags', [tag])
 
   q = q.limit(1, { foreignTable: 'recruitment_images' })
+  q = q.limit(5, { foreignTable: 'study_groups.study_lectures' })
 
   const { data, error, count } = await q.range(from, to)
   if (error) throw error
 
   const rows = (data ?? []) as RecruitmentRow[]
 
-  const items: JobPost[] = rows.map((r) => ({
-    id: r.id,
-    uuid: r.uuid,
-    title: r.title ?? '',
-    viewCount: r.views_count ?? 0,
-    bookmarkCount: r.bookmarks_count ?? 0,
-    commentCount: 0,
-    memberLimit: r.expected_headcount ?? 0,
-    deadline: fmtDate(r.close_at),
-    courses: [],
-    tags: r.tags ?? [],
-    image:
-      (r.recruitment_images && r.recruitment_images[0]?.img_url) ||
-      'https://placehold.co/320x240/e5e7eb/e5e7eb.png',
-  }))
+  const items: JobPost[] = rows.map((r) => {
+    const groups = toArr(r.study_groups)
+    const lectures = groups.flatMap((g) => toArr(g.study_lectures))
+    const crawled = lectures.flatMap((sl) => toArr(sl.crawled_lectures))
+
+    const courses =
+      crawled
+        .map((cl) =>
+          [cl.title ?? '', cl.instructor ?? ''].filter(Boolean).join(' - ')
+        )
+        .filter((s) => s.length > 0) ?? []
+
+    return {
+      id: r.id,
+      uuid: r.uuid,
+      title: r.title ?? '',
+      viewCount: r.views_count ?? 0,
+      bookmarkCount: r.bookmarks_count ?? 0,
+      commentCount: 0,
+      memberLimit: r.expected_headcount ?? 0,
+      deadline: fmtDate(r.close_at),
+      courses,
+      tags: r.tags ?? [],
+      image:
+        (r.recruitment_images && r.recruitment_images[0]?.img_url) ||
+        'https://placehold.co/320x240/e5e7eb/e5e7eb.png',
+    }
+  })
 
   const total = count ?? items.length
-  const hasNext = total > to + 1
-
-  return { items, totalCount: total, hasNext }
+  return { items, totalCount: total, hasNext: total > to + 1 }
 }
