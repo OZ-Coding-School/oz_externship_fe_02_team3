@@ -40,11 +40,6 @@ const formatDate = (dateString: string | undefined) => {
 
 export default function ChatItem({ openChatRoom, ...data }: ChatItemProps) {
   const createdAt = formatDate(data.last_message?.created_at)
-  // const lastMessageAt = formatDate(
-  //   data.last_message?.created_at,
-  //   'lastMessageAt'
-  // )
-  console.log(data)
 
   return (
     <div
