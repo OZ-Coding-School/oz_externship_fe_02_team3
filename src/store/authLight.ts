@@ -4,16 +4,16 @@ interface AuthLightState {
   ready: boolean
   loggedIn: boolean
   setReady: (v: boolean) => void
-  setLoggedIn: (v: boolean) => void
+  setLogged: (v: boolean) => void
 }
 
-export const useAuthLight = create<AuthLightState>()(() => ({
+export const useAuthLight = create<AuthLightState>((set) => ({
   ready: false,
   loggedIn: false,
-  setReady: () => {},
-  setLoggedIn: () => {},
+  setReady: (v) => set({ ready: v }),
+  setLogged: (v) => set({ loggedIn: v }),
 }))
 
-export function syncLoggedInFromToken(token: string | null) {
+export const syncLoggedInFromToken = (token?: string | null) => {
   useAuthLight.setState({ loggedIn: !!token })
 }
