@@ -2,8 +2,8 @@ import type { Chat, MessagesResponse } from '@src/types/chat'
 
 export const chatList: Chat[] = [
   {
-    study_group_uuid: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-    study_group_name: 'React 실무 프로젝트 스터디',
+    uuid: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    name: 'React 실무 프로젝트 스터디',
     last_message: {
       sender_nickname: '김스터디',
       content: `내일 미팅 시간 변경 가능하신가요? 내일 미팅 시간 변경 가능하신가요? 내일 미팅 시간 변경 가능하신가요? 내일 미팅 시간 변경 가능하신가요?`,
@@ -12,8 +12,8 @@ export const chatList: Chat[] = [
     unread_count: 2,
   },
   {
-    study_group_uuid: 'b2c3d4e5-f6a7-8901-bcde-f23456789012',
-    study_group_name: 'Python 데이터 분석 스터디',
+    uuid: 'b2c3d4e5-f6a7-8901-bcde-f23456789012',
+    name: 'Python 데이터 분석 스터디',
     last_message: {
       sender_nickname: '이데이터',
       content: '과제 제출했습니다!',
@@ -22,8 +22,8 @@ export const chatList: Chat[] = [
     unread_count: 1,
   },
   {
-    study_group_uuid: 'c3d4e5f6-a7b8-9012-cdef-345678901234',
-    study_group_name: 'AWS 클라우드 아키텍처 스터디',
+    uuid: 'c3d4e5f6-a7b8-9012-cdef-345678901234',
+    name: 'AWS 클라우드 아키텍처 스터디',
     last_message: {
       sender_nickname: '박클라우드',
       content: '좋은 자료 감사합니다',
@@ -32,8 +32,8 @@ export const chatList: Chat[] = [
     unread_count: 0,
   },
   {
-    study_group_uuid: 'd4e5f6a7-b8c9-0123-defa-456789012345',
-    study_group_name: 'Node.js 백엔드 개발팀',
+    uuid: 'd4e5f6a7-b8c9-0123-defa-456789012345',
+    name: 'Node.js 백엔드 개발팀',
     last_message: {
       sender_nickname: '최서버',
       content: '다들 수고하셨습니다!',
@@ -42,8 +42,8 @@ export const chatList: Chat[] = [
     unread_count: 0,
   },
   {
-    study_group_uuid: 'e5f6a7b8-c9d0-1234-efab-567890123456',
-    study_group_name: '알고리즘 스터디',
+    uuid: 'e5f6a7b8-c9d0-1234-efab-567890123456',
+    name: '알고리즘 스터디',
     last_message: null,
     unread_count: 0,
   },
