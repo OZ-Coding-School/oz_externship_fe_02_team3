@@ -1,95 +1,115 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { PostgrestError } from '@supabase/supabase-js'
 import type { Tag } from '@src/types/tag'
-import { createTag, fetchTags } from '@src/api/tag'
-import { useToast } from '@src/components/commons/toast'
-import axios from 'axios'
-import { checkTagValidity } from '@src/validations/tag'
+import { supa } from '@src/lib/supabase'
 
-export function useTagManager(open: boolean, pageSize = 5) {
-  const toast = useToast()
+type FetchState = 'idle' | 'loading' | 'done' | 'error'
+
+function isPostgrestError(e: unknown): e is PostgrestError {
+  return typeof e === 'object' && e !== null && 'code' in e && 'message' in e
+}
+
+export function useTagManager(open: boolean, size: number = 5) {
   const [query, setQuery] = useState('')
   const [page, setPage] = useState(1)
   const [items, setItems] = useState<Tag[]>([])
   const [count, setCount] = useState(0)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState<FetchState>('idle')
   const [creating, setCreating] = useState(false)
   const [justCreatedId, setJustCreatedId] = useState<number | null>(null)
 
-  const fetchAndSetTags = useCallback(async () => {
+  const lastFetchKey = useRef<string>('')
+
+  const range = useMemo(() => {
+    const from = (page - 1) * size
+    const to = from + size - 1
+    return { from, to }
+  }, [page, size])
+
+  const fetchTags = useCallback(async () => {
     if (!open) return
-    setLoading(true)
-    try {
-      const { results, count } = await fetchTags({
-        search: query,
-        page,
-        size: pageSize,
-      })
-      setItems(Array.isArray(results) ? results : [])
-      setCount(typeof count === 'number' ? count : 0)
-    } catch {
-      setItems([])
-      setCount(0)
-      toast.error({
-        title: '태그 불러오기 실패',
-        content: '잠시 후 다시 시도해 주세요.',
-      })
-    } finally {
-      setLoading(false)
+    setLoading('loading')
+
+    const key = JSON.stringify({ q: query, page, size })
+    if (lastFetchKey.current === key) {
+      setLoading('done')
+      return
     }
-  }, [open, query, page, pageSize, toast])
+    lastFetchKey.current = key
+
+    const { from, to } = range
+
+    const base = supa
+      .from('tags')
+      .select('id, name', { count: 'exact' })
+      .order('created_at', { ascending: false })
+
+    const builder = query.trim()
+      ? base.ilike('name', `%${query.trim()}%`)
+      : base
+
+    const { data, count: total, error } = await builder.range(from, to)
+    if (error) {
+      setLoading('error')
+      return
+    }
+    setItems((data ?? []) as Tag[])
+    setCount(total ?? 0)
+    setLoading('done')
+  }, [open, page, size, query, range])
 
   useEffect(() => {
-    fetchAndSetTags()
-  }, [fetchAndSetTags])
+    if (!open) return
+    fetchTags()
+  }, [open, fetchTags])
+
+  useEffect(() => {
+    if (!open) return
+    fetchTags()
+  }, [query, page, fetchTags, open])
 
   const register = useCallback(
-    async (name: string) => {
-      const trimmed = name.trim()
-      const msg = checkTagValidity(trimmed)
-      if (msg) {
-        toast.warning({ title: '태그 등록 실패', content: msg })
-        throw new Error('validation_failed')
-      }
+    async (name: string): Promise<Tag | null> => {
+      if (!name.trim()) return null
       setCreating(true)
-      try {
-        const tag = await createTag(trimmed)
+      setJustCreatedId(null)
 
-        const id = typeof tag.id === 'number' ? tag.id : null
-        setJustCreatedId(id)
+      const { data: inserted, error: insertErr } = await supa
+        .from('tags')
+        .insert({ name: name.trim() })
+        .select('id, name')
+        .single()
 
-        setQuery(tag.name)
-        await fetchAndSetTags()
-
-        toast.success({
-          title: '태그 등록 완료',
-          content: `${tag.name} 태그가 등록되었습니다. 목록에서 선택해 주세요.`,
-        })
-        return tag
-      } catch (e: unknown) {
-        if (axios.isAxiosError(e)) {
-          if (e?.response?.status === 409) {
-            toast.warning({
-              title: '태그 등록 실패',
-              content: `이미 존재하는 태그예요. 목록에서 선택해 주세요.`,
-            })
-          } else {
-            toast.error({
-              title: '태그 등록 실패',
-              content: '잠시 후 다시 시도해 주세요.',
-            })
-          }
-        } else {
-          toast.error({
-            title: '태그 등록 실패',
-            content: '잠시 후 다시 시도해 주세요.',
-          })
-        }
-      } finally {
+      if (!insertErr && inserted) {
         setCreating(false)
-        setTimeout(() => setJustCreatedId(null), 2000)
+        setJustCreatedId(inserted.id)
+        await fetchTags()
+        return inserted as Tag
       }
+
+      const pgCode = isPostgrestError(insertErr) ? insertErr.code : undefined
+      if (pgCode === '23505') {
+        const { data: existing, error: selectErr } = await supa
+          .from('tags')
+          .select('id, name')
+          .eq('name', name.trim())
+          .single()
+
+        setCreating(false)
+
+        if (selectErr || !existing) {
+          return null
+        }
+
+        setJustCreatedId(existing.id)
+        await fetchTags()
+        return existing as Tag
+      }
+
+      setCreating(false)
+      return null
     },
-    [fetchAndSetTags, toast]
+    [fetchTags]
   )
 
   return {
@@ -99,7 +119,7 @@ export function useTagManager(open: boolean, pageSize = 5) {
     setPage,
     items,
     count,
-    loading,
+    loading: loading === 'loading',
     creating,
     justCreatedId,
     register,
