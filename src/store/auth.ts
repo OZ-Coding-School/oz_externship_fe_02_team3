@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { goLogin } from '../utils/redirect'
 import { API_END_POINTS } from '@src/constants/apiendpoint'
-import { api, setAccessToken } from '@src/api/api'
+import { api, getOrCreateRefresh, setAccessToken } from '@src/api/api'
 
 export interface User {
   id: number
@@ -62,6 +62,10 @@ export const useAuth = create<AuthState>()(
         set({ loading: true }, false, 'auth/bootstrap:start')
 
         try {
+          // 1. 먼저 refresh token으로 access token 발급 시도
+          await getOrCreateRefresh()
+
+          // 2. access token이 있으면 사용자 정보 조회
           const me = await get().tryFetchMe()
           set(
             { user: me, bootstrapped: true, loading: false },

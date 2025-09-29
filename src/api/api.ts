@@ -40,7 +40,7 @@ async function doRefresh(): Promise<string | null> {
   }
 }
 
-async function getOrCreateRefresh(): Promise<string | null> {
+export async function getOrCreateRefresh(): Promise<string | null> {
   if (!refreshPromise) {
     refreshPromise = doRefresh().finally(() => {
       refreshPromise = null

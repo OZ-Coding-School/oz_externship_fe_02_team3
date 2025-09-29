@@ -5,6 +5,7 @@ import { cn } from '@utils/cn'
 import { UserRound as UserRoundIcon, LogOut as LogOutIcon } from 'lucide-react'
 import { useRef } from 'react'
 import { EXTERNAL } from '@src/constants/external'
+import { logoutHard } from '@src/store/auth'
 
 interface UserMenuProps {
   isNotificationOpen: boolean
@@ -32,6 +33,9 @@ export default function UserMenu({
     setIsUserMenuOpen(!isUserMenuOpen)
   }
 
+  const handleLogout = async () => {
+    await logoutHard()
+  }
   useOutsideClick(isUserMenuOpen, [userMenuButtonRef, userMenuPanelRef], () =>
     setIsUserMenuOpen(false)
   )
@@ -62,13 +66,13 @@ export default function UserMenu({
             <UserRoundIcon className="h-4 w-4" />
             마이페이지
           </a>
-          <a
-            href={EXTERNAL.ACCOUNT_ROOT}
+          <button
+            onClick={handleLogout}
             className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"
           >
             <LogOutIcon className="h-4 w-4 rotate-180" />
             로그아웃
-          </a>
+          </button>
         </div>
       )}
     </div>
