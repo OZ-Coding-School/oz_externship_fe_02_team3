@@ -19,6 +19,8 @@ interface TagSearchModalProps {
   size?: number
 }
 
+const isNumber = (v: unknown): v is number => typeof v === 'number'
+
 export default function TagSearchModal({
   open,
   onClose,
@@ -78,8 +80,11 @@ export default function TagSearchModal({
 
   const toggleByClick = useCallback(
     (tag: Tag) => {
+      if (!isNumber(tag.id)) return
+
       const nextChecked = !isSelected(tag.id)
-      if (atMax && nextChecked && !isSelected(tag.id)) return
+      if (atMax && nextChecked) return
+
       toggle(tag, nextChecked)
     },
     [isSelected, toggle, atMax]
@@ -92,7 +97,7 @@ export default function TagSearchModal({
           {title}
         </h2>
         <p className="mt-1 text-sm text-gray-500">
-          공고에 추가할 태그를 선택하세요. (최대 5개)
+          공고에 추가할 태그를 선택하세요. (최대 {max}개)
         </p>
       </Modal.Header>
 
@@ -111,7 +116,9 @@ export default function TagSearchModal({
           selected={selected}
           max={max}
           items={items}
-          onRemove={(id) => removeById(Number(id))}
+          onRemove={(id) => {
+            if (isNumber(id)) removeById(id)
+          }}
         />
 
         <TagResultSection

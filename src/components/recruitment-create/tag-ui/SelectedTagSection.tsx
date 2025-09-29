@@ -9,21 +9,37 @@ interface SelectedTagSectionProps {
   onRemove: (id: number) => void
 }
 
+interface TagOption {
+  id: number
+  label: string
+}
+
+const isNumber = (v: unknown): v is number => typeof v === 'number'
+
+const isTagOption = (o: {
+  id: number | undefined
+  label: string
+}): o is TagOption => typeof o.id === 'number'
+
 export default function SelectedTagSection({
   selected,
   max,
   items,
   onRemove,
 }: SelectedTagSectionProps) {
-  const selectedIds = useMemo(() => selected.map((t) => t.id), [selected])
-  const options = useMemo(
+  const selectedIds = useMemo<number[]>(
+    () => selected.map((t) => t.id).filter(isNumber),
+    [selected]
+  )
+
+  const options = useMemo<TagOption[]>(
     () =>
-      [...selected, ...(items ?? [])].map((t) => ({
-        id: t.id,
-        label: t.name,
-      })),
+      [...selected, ...(items ?? [])]
+        .map((t) => ({ id: t.id, label: t.name }))
+        .filter(isTagOption),
     [selected, items]
   )
+
   return (
     <div className="px-6 py-3">
       <p className="mb-3 text-sm">
