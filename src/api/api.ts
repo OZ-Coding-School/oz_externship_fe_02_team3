@@ -82,7 +82,7 @@ api.interceptors.response.use(
       } else {
         // If refresh token 사용 실패: 완전 로그아웃(쿠키 제거 + 상태 초기화 + 로그인 이동)
         const { logoutHard } = await import('../store/auth')
-        // await logoutHard()
+        await logoutHard()
         return Promise.reject(error)
       }
     }
