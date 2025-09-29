@@ -27,7 +27,7 @@ let refreshPromise: Promise<string | null> | null = null
 async function doRefresh(): Promise<string | null> {
   try {
     const res = await axios.post<{ access: string }>(
-      `${API_BASE_URL}/auth/refresh`,
+      `${API_BASE_URL}/api/v1/auth/refresh`,
       {},
       { withCredentials: true }
     )
