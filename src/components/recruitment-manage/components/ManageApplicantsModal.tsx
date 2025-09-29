@@ -15,25 +15,13 @@ interface ManageApplicantsModalProps {
   open: boolean
   onClose: () => void
   title?: string // 공고 제목
-<<<<<<< HEAD
-  applicants: Applicant[] // 목록 데이터 (추후 API)
-  totalCount?: number
-  onOpenApplicantDetail?: (applicant: Applicant) => void
-=======
   recruitmentUuid: string
->>>>>>> 6301f68 (feat: 지원자 관리 모달 API 연동 및 무한스크롤/액션 추가 #209)
 }
 
 export default function ManageApplicantsModal({
   open,
   onClose,
   title = '공고 제목',
-<<<<<<< HEAD
-  applicants,
-  totalCount = applicants.length,
-  onOpenApplicantDetail,
-}: Props) {
-=======
   recruitmentUuid,
 }: ManageApplicantsModalProps) {
   const toast = useToast()
@@ -63,7 +51,7 @@ export default function ManageApplicantsModal({
     )
   }
 
-  // 지원자 거절, 승인 핸들러
+  // 승인/거절 액션
   const handleAction = async (id: number, action: 'APPROVED' | 'REJECTED') => {
     try {
       if (action === 'APPROVED') {
@@ -103,7 +91,6 @@ export default function ManageApplicantsModal({
     threshold: 0.5,
   })
 
->>>>>>> 6301f68 (feat: 지원자 관리 모달 API 연동 및 무한스크롤/액션 추가 #209)
   return (
     <Modal open={open} onClose={onClose} size="lg">
       <Modal.Header onClose={onClose}>
@@ -114,6 +101,7 @@ export default function ManageApplicantsModal({
           {title} · 총 {totalCount}명
         </p>
       </Modal.Header>
+
       <div className="max-h-[80vh] flex-1 overflow-y-auto px-6 py-4">
         {loading ? (
           <LoadingSpinner
@@ -122,22 +110,13 @@ export default function ManageApplicantsModal({
           />
         ) : items.length > 0 ? (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-<<<<<<< HEAD
-            {applicants.map((a) => (
-              <ApplicantCard
-                key={a.id}
-                data={a}
-                onClick={onOpenApplicantDetail}
-=======
             {items.map((a) => (
               <ApplicantCard
                 key={a.application_id}
                 data={a}
                 onClick={handleCardClick}
->>>>>>> 6301f68 (feat: 지원자 관리 모달 API 연동 및 무한스크롤/액션 추가 #209)
               />
             ))}
-            {/* 무한 스크롤 트리거 */}
             {hasNext && <div ref={loadMoreRef} className="h-4" />}
           </div>
         ) : (
@@ -157,6 +136,7 @@ export default function ManageApplicantsModal({
           />
         )}
       </div>
+
       {openDetail && selectedId !== null && (
         <ApplicantDetailModal
           open={openDetail}
