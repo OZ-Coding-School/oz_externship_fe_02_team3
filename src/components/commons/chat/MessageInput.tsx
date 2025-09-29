@@ -12,17 +12,14 @@ export default function MessageInput({ onSendMessage }: MessageInputProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value
     setMessage(newValue)
-    console.log('현재 입력값:', newValue)
   }
   const sendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('메시지 전송:', message)
 
-    // onSendMessage prop이 있으면 호출
     if (onSendMessage && message.trim()) {
       const success = onSendMessage(message.trim())
       if (success) {
-        setMessage('') // 전송 성공시 입력창 비우기
+        setMessage('')
       }
     }
   }

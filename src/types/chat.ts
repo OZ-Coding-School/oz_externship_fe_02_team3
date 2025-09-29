@@ -1,6 +1,6 @@
 export interface Chat {
-  study_group_uuid: string
-  study_group_name: string
+  uuid: string
+  name: string
   last_message: {
     sender_nickname: string
     content: string
