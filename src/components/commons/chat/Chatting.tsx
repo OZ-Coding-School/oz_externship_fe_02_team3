@@ -8,10 +8,10 @@ import ChatRoomHeader from './chat-header/ChatRoomHeader'
 import MessageInput from './MessageInput'
 import MessageList from './MessageList'
 import ParticipantsList from './ParticipantsList'
-import { useChatMessages } from '@src/hooks/useChatting'
+import { useChatMessages, useChatting } from '@src/hooks/useChatting'
 import { participants } from '@src/mock/participants'
 import { useSearchParams } from 'react-router-dom'
-import { chatList } from '@src/mock/chatListData'
+// import { chatList } from '@src/mock/chatListData'
 import { Z_INDEX } from '@src/constants/ui'
 import { useAuth } from '@src/store/auth'
 
@@ -44,6 +44,12 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   const studyGroupUuid = searchParams.get('study_group_uuid')
   const { chatMessages, isLoading: isMessagesLoading } = useChatMessages(
     selectedChatRoom?.uuid
+  )
+  const { chatList } = useChatting()
+
+  const totalUnreadCount = chatList.reduce(
+    (sum, chat) => sum + (chat.unread_count || 0),
+    0
   )
 
   const openChatRoom = (chatData: Chat) => {
@@ -194,7 +200,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
 
   const renderListView = () => (
     <>
-      <ChatListHeader unreadCount={3} onClose={toggleChat} />
+      <ChatListHeader unreadCount={totalUnreadCount} onClose={toggleChat} />
       <ChatList openChatRoom={openChatRoom} />
     </>
   )
@@ -226,16 +232,14 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
     )
 
   useEffect(() => {
-    if (!studyGroupUuid) {
-      return
-    }
+    if (!studyGroupUuid || chatList.length === 0) return
 
     const targetChatRoom = chatList.find((chat) => chat.uuid === studyGroupUuid)
     if (targetChatRoom) {
       setIsOpen(true)
       openChatRoom(targetChatRoom)
     }
-  }, [studyGroupUuid, setIsOpen])
+  }, [studyGroupUuid, setIsOpen, chatList])
 
   return (
     <div
