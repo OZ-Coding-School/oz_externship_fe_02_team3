@@ -1,10 +1,14 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, passthrough } from 'msw'
 import notificationsData from '../notificationsData'
 import type {
   NotificationItem,
   NotificationResponse,
 } from '@src/types/notification'
 
+const API_STATUS = {
+  notificationGet: true,
+  unReadCountGet: true,
+}
 // 변경 가능한 데이터 선언
 let mutableNotificationsData: NotificationItem[] = [...notificationsData]
 
@@ -43,6 +47,9 @@ const validateAuth = (request: Request) => {
 export const notificationHandlers = [
   // 전체 알림 목록 조회 API 모킹
   http.get('/api/v1/notifications', ({ request }) => {
+    if (API_STATUS.notificationGet) {
+      return passthrough()
+    }
     const auth = validateAuth(request)
     if (!auth.isValid) {
       return HttpResponse.json(
@@ -156,6 +163,9 @@ export const notificationHandlers = [
 
   // 읽지 않은 개수 조회 API
   http.get('/api/v1/notifications/unread-count', ({ request }) => {
+    if (API_STATUS.unReadCountGet) {
+      return passthrough()
+    }
     const auth = validateAuth(request)
     if (!auth.isValid) {
       return HttpResponse.json(

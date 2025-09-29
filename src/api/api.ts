@@ -1,6 +1,6 @@
 import axios, { AxiosError, type AxiosRequestConfig } from 'axios'
 
-export const API_BASE_URL = 'https://ozcoding.site'
+export const API_BASE_URL = 'https://api.ozcoding.site'
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -15,9 +15,13 @@ export const setAccessToken = (token: string | null) => {
 
 // 요청마다 Authorization 부착
 api.interceptors.request.use((config) => {
-  if (accessToken) {
+  console.log(accessToken) // accessToken이 null이면 헤더 추가 안 됨
+  // 메모리에 없으면 localStorage에서 읽기
+  const token = accessToken || localStorage.getItem('access_token')
+
+  if (token) {
     config.headers = config.headers ?? {}
-    config.headers.Authorization = `Bearer ${accessToken}`
+    config.headers.Authorization = `Bearer ${token}`
   }
   return config
 })

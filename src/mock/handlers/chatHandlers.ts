@@ -1,8 +1,11 @@
 // src/mock/chatHandlers.ts
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, passthrough } from 'msw'
 import type { Chat } from '@src/types/chat'
 import chatMessagesData, { chatList } from '../chatListData'
-
+const API_STATUS = {
+  chatRoomsGet: true,
+  unReadCountGet: true,
+}
 const mutableChatListData: Chat[] = [...chatList]
 // JWT 토큰 검증 헬퍼 함수
 const validateAuth = (request: Request) => {
@@ -39,6 +42,9 @@ const validateAuth = (request: Request) => {
 export const chatHandlers = [
   // 스터디 그룹 채팅 목록 조회 API
   http.get('/api/v1/chat/rooms/', ({ request }) => {
+    if (API_STATUS.chatRoomsGet) {
+      return passthrough()
+    }
     const auth = validateAuth(request)
     if (!auth.isValid) {
       return HttpResponse.json(

@@ -11,7 +11,6 @@ const formatMessageTime = (dateString: string) => {
 
   const messageDate = new Date(dateString)
 
-  // 항상 시:분 형식으로 표시 (24시간 형식)
   return messageDate.toLocaleTimeString('ko-KR', {
     hour: '2-digit',
     minute: '2-digit',
@@ -26,7 +25,6 @@ export default function Message({
   isOwn,
 }: MessageProps) {
   const formattedTime = formatMessageTime(time)
-  console.log(sender, message, time, isOwn)
 
   return (
     <div

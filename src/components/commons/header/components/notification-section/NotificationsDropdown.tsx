@@ -94,7 +94,7 @@ export default function NotificationsDropdown({
         {isLoading ? (
           <NotificationsSkeleton />
         ) : error ? (
-          <div className="flex items-center justify-center text-sm text-red-500">
+          <div className="flex h-32 min-w-[364px] items-center justify-center text-sm text-red-500">
             알림을 불러오는데 실패했습니다.
           </div>
         ) : filteredNotifications.length !== 0 ? (
@@ -106,7 +106,7 @@ export default function NotificationsDropdown({
             />
           ))
         ) : (
-          <div className="flex h-32 items-center justify-center text-sm text-gray-500">
+          <div className="flex h-32 min-w-[364px] items-center justify-center text-sm text-gray-500">
             표시할 알림이 없습니다.
           </div>
         )}

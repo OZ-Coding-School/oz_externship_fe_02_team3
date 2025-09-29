@@ -1,18 +1,7 @@
 // src/hooks/useChatting.ts
-import axios from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import type { Chat, MessagesResponse } from '@src/types/chat'
-
-const getAuthToken = () => {
-  const token = localStorage.getItem('access_token')
-
-  if (!import.meta.env.DEV) {
-    return token // 프로덕션에서는 localStorage 토큰만 반환
-  }
-
-  // 개발 환경에서는 기본 토큰 제공
-  return token || 'dev-token'
-}
+import { api } from '@api/api' // 수정: 팀원의 api import
 
 // 채팅 목록 조회
 export function useChatting() {
@@ -20,10 +9,7 @@ export function useChatting() {
   const query = useQuery<Chat[]>({
     queryKey: ['chat'],
     queryFn: async () => {
-      const token = getAuthToken()
-      const response = await axios.get('/api/v1/chat/rooms/', {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      const response = await api.get('/api/v1/chat/rooms')
       return response.data
     },
   })
@@ -33,19 +19,24 @@ export function useChatting() {
   }
 }
 
-// 채팅 목록 조회
+// 특정 채팅 메세지 조회
 export function useChatMessages(id: string | undefined) {
   // useQuery 은 데이터 조회 (GET)
   const query = useQuery<MessagesResponse>({
     queryKey: ['chatMessages', id],
     queryFn: async () => {
-      const token = getAuthToken()
-      const response = await axios.get(`/api/v1/chat/rooms/${id}/messages`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      return response.data
+      try {
+        const response = await api.get(`/api/v1/chat/rooms/${id}/messages`)
+        return response.data
+      } catch (error: any) {
+        if (error.response?.status === 404) {
+          return { next_cursor: null, results: [] }
+        }
+        throw error
+      }
     },
     enabled: !!id, // id가 있을 때만 쿼리 실행
+    retry: false,
   })
   return {
     ...query,

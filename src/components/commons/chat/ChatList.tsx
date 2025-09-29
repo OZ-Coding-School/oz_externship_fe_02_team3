@@ -8,12 +8,11 @@ interface ChatListProps {
 }
 
 export default function ChatList({ openChatRoom }: ChatListProps) {
-
-  const {chatList} = useChatting()
+  const { chatList } = useChatting()
   return (
     <div className="flex max-h-[310px] w-[318px] flex-col divide-y divide-gray-200 overflow-y-auto">
       {chatList.map((data) => (
-        <ChatItem key={data.study_group_uuid} openChatRoom={openChatRoom} {...data} />
+        <ChatItem key={data.uuid} openChatRoom={openChatRoom} {...data} />
       ))}
     </div>
   )
