@@ -5,9 +5,6 @@ import { useEffect, useRef, useState } from 'react'
 import type { RecruitmentMeItem } from '@src/api/recManage'
 import MobileJobPostCard from './MobileJobPostCard'
 import ManageApplicantsModal from './ManageApplicantsModal'
-import ApplicantDetailModal from './ApplicantDetailModal'
-import type { Applicant, ApplicantDetail } from '@src/types/applicant'
-import { dummyApplicants, dummyApplicants2 } from '@src/mock/applicants'
 
 interface Props {
   items: RecruitmentMeItem[]
@@ -29,22 +26,16 @@ export default function RecManageList({
   totalCount,
 }: Props) {
   const sentinelRef = useRef<HTMLDivElement | null>(null)
+
+  // 지원자 관리 모달 제어
   const [openManage, setOpenManage] = useState(false)
   const [selectedTitle, setSelectedTitle] = useState<string>('')
-  const [openApplicationDetail, setOpenApplicationDetail] = useState(false)
-  const [selectedApplicant, setSelectedApplicant] =
-    useState<ApplicantDetail | null>(null)
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null)
 
-  const openApplicantsModal = (title: string) => {
+  const openApplicantsModal = (id: number, title: string) => {
+    setSelectedPostId(id)
     setSelectedTitle(title)
     setOpenManage(true)
-  }
-
-  const openApplicantDetail = (applicant: Applicant) => {
-    const detail = dummyApplicants2.find((d) => d.id === applicant.id)
-    if (!detail) return
-    setSelectedApplicant(detail)
-    setOpenApplicationDetail(true)
   }
 
   useEffect(() => {
@@ -78,7 +69,7 @@ export default function RecManageList({
     },
     editTo: `/recruitment/${it.id}/edit`,
     applyLabel: '지원 내역',
-    onClickApply: () => openApplicantsModal(it.title),
+    onClickApply: () => openApplicantsModal(it.id, it.title),
   }))
 
   const isEmpty = !loading && items.length === 0
@@ -126,19 +117,12 @@ export default function RecManageList({
         </div>
       )}
 
-      <ManageApplicantsModal
-        open={openManage}
-        onClose={() => setOpenManage(false)}
-        title={selectedTitle}
-        applicants={dummyApplicants}
-        onOpenApplicantDetail={openApplicantDetail}
-      />
-      {selectedApplicant && (
-        <ApplicantDetailModal
-          open={openApplicationDetail}
-          onClose={() => setOpenApplicationDetail(false)}
-          title="지원자 상세 정보"
-          data={selectedApplicant}
+      {selectedPostId !== null && (
+        <ManageApplicantsModal
+          open={openManage}
+          onClose={() => setOpenManage(false)}
+          title={selectedTitle}
+          recruitmentUuid={String(selectedPostId)}
         />
       )}
     </section>

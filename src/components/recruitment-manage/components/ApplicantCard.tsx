@@ -5,27 +5,32 @@ import InfoRow from './InfoRow'
 import { formatDate } from '@utils/date'
 import StatusBadge from '@components/commons/StatusBadge'
 import { useCallback, memo } from 'react'
-import type { Applicant } from '@src/types/applicant'
+import type { ApplicationsItem, ApplicantStatus } from '@src/types/applicant'
 import { getExpBadge } from '@src/constants/applicant'
 
-interface Props {
-  data: Applicant
-  onClick?: (applicant: Applicant) => void
+interface ApplicantCardProps {
+  data: ApplicationsItem
+  onClick?: (applicant: ApplicationsItem) => void
 }
 
-export default memo(function ApplicantCard({ data, onClick }: Props) {
+export default memo(function ApplicantCard({
+  data,
+  onClick,
+}: ApplicantCardProps) {
   const {
-    // id, // 현재안쓰임
-    name,
-    gender,
-    avatarUrl,
-    appliedAt,
-    availability,
-    hasExp,
+    applicant,
+    applied_at,
+    available_time,
+    has_study_experience,
     status,
   } = data
 
-  const { title: expTitle, className: badgeClass } = getExpBadge(hasExp)
+  const name = applicant.nickname
+  const gender = applicant.gender === 'M' ? '남성' : '여성'
+  const avatarUrl = applicant.profile_img_url ?? undefined
+
+  const { title: expTitle, className: badgeClass } =
+    getExpBadge(has_study_experience)
 
   const handleClick = useCallback(() => onClick?.(data), [onClick, data])
 
@@ -57,17 +62,17 @@ export default memo(function ApplicantCard({ data, onClick }: Props) {
           <p className="truncate text-lg font-semibold text-gray-900">{name}</p>
           {gender && <p className="text-sm text-gray-500">{gender}</p>}
         </div>
-        <StatusBadge status={status} />
+        <StatusBadge status={status as ApplicantStatus} />
       </div>
 
       <div className="col-start-2 flex flex-col justify-between gap-2 overflow-hidden">
         <InfoRow
           label="지원 일시"
-          value={formatDate(appliedAt)}
+          value={formatDate(applied_at)}
           icon={CalendarIcon}
           direction="row"
         />
-        <InfoRow label="가능한 시간대" value={availability} direction="col" />
+        <InfoRow label="가능한 시간대" value={available_time} direction="col" />
         <InfoRow
           label="스터디 경험"
           direction="row"

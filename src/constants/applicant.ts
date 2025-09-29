@@ -4,9 +4,9 @@ export const STATUS_MAP: Record<
   ApplicantStatus,
   { text: string; className: string }
 > = {
-  approved: { text: '승인됨', className: 'bg-success-100 text-success-800' },
-  pending: { text: '대기중', className: 'bg-primary-100 text-primary-700' },
-  rejected: { text: '거절됨', className: 'bg-danger-100 text-danger-800' },
+  APPROVED: { text: '승인됨', className: 'bg-success-100 text-success-800' },
+  PENDING: { text: '대기중', className: 'bg-primary-100 text-primary-700' },
+  REJECTED: { text: '거절됨', className: 'bg-danger-100 text-danger-800' },
 }
 
 export const EXP_BADGE = {
