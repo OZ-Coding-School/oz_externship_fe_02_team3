@@ -1,6 +1,6 @@
 // src/mock/browser.ts
 import { setupWorker } from 'msw/browser'
 import { handlers } from './handlers'
-import { websocketHandlers } from './websocketHandlers'
+// import { websocketHandlers } from './websocketHandlers'
 
-export const worker = setupWorker(...handlers, ...websocketHandlers)
+export const worker = setupWorker(...handlers)

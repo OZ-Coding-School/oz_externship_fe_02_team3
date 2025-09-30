@@ -3,8 +3,8 @@ import { chatHandlers } from './chatHandlers'
 import { applicationHandlers, applicationSubmitHandlers } from './applications'
 
 export const handlers = [
-  ...notificationHandlers,
-  ...chatHandlers,
+  // ...notificationHandlers,
+  // ...chatHandlers,
   ...applicationHandlers,
   ...applicationSubmitHandlers,
 ]
