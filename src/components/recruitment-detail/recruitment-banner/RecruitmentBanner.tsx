@@ -14,6 +14,7 @@ import { BannerInfoBoxs, type BannerInfoBoxPost } from './BannerInfoBoxs'
 import ApplicationModal from '@src/components/recruitment-manage/application/ApplicationModal'
 import type { RecruitmentDetail } from '@src/api/supabase/recDetail.supa'
 import type { Tag } from '@src/types/tag'
+import { useAuthLight } from '@src/store/authLight'
 
 interface Props {
   post: RecruitmentDetail
@@ -37,6 +38,9 @@ export default function RecruitmentBanner({ post, onBookmark }: Props) {
   const [bmCount, setBmCount] = useState<number>(post.bookmarks_count ?? 0)
   const [bookmarking, setBookmarking] = useState(false)
   const toast = useToast()
+
+  const ready = useAuthLight((state) => state.ready)
+  const loggedIn = useAuthLight((state) => state.loggedIn)
 
   const createdAtText =
     post.created_at &&
@@ -69,6 +73,23 @@ export default function RecruitmentBanner({ post, onBookmark }: Props) {
 
   const handleBookmark = async () => {
     if (bookmarking) return
+
+    if (!ready) {
+      toast.warning({
+        title: '기다려주세요',
+        content: '로그인 상태 확인 중입니다. 잠시 후 다시 시도해주세요.',
+      })
+      return
+    }
+
+    if (!loggedIn) {
+      toast.error({
+        title: '로그인이 필요합니다',
+        content: '북마크 기능을 이용하려면 먼저 로그인해주세요.',
+      })
+      return
+    }
+
     try {
       setBookmarking(true)
       const { error } = await supa.rpc('inc_recruitment_bookmarks', {
