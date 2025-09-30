@@ -8,6 +8,56 @@ import {
 } from '@tanstack/react-query'
 import { api } from '@api/api'
 import { useAuth } from '@store/auth'
+import { useEffect } from 'react'
+// SSE 실시간 연결
+export function useNotificationSSE() {
+  const queryClient = useQueryClient()
+  const user = useAuth((state) => state.user)
+  const bootstrapped = useAuth((state) => state.bootstrapped)
+
+  useEffect(() => {
+    if (!bootstrapped || !user || !user.id) {
+      console.log('[SSE] 연결 안 함:', {
+        bootstrapped,
+        hasUser: !!user,
+        userId: user?.id,
+      })
+      return
+    }
+
+    const userId = user.id
+    console.log('[SSE] 연결 시작:', userId)
+    // SSE 연결 시작
+    const eventSource = new EventSource(
+      `https://ozcoding.site/events/?channel=user-${userId}`,
+      { withCredentials: true }
+    )
+
+    eventSource.onmessage = (event) => {
+      console.log('[SSE] 메시지 수신:', event.data)
+      const data = JSON.parse(event.data)
+
+      queryClient.setQueryData(['notifications', 'unread-count'], {
+        unread_count: data.unreadCount,
+      })
+
+      queryClient.invalidateQueries({
+        queryKey: ['notifications'],
+        refetchType: 'active',
+      })
+    }
+
+    eventSource.onerror = (error) => {
+      console.error('[SSE] 연결 오류:', error)
+      eventSource.close()
+    }
+
+    return () => {
+      console.log('[SSE] 연결 종료:', userId)
+      eventSource.close()
+    }
+  }, [bootstrapped, user, queryClient])
+}
 
 // 알림 목록 조회
 export function useNotifications() {
@@ -81,10 +131,10 @@ export function useUnreadCountQuery() {
       return response.data
     },
     enabled: isLoggedIn,
-    refetchInterval: 60000, // 1분마다 자동 새로고침
+    // refetchInterval: 60000, // 1분마다 자동 새로고침
     refetchOnWindowFocus: true, // 창 포커스 시 즉시 확인
     refetchOnReconnect: true, // 네트워크 재연결 시 확인
-    refetchIntervalInBackground: false, // 백그라운드에서는 폴링 중단
+    // refetchIntervalInBackground: false, // 백그라운드에서는 폴링 중단
   })
 
   return {

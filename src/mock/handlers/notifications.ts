@@ -45,6 +45,16 @@ const validateAuth = (request: Request) => {
 }
 
 export const notificationHandlers = [
+  http.get('https://ozcoding.site/events/', ({ request }) => {
+    const url = new URL(request.url)
+    const channel = url.searchParams.get('channel')
+
+    // 로그로 확인 (개발 중에만)
+    console.log('[MSW] SSE 요청 통과:', channel)
+
+    return passthrough()
+  }),
+
   // 전체 알림 목록 조회 API 모킹
   http.get('/api/v1/notifications', ({ request }) => {
     if (API_STATUS.notificationGet) {

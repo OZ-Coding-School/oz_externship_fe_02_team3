@@ -3,7 +3,11 @@ import { useOutsideClick } from '@src/hooks/useOutsideClick'
 import Icon from '@components/commons/Icon'
 import { Bell as BellIcon } from 'lucide-react'
 import NotificationsDropdown from './NotificationsDropdown'
-import { useUnreadCountQuery } from '@hooks/useNotifications'
+import {
+  useUnreadCountQuery,
+  useNotificationSSE,
+} from '@hooks/useNotifications'
+import { useAuth } from '@src/store/auth'
 
 interface NotificationButtonProps {
   isNotificationOpen: boolean
@@ -18,6 +22,12 @@ export default function NotificationButton({
   isUserMenuOpen,
   setIsUserMenuOpen,
 }: NotificationButtonProps) {
+  const user = useAuth((state) => state.user)
+  const bootstrapped = useAuth((state) => state.bootstrapped)
+
+  console.log('[NotificationButton] user 전체:', JSON.stringify(user, null, 2))
+  console.log('[NotificationButton] user.id:', user?.id)
+  useNotificationSSE()
   const { unreadCount } = useUnreadCountQuery()
 
   const notificationsDropdownRef = useRef<HTMLDivElement>(null)
