@@ -35,7 +35,7 @@ export function useChatMessages(id: string | undefined) {
         throw error
       }
     },
-    enabled: !!id, // id가 있을 때만 쿼리 실행
+    enabled: !!id,
     retry: false,
   })
   return {
