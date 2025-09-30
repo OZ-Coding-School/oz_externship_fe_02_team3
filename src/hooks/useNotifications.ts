@@ -1,4 +1,5 @@
 // src/hooks/useNotifications.ts
+/* eslint-disable no-console */
 import type { NotificationResponse } from '@src/types/notification'
 import {
   useMutation,
@@ -9,6 +10,7 @@ import {
 import { api } from '@api/api'
 import { useAuth } from '@store/auth'
 import { useEffect } from 'react'
+import { EventSourcePolyfill } from 'event-source-polyfill'
 // SSE 실시간 연결
 export function useNotificationSSE() {
   const queryClient = useQueryClient()
@@ -16,44 +18,72 @@ export function useNotificationSSE() {
   const bootstrapped = useAuth((state) => state.bootstrapped)
 
   useEffect(() => {
-    if (!bootstrapped || !user || !user.id) {
-      console.log('[SSE] 연결 안 함:', {
-        bootstrapped,
-        hasUser: !!user,
-        userId: user?.id,
-      })
+    if (!bootstrapped || !user) {
+      console.log('[SSE] 연결 안 함:', { bootstrapped, hasUser: !!user })
       return
     }
 
-    const userId = user.id
-    console.log('[SSE] 연결 시작:', userId)
-    // SSE 연결 시작
-    const eventSource = new EventSource(
-      `https://ozcoding.site/events/?channel=user-${userId}`,
-      { withCredentials: true }
+    const eventSource = new EventSourcePolyfill(
+      'https://api.ozcoding.site/events/me',
+      {
+        withCredentials: true,
+      }
     )
+    console.log('[SSE] 연결 시작')
 
-    eventSource.onmessage = (event) => {
-      console.log('[SSE] 메시지 수신:', event.data)
-      const data = JSON.parse(event.data)
+    // notification 이벤트: 새 알림이 왔을 때
+    eventSource.addEventListener('notification', (e) => {
+      // console.log('[SSE] notification 수신:', e.data)
+      // const payload = JSON.parse(e.data)
+      // console.log('[SSE] notification payload:', payload) // 여기서 알림 개수 업데이트 해야 할거 같은데...?
 
+      try {
+        const payload = JSON.parse(e.data)
+
+        // 단일 객체일 수도 있고, 여러 개 배열일 수도 있음
+        const notifications = Array.isArray(payload) ? payload : [payload]
+
+        // unread-count를 알림 개수만큼 증가
+        queryClient.setQueryData<{ unread_count: number }>(
+          ['notifications', 'unread-count'],
+          (prev) => {
+            const prevCount = prev?.unread_count ?? 0
+            return { unread_count: prevCount + notifications.length }
+          }
+        )
+        queryClient.invalidateQueries({ queryKey: ['notifications'] })
+
+        console.log(
+          `[SSE] 새 알림 ${notifications.length}건 수신`,
+          notifications
+        )
+      } catch (err) {
+        console.error('[SSE] notification payload 파싱 오류:', err)
+      }
+    })
+
+    // summary 이벤트: 읽지 않은 개수 업데이트
+    eventSource.addEventListener('summary', (e) => {
+      console.log('[SSE] summary 수신:', e.data)
+      const payload = JSON.parse(e.data)
+      console.log('[SSE] summary payload:', payload)
+
+      // 읽지 않은 개수 캐시 업데이트
       queryClient.setQueryData(['notifications', 'unread-count'], {
-        unread_count: data.unreadCount,
+        unread_count: payload.unreadCount,
       })
-
-      queryClient.invalidateQueries({
-        queryKey: ['notifications'],
-        refetchType: 'active',
-      })
-    }
+    })
 
     eventSource.onerror = (error) => {
       console.error('[SSE] 연결 오류:', error)
-      eventSource.close()
+    }
+
+    eventSource.onopen = () => {
+      console.log('[SSE] 연결 성공')
     }
 
     return () => {
-      console.log('[SSE] 연결 종료:', userId)
+      console.log('[SSE] 연결 종료')
       eventSource.close()
     }
   }, [bootstrapped, user, queryClient])
@@ -131,10 +161,10 @@ export function useUnreadCountQuery() {
       return response.data
     },
     enabled: isLoggedIn,
-    // refetchInterval: 60000, // 1분마다 자동 새로고침
-    refetchOnWindowFocus: true, // 창 포커스 시 즉시 확인
-    refetchOnReconnect: true, // 네트워크 재연결 시 확인
-    // refetchIntervalInBackground: false, // 백그라운드에서는 폴링 중단
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+    staleTime: Infinity,
   })
 
   return {
