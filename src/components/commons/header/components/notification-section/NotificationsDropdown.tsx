@@ -9,6 +9,7 @@ import {
   useMarkAllAsRead,
   useUnreadCountQuery,
 } from '@hooks/useNotifications'
+import { useIntersectionObserver } from '@hooks/useIntersectionObserver'
 
 interface NotificationsDropdownProps {
   setIsNotificationOpen: (isNotificationOpen: boolean) => void
@@ -23,7 +24,16 @@ export default function NotificationsDropdown({
     'all' | 'unread' | 'read'
   >('all')
 
-  const { notifications, totalCount, isLoading, error } = useNotifications()
+  const {
+    notifications,
+    totalCount,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useNotifications()
+
   const { unreadCount } = useUnreadCountQuery()
   const markAllAsReadMutation = useMarkAllAsRead()
 
@@ -37,6 +47,13 @@ export default function NotificationsDropdown({
       setNotificationFilter('all')
     }
   }
+  const observerTargetRef = useIntersectionObserver({
+    enabled: true,
+    hasNextPage,
+    isFetchingNextPage,
+    onIntersect: () => fetchNextPage(),
+    threshold: 0.5,
+  })
 
   const filteredNotifications = useMemo(() => {
     switch (notificationFilter) {
@@ -98,13 +115,21 @@ export default function NotificationsDropdown({
             알림을 불러오는데 실패했습니다.
           </div>
         ) : filteredNotifications.length !== 0 ? (
-          filteredNotifications.map((notification) => (
-            <NotificationItem
-              key={notification.notification_id}
-              {...notification}
-              setIsNotificationOpen={setIsNotificationOpen}
-            />
-          ))
+          <>
+            {filteredNotifications.map((notification) => (
+              <NotificationItem
+                key={notification.notification_id}
+                {...notification}
+                setIsNotificationOpen={setIsNotificationOpen}
+              />
+            ))}
+            <div ref={observerTargetRef} className="h-4" />
+            {isFetchingNextPage && (
+              <div className="flex items-center justify-center py-4 text-sm text-gray-500">
+                로딩 중...
+              </div>
+            )}
+          </>
         ) : (
           <div className="flex h-32 min-w-[364px] items-center justify-center text-sm text-gray-500">
             표시할 알림이 없습니다.

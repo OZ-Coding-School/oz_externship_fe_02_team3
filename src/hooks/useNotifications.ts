@@ -1,28 +1,72 @@
 // src/hooks/useNotifications.ts
 import type { NotificationResponse } from '@src/types/notification'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useInfiniteQuery,
+} from '@tanstack/react-query'
 import { api } from '@api/api'
 import { useAuth } from '@store/auth'
 
 // 알림 목록 조회
 export function useNotifications() {
   const isLoggedIn = useAuth((state) => state.isLoggedIn())
-  const query = useQuery<NotificationResponse>({
+  const query = useInfiniteQuery<NotificationResponse>({
     queryKey: ['notifications'],
-    queryFn: async () => {
-      const response = await api.get('/api/v1/notifications')
 
+    // 각 페이지를 불러올 때 실행되는 함수
+    // pageParam: 현재 불러올 페이지의 offset (0, 10, 20, 30...)
+    queryFn: async ({ pageParam = 0 }) => {
+      const response = await api.get('/api/v1/notifications', {
+        params: {
+          limit: 10, // 한 번에 10개씩
+          offset: pageParam, // 시작 위치
+          status: 'all',
+        },
+      })
       return response.data
     },
     enabled: isLoggedIn,
-    refetchOnWindowFocus: true, // 창 포커스 시에만 확인
-    refetchOnReconnect: true, // 네트워크 재연결 시에만 확인
-    staleTime: 60000, // 1분간은 캐시된 데이터 사용
+    initialPageParam: 0, // 첫 시작은 0부터
+    // 다음 페이지가 있는지 판단하고, 있으면 다음 offset을 반환
+    getNextPageParam: (lastPage, allPages) => {
+      // 지금까지 불러온 알림 개수 세기
+      let totalFetched = 0
+      for (const page of allPages) {
+        totalFetched += page.results.length
+      }
+
+      // 전체 개수보다 적게 불러왔으면 더 있다는 뜻
+      if (totalFetched < lastPage.count) {
+        return totalFetched // 다음 offset
+      }
+      return undefined // 더 이상 없음
+    },
+
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    staleTime: 60000,
   })
+
+  // 여러 페이지의 알림들을 하나의 배열로 합치기
+  // pages = [페이지1, 페이지2, 페이지3...]
+  // 각 페이지에서 results만 꺼내서 하나로 합침
+  const notifications = []
+  if (query.data?.pages) {
+    for (const page of query.data.pages) {
+      for (const notification of page.results) {
+        notifications.push(notification)
+      }
+    }
+  }
+
+  const totalCount = query.data?.pages[0]?.count || 0
+
   return {
     ...query,
-    notifications: query.data?.results || [],
-    totalCount: query.data?.count || 0,
+    notifications, // 합쳐진 모든 알림들
+    totalCount,
   }
 }
 
