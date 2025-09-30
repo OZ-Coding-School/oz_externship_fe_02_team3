@@ -18,7 +18,7 @@ export default function RecruitmentPage() {
   }
 
   return (
-    <div className="flex w-full flex-col justify-center gap-8 px-4 sm:px-16">
+    <div className="flex w-full flex-col justify-center gap-8 px-4 py-6 sm:px-16">
       <RecruitmentHeader isAuthenticated={isAuthenticated} />
       <UserRecruitment isAuthenticated={isAuthenticated} />
       <SearchFilterBar />
