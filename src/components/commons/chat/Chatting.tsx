@@ -66,7 +66,7 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
     const token = localStorage.getItem('access_token')
     if (!token) return
 
-    const wsUrl = `ws://api.ozcoding.site/ws/chat/${selectedChatRoom.uuid}/?token=${token}`
+    const wsUrl = `wss://api.ozcoding.site/ws/chat/${selectedChatRoom.uuid}/?token=${token}`
     const ws = new WebSocket(wsUrl)
 
     ws.onopen = () => {
@@ -137,6 +137,31 @@ export default function Chatting({ isOpen, setIsOpen }: ChatProps) {
   }, [selectedChatRoom, user])
 
   const sendMessage = (content: string) => {
+    console.log('🔵 sendMessage 호출됨')
+    console.log('content:', content)
+    console.log('socketRef.current:', socketRef.current)
+    console.log('readyState:', socketRef.current?.readyState)
+    console.log('WebSocket.OPEN:', WebSocket.OPEN)
+    console.log('selectedChatRoom?.uuid:', selectedChatRoom?.uuid)
+
+    if (
+      !socketRef.current ||
+      socketRef.current.readyState !== WebSocket.OPEN ||
+      !content.trim() ||
+      !selectedChatRoom?.uuid
+    ) {
+      console.log('❌ 조건 실패')
+      console.log('socketRef 있음?', !!socketRef.current)
+      console.log(
+        'OPEN 상태?',
+        socketRef.current?.readyState === WebSocket.OPEN
+      )
+      console.log('content 있음?', !!content.trim())
+      console.log('uuid 있음?', !!selectedChatRoom?.uuid)
+      return false
+    }
+
+    console.log('✅ 메시지 전송 시도')
     if (
       !socketRef.current ||
       socketRef.current.readyState !== WebSocket.OPEN ||
