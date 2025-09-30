@@ -80,6 +80,8 @@ interface NotificationItemProps extends NotificationItemType {
   setIsNotificationOpen: (isOpen: boolean) => void
 }
 
+const ACCOUNT = 'https://account.ozcoding.site'
+const STUDY_GROUP = 'https://study.ozcoding.site'
 export default function NotificationItem({
   setIsNotificationOpen,
   ...notification
@@ -87,30 +89,47 @@ export default function NotificationItem({
   const { notification_id } = notification
   const navigate = useNavigate()
   const readNotificationMutation = useReadNotification()
-
   const handleNotificationClick = () => {
-    console.log(notification.back_url_link)
+    const navigateToLink = () => {
+      if (!notification.back_url_link) return
+
+      if (
+        notification.type === 'STUDY_JOIN' &&
+        notification.back_url_link.includes('/study-group/')
+      ) {
+        const uuid = notification.back_url_link
+          .split('/study-group/')[1]
+          ?.split('/')[0]
+        if (uuid) {
+          navigate(`/?study_group_uuid=${uuid}`)
+          return
+        }
+      }
+      // "my-page"가 포함된 경우 외부 도메인으로 리다이렉트
+      if (notification.back_url_link.includes('my-page')) {
+        window.location.href = `${ACCOUNT}${notification.back_url_link}`
+      } else if (notification.back_url_link.includes('study-group')) {
+        window.location.href = `${STUDY_GROUP}${notification.back_url_link}`
+      } else {
+        navigate(ACCOUNT)
+      }
+    }
 
     if (notification.is_read || readNotificationMutation.isPending) {
       setIsNotificationOpen(false)
-      if (notification.back_url_link) navigate(notification.back_url_link)
+      navigateToLink()
       return
     }
 
     readNotificationMutation.mutate(notification_id, {
       onError: (error) => {
-        console.error('읽음 처리 실패:', error)
+        alert(`Error: ${error}`)
       },
       onSuccess: () => {
-        console.log('읽음 처리 성공!')
         setIsNotificationOpen(false)
-        if (notification.back_url_link) {
-          navigate(notification.back_url_link)
-        }
+        navigateToLink()
       },
     })
-
-    // setIsNotificationOpen(false)
   }
   return (
     <div
@@ -121,7 +140,7 @@ export default function NotificationItem({
       onClick={() => handleNotificationClick()}
     >
       {getNotificationIcon(notification.type)}
-      <div className="flex min-w-72 gap-1">
+      <div className="flex min-w-72 justify-between gap-1">
         <div className="flex flex-col gap-1">
           <p className="line-clamp-2 text-left text-sm text-gray-900">
             {notification.content}
