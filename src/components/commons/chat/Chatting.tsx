@@ -1,8 +1,6 @@
 import type { Chat } from '@src/types/chat'
 import { useEffect, useState, useCallback, useRef } from 'react'
-
 import ChatList from './ChatList'
-
 import ChatListHeader from './chat-header/ChatListHeader'
 import ChatRoomHeader from './chat-header/ChatRoomHeader'
 import MessageInput from './MessageInput'
