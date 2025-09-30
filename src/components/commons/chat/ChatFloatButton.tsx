@@ -17,6 +17,17 @@ export function ChatFloatButton({ className }: ChatFloatButtonProps) {
   const buttonRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const handleResetChat = () => {
+      setIsOpen(false)
+    }
+
+    window.addEventListener('resetChatState', handleResetChat)
+    return () => {
+      window.removeEventListener('resetChatState', handleResetChat)
+    }
+  }, [])
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         isOpen &&

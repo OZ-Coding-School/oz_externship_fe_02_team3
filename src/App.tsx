@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useSearchParams } from 'react-router-dom'
 import './App.css'
 import MainLayout from '@layouts/MainLayout'
 import TestHub from '@src/pages/test-page/TestHub'
@@ -20,7 +20,6 @@ import { useEffect } from 'react'
 
 import AuthWarmup from './components/commons/AuthWarmup'
 
-
 const routes = [
   { path: ROUTES.HOME, element: <TestHub /> },
   { path: ROUTES.RECRUITMENT_CREATE, element: <RecruitmentCreate /> },
@@ -37,11 +36,21 @@ const scrollRoutes = [
 
 export default function App() {
   const bootstrap = useAuth((state) => state.bootstrap)
+  const [searchParams, setSearchParams] = useSearchParams()
 
   useEffect(() => {
     // 앱 시작시 사용자 정보 로드
     bootstrap('public')
   }, [bootstrap])
+
+  // 새로고침 시 URL 정리
+  useEffect(() => {
+    if (searchParams.has('study_group_uuid')) {
+      setSearchParams({})
+
+      window.dispatchEvent(new CustomEvent('resetChatState'))
+    }
+  }, [])
   return (
     <ToastPorvider max={5}>
       <AuthWarmup>
