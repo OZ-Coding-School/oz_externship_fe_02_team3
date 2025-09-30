@@ -17,7 +17,7 @@ export default function AuthMenu() {
         variant="filled"
         size="base"
         fontWeight="medium"
-        link="/signup"
+        link={`${ACCOUNT}/auth/signup?return_to=${returnTo}`}
         className="text-base"
       />
     </>
