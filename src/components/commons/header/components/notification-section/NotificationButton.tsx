@@ -3,7 +3,11 @@ import { useOutsideClick } from '@src/hooks/useOutsideClick'
 import Icon from '@components/commons/Icon'
 import { Bell as BellIcon } from 'lucide-react'
 import NotificationsDropdown from './NotificationsDropdown'
-import { useUnreadCountQuery } from '@hooks/useNotifications'
+import {
+  useUnreadCountQuery,
+  useNotificationSSE,
+  useNotifications,
+} from '@hooks/useNotifications'
 
 interface NotificationButtonProps {
   isNotificationOpen: boolean
@@ -18,24 +22,29 @@ export default function NotificationButton({
   isUserMenuOpen,
   setIsUserMenuOpen,
 }: NotificationButtonProps) {
+  useNotificationSSE()
   const { unreadCount } = useUnreadCountQuery()
+  const { refetch } = useNotifications()
 
   const notificationsDropdownRef = useRef<HTMLDivElement>(null)
   const notificationButtonRef = useRef<HTMLDivElement>(null)
 
   const handleNotificationToggle = () => {
-    // 마이페이지 ui가 열려있다면 마이페이지 ui 닫기
     if (isUserMenuOpen) {
       setIsUserMenuOpen(false)
     }
-    // 알림드롭다운 토글
-    setIsNotificationOpen(!isNotificationOpen)
+    const nextState = !isNotificationOpen
+    setIsNotificationOpen(nextState)
+
+    if (nextState) {
+      refetch()
+    }
   }
 
   useOutsideClick(
-    isNotificationOpen, // 드롭다운이 열려있는지
-    [notificationButtonRef, notificationsDropdownRef], // 안쪽으로 취급할 영역들
-    () => setIsNotificationOpen(false) // 바깥 클릭시 실행할 함수
+    isNotificationOpen,
+    [notificationButtonRef, notificationsDropdownRef],
+    () => setIsNotificationOpen(false)
   )
 
   return (

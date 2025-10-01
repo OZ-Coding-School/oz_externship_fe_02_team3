@@ -15,10 +15,11 @@ async function enableMocking() {
   }
 
   const { worker } = await import('./mock/browser.ts')
-  return worker.start({
+  await worker.start({
     onUnhandledRequest: 'bypass',
   })
 }
+
 enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
