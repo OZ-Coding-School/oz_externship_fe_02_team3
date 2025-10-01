@@ -39,11 +39,8 @@ export function useNotificationSSE() {
 
       try {
         const payload = JSON.parse(e.data)
-
-        // 단일 객체일 수도 있고, 여러 개 배열일 수도 있음
         const notifications = Array.isArray(payload) ? payload : [payload]
 
-        // unread-count를 알림 개수만큼 증가
         queryClient.setQueryData<{ unread_count: number }>(
           ['notifications', 'unread-count'],
           (prev) => {
@@ -52,7 +49,6 @@ export function useNotificationSSE() {
           }
         )
         queryClient.invalidateQueries({ queryKey: ['notifications'] })
-
         console.log(
           `[SSE] 새 알림 ${notifications.length}건 수신`,
           notifications
@@ -64,14 +60,23 @@ export function useNotificationSSE() {
 
     // summary 이벤트: 읽지 않은 개수 업데이트
     eventSource.addEventListener('summary', (e) => {
-      console.log('[SSE] summary 수신:', e.data)
-      const payload = JSON.parse(e.data)
-      console.log('[SSE] summary payload:', payload)
+      try {
+        const payload = JSON.parse(e.data)
+        const summaries = Array.isArray(payload) ? payload : [payload]
 
-      // 읽지 않은 개수 캐시 업데이트
-      queryClient.setQueryData(['notifications', 'unread-count'], {
-        unread_count: payload.unreadCount,
-      })
+        queryClient.setQueryData<{ unread_count: number }>(
+          ['notifications', 'unread-count'],
+          (prev) => {
+            const prevCount = prev?.unread_count ?? 0
+            return { unread_count: prevCount + summaries.length }
+          }
+        )
+
+        queryClient.invalidateQueries({ queryKey: ['notifications'] })
+        console.log(`[SSE] summary ${summaries.length}건 수신`, summaries)
+      } catch (err) {
+        console.error('[SSE] summary payload 파싱 오류:', err)
+      }
     })
 
     eventSource.onerror = (error) => {
@@ -183,10 +188,10 @@ export function useMarkAllAsRead() {
       return response.data
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['notifications'] })
-      queryClient.invalidateQueries({
-        queryKey: ['notifications', 'unread-count'],
+      queryClient.setQueryData(['notifications', 'unread-count'], {
+        unread_count: 0,
       })
+      queryClient.invalidateQueries({ queryKey: ['notifications'] })
     },
   })
 }
@@ -201,10 +206,14 @@ export function useReadNotification() {
       return response.data
     },
     onSuccess: () => {
+      queryClient.setQueryData<{ unread_count: number }>(
+        ['notifications', 'unread-count'],
+        (prev) => {
+          const prevCount = prev?.unread_count ?? 0
+          return { unread_count: Math.max(0, prevCount - 1) }
+        }
+      )
       queryClient.invalidateQueries({ queryKey: ['notifications'] })
-      queryClient.invalidateQueries({
-        queryKey: ['notifications', 'unread-count'],
-      })
     },
     onError: (error) => {
       console.error('모두 읽음 처리 실패:', error)
